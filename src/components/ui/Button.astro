@@ -1,0 +1,131 @@
+---
+/**
+ * Button — CTA reutilizable de la landing.
+ * Renderiza un <a> (la conversión siempre es navegación: WhatsApp o ancla).
+ * Variantes:
+ *   primary  → botón naranja sólido (acción principal)
+ *   outline  → contorno sutil (nav / acciones secundarias)
+ *   ghost    → texto con línea animada (CTA fantasma)
+ */
+interface Props {
+  href: string;
+  variant?: "primary" | "outline" | "ghost";
+  class?: string;
+  /** Abre en pestaña nueva + rel de seguridad (para wa.me). */
+  external?: boolean;
+}
+
+const {
+  href,
+  variant = "primary",
+  class: className = "",
+  external = false,
+} = Astro.props;
+
+const target = external ? "_blank" : undefined;
+const rel = external ? "noopener noreferrer" : undefined;
+---
+
+<a
+  href={href}
+  class:list={["btn", `btn--${variant}`, className]}
+  target={target}
+  rel={rel}
+>
+  <span class="btn__label"><slot /></span>
+</a>
+
+<style>
+  .btn {
+    --btn-fg: var(--color-black);
+    --btn-bg: var(--color-cta-primary);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px; /* touch target accesible (WCAG 2.5.8) */
+    padding: 0.95rem 1.75rem;
+    font-family: var(--font-body);
+    font-weight: var(--fw-medium);
+    font-size: 0.95rem;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    border-radius: 999px;
+    color: var(--btn-fg);
+    background-color: var(--btn-bg);
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease,
+      transform 0.25s ease,
+      border-color 0.25s ease;
+    will-change: transform;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .btn:focus-visible {
+    outline: 2px solid var(--color-cta-hover);
+    outline-offset: 3px;
+  }
+
+  /* Primary — naranja → amarillo en hover */
+  .btn--primary:hover {
+    --btn-bg: var(--color-cta-hover);
+  }
+
+  /* Outline — contorno sutil sobre fondo oscuro */
+  .btn--outline {
+    --btn-fg: var(--color-text-on-dark);
+    background-color: transparent;
+    border: 1px solid color-mix(in srgb, var(--color-white) 35%, transparent);
+    padding: 0.7rem 1.4rem;
+  }
+  .btn--outline:hover {
+    --btn-fg: var(--color-black);
+    background-color: var(--color-white);
+    border-color: var(--color-white);
+  }
+
+  /* Ghost — texto con línea animada */
+  .btn--ghost {
+    --btn-fg: var(--color-text-on-dark);
+    background-color: transparent;
+    padding: 0.5rem 0;
+    border-radius: 0;
+    position: relative;
+  }
+  .btn--ghost .btn__label::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 1px;
+    background-color: var(--color-cta-primary);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .btn--ghost:hover {
+    transform: none;
+  }
+  .btn--ghost:hover .btn__label::after {
+    transform: scaleX(1);
+  }
+
+  .btn__label {
+    position: relative;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn {
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+    .btn:hover {
+      transform: none;
+    }
+  }
+</style>

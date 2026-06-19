@@ -22,3 +22,9 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# agent skills materializadas (se regeneran desde skills-lock.json)
+.agents/
+
+# fuentes de imágenes sin optimizar (reemplazadas por sus .webp)
+src/assets/images/img*.jpg

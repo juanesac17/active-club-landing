@@ -1,0 +1,403 @@
+---
+/**
+ * Hero — primera sección. Dark-first, editorial de alto contraste.
+ * Capa 1 (este archivo): estructura estática + estilos.
+ * Capa 2 (hero.js): palabra rotatoria, dots, stagger de entrada, parallax.
+ *
+ * Los elementos animables ya tienen hooks (data-*, clases) para que GSAP
+ * se enganche sin tocar este markup.
+ */
+import Button from "../ui/Button.astro";
+import heroBg from "../../assets/images/hero-bg.webp";
+import logoSvg from "../../assets/images/logo-horizontal.svg?raw";
+
+// TODO: reemplazar por el link wa.me real cuando esté el número (whatsapp.js).
+const WHATSAPP_URL = "#contacto";
+
+// Palabras de la rotación. Estáticamente se muestra la primera; GSAP usará todas.
+const ROTATING_WORDS = ["propósito", "ciencia", "método", "resultados"];
+---
+
+<section class="hero" id="hero">
+  <!-- Fondo: foto atmosférica + overlay de contraste -->
+  <div class="hero__bg" aria-hidden="true">
+    <img src={heroBg.src} alt="" width={heroBg.width} height={heroBg.height} fetchpriority="high" />
+    <div class="hero__overlay"></div>
+  </div>
+
+  <!-- Nav -->
+  <header class="hero__nav" data-hero-nav>
+    <a href="/" class="hero__logo" aria-label="Active Club — inicio" set:html={logoSvg}></a>
+    <Button href={WHATSAPP_URL} variant="outline" external>Contactar</Button>
+  </header>
+
+  <!-- Contenido principal -->
+  <div class="hero__content">
+    <p class="hero__eyebrow" data-hero-reveal>
+      Entrenamiento personalizado · Basado en ciencia
+    </p>
+
+    <h1 class="hero__headline">
+      <span class="hero__headline-line" data-hero-reveal>Entrena con</span>
+      <span
+        class="hero__rotator"
+        data-hero-rotator
+        data-words={JSON.stringify(ROTATING_WORDS)}
+      >
+        <span class="hero__word">{ROTATING_WORDS[0]}</span>
+      </span>
+    </h1>
+
+    <p class="hero__subtitle" data-hero-reveal>
+      Asesoría personalizada para mejorar tu rendimiento físico, con un método
+      respaldado por evidencia.
+    </p>
+
+    <div class="hero__actions" data-hero-reveal>
+      <Button href={WHATSAPP_URL} variant="primary" external>Quiero empezar</Button>
+      <a href="#metodo" class="hero__secondary">
+        <span>Conocé el método</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Stats (borde izquierdo) -->
+  <ul class="hero__stats">
+    <li><span class="hero__stat-num">100%</span><span class="hero__stat-label">Personalizado</span></li>
+    <li><span class="hero__stat-num">2x</span><span class="hero__stat-label">Tu rendimiento</span></li>
+    <li><span class="hero__stat-num">∞</span><span class="hero__stat-label">Ajuste continuo</span></li>
+  </ul>
+
+  <!-- Tags (borde derecho) -->
+  <ul class="hero__tags">
+    <li>Presencial</li>
+    <li>Virtual</li>
+  </ul>
+
+  <!-- Barra inferior: scroll + dots -->
+  <div class="hero__footer">
+    <a href="#metodo" class="hero__scroll">
+      <span class="hero__scroll-line"></span>
+      <span class="hero__scroll-label">Scroll</span>
+    </a>
+
+    <ul class="hero__dots" data-hero-dots aria-hidden="true">
+      <li class="is-active"></li>
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(1.25rem, 3vw, 2.5rem);
+    overflow: hidden;
+    color: var(--color-text-on-dark);
+    isolation: isolate;
+  }
+
+  /* Anti-FOUC: ocultamos los elementos de entrada SOLO si hay JS y el
+     usuario no pidió menos movimiento. GSAP los revela en la entrada.
+     Sin JS o con reduced-motion → quedan visibles por defecto. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) [data-hero-nav],
+    :global(html.js) [data-hero-reveal],
+    :global(html.js) .hero__rotator {
+      opacity: 0;
+    }
+  }
+
+  /* ---------- Fondo ---------- */
+  .hero__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+  }
+  .hero__bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 60% center;
+    will-change: transform;
+  }
+  .hero__overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        90deg,
+        var(--color-bg-dark) 0%,
+        color-mix(in srgb, var(--color-bg-dark) 80%, transparent) 38%,
+        color-mix(in srgb, var(--color-bg-dark) 30%, transparent) 70%,
+        transparent 100%
+      ),
+      linear-gradient(
+        0deg,
+        var(--color-bg-dark) 2%,
+        transparent 45%
+      );
+  }
+
+  /* ---------- Nav ---------- */
+  .hero__nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .hero__logo {
+    display: block;
+    width: clamp(120px, 14vw, 168px);
+    color: var(--color-white);
+  }
+  .hero__logo :global(svg) {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* ---------- Contenido ---------- */
+  .hero__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    max-width: 60rem;
+    gap: clamp(1rem, 2.5vw, 1.75rem);
+    padding-block: clamp(2rem, 6vh, 4rem);
+  }
+
+  .hero__eyebrow {
+    font-size: clamp(0.75rem, 1.2vw, 0.9rem);
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-cta-primary);
+  }
+
+  .hero__headline {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(3rem, 11vw, 8.5rem);
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+  .hero__headline-line {
+    display: block;
+  }
+
+  /* Palabra rotatoria — highlight tipográfico en amarillo (token de marca) */
+  .hero__rotator {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    color: var(--color-cta-hover);
+  }
+  .hero__word {
+    display: inline-block;
+    will-change: transform;
+  }
+  /* Clon de la palabra saliente: superpuesto para animar salida y entrada a la vez */
+  .hero__word.is-leaving {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .hero__subtitle {
+    font-weight: var(--fw-light);
+    font-size: clamp(1rem, 1.6vw, 1.3rem);
+    line-height: 1.5;
+    max-width: 38ch;
+    opacity: 0.72;
+  }
+
+  .hero__actions {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 2.5vw, 2rem);
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+  .hero__secondary {
+    position: relative;
+    font-size: 0.95rem;
+    font-weight: var(--fw-regular);
+    color: var(--color-text-on-dark);
+    opacity: 0.85;
+    padding-bottom: 4px;
+  }
+  .hero__secondary span::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0.4);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .hero__secondary:hover span::after {
+    transform: scaleX(1);
+  }
+
+  /* ---------- Stats (borde derecho) ---------- */
+  .hero__stats {
+    position: absolute;
+    right: clamp(1.25rem, 3vw, 2.5rem);
+    bottom: clamp(7rem, 16vh, 9rem);
+    list-style: none;
+    display: grid;
+    gap: 1rem;
+    padding-right: 1rem;
+    border-right: 2px solid var(--color-cta-primary);
+    text-align: right;
+    /* El borde derecho cae sobre la zona clara de la foto → sombra para contraste */
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+  }
+  .hero__stats li {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1;
+  }
+  .hero__stat-num {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: 1.4rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .hero__stat-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    margin-top: 0.25rem;
+  }
+
+  /* ---------- Tags (derecha) ---------- */
+  .hero__tags {
+    position: absolute;
+    right: clamp(1.25rem, 3vw, 2.5rem);
+    top: clamp(5.5rem, 16vh, 9rem);
+    list-style: none;
+    display: grid;
+    gap: 0.6rem;
+    justify-items: end;
+  }
+  .hero__tags li {
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    padding: 0.4rem 0.85rem;
+    border: 1px solid color-mix(in srgb, var(--color-white) 22%, transparent);
+    border-radius: 999px;
+    /* Scrim: garantiza contraste del texto sobre zonas claras de la foto */
+    background: color-mix(in srgb, var(--color-bg-dark) 55%, transparent);
+    backdrop-filter: blur(4px);
+  }
+
+  /* ---------- Footer: scroll + dots ---------- */
+  .hero__footer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .hero__scroll {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  .hero__scroll-line {
+    width: 1px;
+    height: 2.5rem;
+    background: linear-gradient(
+      to bottom,
+      var(--color-white),
+      transparent
+    );
+    position: relative;
+    overflow: hidden;
+  }
+  .hero__scroll-line::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--color-cta-primary);
+    animation: scroll-cue 2s ease-in-out infinite;
+  }
+  @keyframes scroll-cue {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+  }
+
+  .hero__dots {
+    list-style: none;
+    display: flex;
+    gap: 0.55rem;
+    align-items: center;
+  }
+  .hero__dots li {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--color-white) 25%, transparent);
+    transition: background 0.3s ease, width 0.3s ease;
+  }
+  .hero__dots li.is-active {
+    width: 22px;
+    border-radius: 999px;
+    background: var(--color-cta-hover);
+  }
+
+  /* ---------- Foco visible (teclado) ---------- */
+  .hero__logo:focus-visible,
+  .hero__secondary:focus-visible,
+  .hero__scroll:focus-visible {
+    outline: 2px solid var(--color-cta-hover);
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1024px) {
+    .hero__stats,
+    .hero__tags {
+      display: none;
+    }
+  }
+  @media (max-width: 560px) {
+    .hero__content {
+      align-items: flex-start;
+    }
+    .hero__dots {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__scroll-line::after {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  import { initHero } from "../../scripts/animations/hero.js";
+  initHero();
+</script>

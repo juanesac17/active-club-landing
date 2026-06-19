@@ -1,0 +1,89 @@
+---
+/**
+ * BaseLayout — esqueleto HTML de la landing.
+ * Responsabilidad única: <head> (meta tags, SEO, fuentes) + <body> con slot.
+ * Header / Footer / WhatsAppFAB se ensamblan en la página, no acá.
+ */
+import "../styles/global.css";
+
+interface Props {
+  /** Título de la pestaña y og:title. */
+  title?: string;
+  /** Meta description + og:description. */
+  description?: string;
+  /** Imagen para compartir en redes (ruta relativa a la raíz pública). */
+  image?: string;
+}
+
+const {
+  title = "Active Club — Entrena con propósito, progresa con ciencia",
+  description = "Asesoría personalizada para mejorar tu rendimiento físico, con un método respaldado por evidencia. Presencial y virtual.",
+  image = "/og-image.jpg",
+} = Astro.props;
+
+// Astro.site se define en astro.config cuando haya dominio. Hasta entonces,
+// cae a Astro.url para que el build no rompa.
+const base = Astro.site ?? Astro.url;
+const canonicalURL = new URL(Astro.url.pathname, base);
+const socialImage = new URL(image, base);
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Marca que hay JS antes del primer paint (anti-FOUC para las
+         animaciones de entrada). Inline para que corra de inmediato. -->
+    <script is:inline>
+      document.documentElement.classList.add("js");
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Primarios -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href={canonicalURL} />
+    <meta name="theme-color" content="#1A1A1A" />
+
+    <!-- Preload de fuentes críticas above-the-fold (evita FOUT en el Hero).
+         crossorigin es obligatorio: las fuentes se piden en modo CORS. -->
+    <link
+      rel="preload"
+      href="/fonts/space-grotesk-bold.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/outfit-regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:site_name" content="Active Club" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={socialImage} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Saltar al contenido</a>
+    <main id="main-content">
+      <slot />
+    </main>
+  </body>
+</html>

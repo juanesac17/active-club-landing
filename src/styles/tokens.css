@@ -1,0 +1,56 @@
+/* =============================================================
+   Active Club — Design Tokens
+   Variables CSS centralizadas: colores, tipografía, espaciado.
+   Si cambia un color o una fuente, se cambia acá y en un solo lugar.
+
+   Nota: cuando se integre Tailwind 4, estos tokens se exponen
+   como utilidades vía @theme. Por ahora son CSS custom properties
+   planas, consumibles con var(--token).
+   ============================================================= */
+
+:root {
+  /* ----------------------------------------------------------
+     Colores — Primarios
+     ---------------------------------------------------------- */
+  --color-black: #1a1a1a;
+  --color-white: #ffffff;
+
+  /* ----------------------------------------------------------
+     Colores — Secundarios
+     ---------------------------------------------------------- */
+  --color-blue-gray: #c7d5d9; /* Fondos sutiles, separadores, texto secundario */
+  --color-green: #75ae8b;     /* Acentos de bienestar, íconos, highlights */
+  --color-yellow: #f5c355;    /* Hover de CTAs, highlights tipográficos */
+  --color-orange: #ee8a5a;    /* CTA principal, energía y acción */
+
+  /* ----------------------------------------------------------
+     Colores — Tokens semánticos
+     Usar SIEMPRE estos en componentes, no los primitivos de arriba.
+     ---------------------------------------------------------- */
+  --color-bg-dark: var(--color-black);       /* Fondo base de la página */
+  --color-bg-light: var(--color-white);      /* Fondo de secciones de contraste */
+  --color-text-primary: var(--color-black);  /* Texto sobre fondo claro */
+  --color-text-on-dark: var(--color-white);  /* Texto sobre fondo oscuro */
+  --color-cta-primary: var(--color-orange);  /* Botones de acción principal */
+  --color-cta-hover: var(--color-yellow);    /* Hover en botones */
+  --color-accent: var(--color-green);        /* Acento general de la interfaz */
+
+  /* ----------------------------------------------------------
+     Tipografía — Familias
+     --font-display / --font-body se definen en el @theme de
+     global.css (Tailwind 4 las posee para generar utilidades
+     font-display / font-body). Disponibles igual como var().
+     Display → títulos de alto impacto, logo, números grandes.
+     Body    → títulos, subtítulos y cuerpo de texto.
+     ---------------------------------------------------------- */
+
+  /* ----------------------------------------------------------
+     Tipografía — Pesos
+     ---------------------------------------------------------- */
+  --fw-thin: 100;
+  --fw-light: 300;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-bold: 700;
+  --fw-black: 900;
+}
