@@ -1,29 +1,26 @@
-import gsap from "gsap";
+import { gsap } from "./gsap.config.js";
+import { initIntro } from "./intro.js";
 
 /**
  * Animaciones del Hero (capa 2).
- * - Entrada en stagger al cargar.
- * - Palabra rotatoria (salida y entrada simultáneas) sincronizada con los dots.
- * - Parallax sutil con el mouse (foto + número fantasma).
- *
- * Respeta prefers-reduced-motion vía gsap.matchMedia(): si el usuario
- * pide menos movimiento, todo queda estático y visible.
- *
- * El markup esconde [data-hero-nav]/[data-hero-reveal]/.hero__rotator solo
- * cuando hay JS y no hay reduced-motion (anti-FOUC), así que acá los revelamos.
+ * - Intro invertida (intro.js): máscara crece, UI entra al ~80%.
+ * - Palabra rotatoria sincronizada con los dots.
+ * - Parallax sutil sobre la foto de la escena enmascarada.
  */
-const HOLD = 2.8; // segundos por palabra
+const HOLD = 2.8;
 
 export function initHero() {
   const hero = document.querySelector("#hero");
   if (!hero || hero.dataset.heroInit === "1") return;
   hero.dataset.heroInit = "1";
 
+  const cleanupIntro = initIntro();
+
   const rotator = hero.querySelector("[data-hero-rotator]");
   const wordEl = rotator?.querySelector(".hero__word");
   const words = safeWords(rotator);
   const dots = [...hero.querySelectorAll("[data-hero-dots] li")];
-  const bgImg = hero.querySelector(".hero__bg img");
+  const bgImg = hero.querySelector("[data-hero-bg]");
 
   const mm = gsap.matchMedia();
 
@@ -34,37 +31,70 @@ export function initHero() {
     },
     (ctx) => {
       const { reduce } = ctx.conditions;
-      const reveals = gsap.utils.toArray("[data-hero-nav], [data-hero-reveal], .hero__rotator");
+      const reveals = gsap.utils.toArray(
+        "[data-hero-nav], [data-hero-reveal], [data-hero-intro-ui], .hero__rotator"
+      );
 
-      // --- Reduced motion: todo visible y quieto, sin rotación ---
       if (reduce) {
         gsap.set(reveals, { autoAlpha: 1, y: 0 });
         return;
       }
 
-      // --- Entrada en stagger ---
-      const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
-      intro
-        .fromTo(
-          "[data-hero-nav]",
-          { autoAlpha: 0, y: -18 },
-          { autoAlpha: 1, y: 0, duration: 0.6 }
-        )
-        .fromTo(
-          reveals.filter((el) => !el.matches("[data-hero-nav]")),
-          { autoAlpha: 0, y: 24 },
-          { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.12 },
-          "-=0.3"
-        )
-        .add(startRotation, "-=0.2");
-
-      // --- Palabra rotatoria + sincronía ---
-      let i = 0;
+      let entrancePlayed = false;
+      let entranceTl;
       let loop;
+      let i = 0;
+
+      const hideEntrance = () => {
+        if (!entrancePlayed) return;
+        entrancePlayed = false;
+
+        loop?.kill();
+        loop = null;
+        entranceTl?.kill();
+        entranceTl = null;
+
+        gsap.killTweensOf(reveals);
+        gsap.set("[data-hero-nav]", { autoAlpha: 0, y: -18 });
+        gsap.set("[data-hero-reveal], [data-hero-intro-ui], .hero__rotator", {
+          autoAlpha: 0,
+          y: 24,
+        });
+
+        rotator?.querySelectorAll(".hero__word.is-leaving").forEach((el) => el.remove());
+        if (wordEl && words.length) {
+          i = 0;
+          wordEl.textContent = words[0];
+          gsap.set(wordEl, { yPercent: 0, autoAlpha: 1 });
+        }
+        dots.forEach((d, idx) => d.classList.toggle("is-active", idx === 0));
+      };
+
+      const playEntrance = () => {
+        if (entrancePlayed) return;
+        entrancePlayed = true;
+
+        entranceTl = gsap.timeline({ defaults: { ease: "power3.out" } });
+        entranceTl
+          .fromTo(
+            "[data-hero-nav]",
+            { autoAlpha: 0, y: -18 },
+            { autoAlpha: 1, y: 0, duration: 0.6 }
+          )
+          .fromTo(
+            reveals.filter((el) => !el.matches("[data-hero-nav]")),
+            { autoAlpha: 0, y: 24 },
+            { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.12 },
+            "-=0.3"
+          )
+          .add(startRotation, "-=0.2");
+      };
+
+      hero.addEventListener("intro:reveal", playEntrance);
+      hero.addEventListener("intro:hide", hideEntrance);
 
       function startRotation() {
         if (!wordEl || words.length < 2) return;
-        // Timeline-temporizador: cada repetición dispara el cambio de palabra.
         loop = gsap.timeline({ repeat: -1, onRepeat: advance });
         loop.to({}, { duration: HOLD });
       }
@@ -72,8 +102,6 @@ export function initHero() {
       function advance() {
         i = (i + 1) % words.length;
 
-        // Clon saliente (posición absoluta) para que la palabra que sale y la
-        // que entra se muevan AL MISMO TIEMPO: ambas suben, una se va y otra entra.
         const leaving = wordEl.cloneNode(true);
         leaving.classList.add("is-leaving");
         rotator.appendChild(leaving);
@@ -88,7 +116,6 @@ export function initHero() {
         dots.forEach((d, idx) => d.classList.toggle("is-active", idx === i));
       }
 
-      // --- Parallax con el mouse (foto + número fantasma) ---
       let cleanupParallax = () => {};
       if (bgImg && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
         gsap.set(bgImg, { scale: 1.06 });
@@ -113,14 +140,16 @@ export function initHero() {
         };
       }
 
-      // Cleanup (matchMedia revierte los tweens; matamos timelines y listeners)
       return () => {
         loop?.kill();
-        intro.kill();
+        entranceTl?.kill();
         cleanupParallax();
+        hero.removeEventListener("intro:reveal", playEntrance);
+        hero.removeEventListener("intro:hide", hideEntrance);
+        cleanupIntro();
       };
     },
-    hero // scope de los selectores
+    hero
   );
 }
 
