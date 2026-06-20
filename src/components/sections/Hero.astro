@@ -1,33 +1,61 @@
 ---
 /**
- * Hero — primera sección. Dark-first, editorial de alto contraste.
- * Capa 1 (este archivo): estructura estática + estilos.
- * Capa 2 (hero.js): palabra rotatoria, dots, stagger de entrada, parallax.
- *
- * Los elementos animables ya tienen hooks (data-*, clases) para que GSAP
- * se enganche sin tocar este markup.
+ * Hero — intro invertida: ventana del logo que crece.
+ * Capa 2 (hero.js): intro, palabra rotatoria, parallax.
  */
 import Button from "../ui/Button.astro";
 import heroBg from "../../assets/images/hero-bg.webp";
-import logoSvg from "../../assets/images/logo-horizontal.svg?raw";
+import navLogoSvg from "../../assets/images/logo-horizontal.svg?raw";
+import introLogoSvg from "../../assets/images/logo-vertical.svg?raw";
 
 // TODO: reemplazar por el link wa.me real cuando esté el número (whatsapp.js).
 const WHATSAPP_URL = "#contacto";
 
 // Palabras de la rotación. Estáticamente se muestra la primera; GSAP usará todas.
-const ROTATING_WORDS = ["propósito", "ciencia", "método", "resultados"];
+const ROTATING_WORDS = ["propósito", "ciencia", "dirección", "resultados"];
 ---
 
 <section class="hero" id="hero">
-  <!-- Fondo: foto atmosférica + overlay de contraste -->
-  <div class="hero__bg" aria-hidden="true">
-    <img src={heroBg.src} alt="" width={heroBg.width} height={heroBg.height} fetchpriority="high" />
-    <div class="hero__overlay"></div>
+  <!-- Escena enmascarada (máscara pequeña → enorme) -->
+  <div class="hero__logo-mask" id="hero-logo-mask" aria-hidden="true">
+    <div class="hero__key" id="hero-key">
+      <!-- 3) Fondo — capa inferior -->
+      <img
+        src={heroBg.src}
+        alt=""
+        width={heroBg.width}
+        height={heroBg.height}
+        fetchpriority="high"
+        decoding="async"
+        data-hero-bg
+        class="hero__key-bg"
+      />
+      <!-- 2) Logo vertical — escala en sync con logo-vertical-mask.svg (GSAP) -->
+      <div class="hero__intro-logos" id="hero-intro-logos">
+        <div class="hero__key-logo" id="hero-key-logo" set:html={introLogoSvg} aria-hidden="true"></div>
+      </div>
+      <div class="hero__scene-overlay"></div>
+    </div>
   </div>
+
+  <!-- Cue de scroll — visible durante la intro (con la máscara) -->
+  <a href="#metodo" class="hero__scroll hero__scroll--intro" id="hero-scroll-cue">
+    <span class="hero__scroll-label">Desliza hacia abajo</span>
+    <span class="hero__scroll-arrow" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M12 4v13M7 13l5 5 5-5"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"></path>
+      </svg>
+    </span>
+  </a>
 
   <!-- Nav -->
   <header class="hero__nav" data-hero-nav>
-    <a href="/" class="hero__logo" aria-label="Active Club — inicio" set:html={logoSvg}></a>
+    <a href="/" class="hero__logo" aria-label="Active Club — inicio" set:html={navLogoSvg}></a>
     <Button href={WHATSAPP_URL} variant="outline" external>Contactar</Button>
   </header>
 
@@ -54,34 +82,23 @@ const ROTATING_WORDS = ["propósito", "ciencia", "método", "resultados"];
     </p>
 
     <div class="hero__actions" data-hero-reveal>
-      <Button href={WHATSAPP_URL} variant="primary" external>Quiero empezar</Button>
+      <Button href={WHATSAPP_URL} variant="outline" external>Quiero empezar</Button>
       <a href="#metodo" class="hero__secondary">
         <span>Conocé el método</span>
       </a>
     </div>
   </div>
 
-  <!-- Stats (borde izquierdo) -->
-  <ul class="hero__stats">
+  <!-- Stats (borde derecho) -->
+  <ul class="hero__stats" data-hero-intro-ui>
     <li><span class="hero__stat-num">100%</span><span class="hero__stat-label">Personalizado</span></li>
     <li><span class="hero__stat-num">2x</span><span class="hero__stat-label">Tu rendimiento</span></li>
     <li><span class="hero__stat-num">∞</span><span class="hero__stat-label">Ajuste continuo</span></li>
   </ul>
 
-  <!-- Tags (borde derecho) -->
-  <ul class="hero__tags">
-    <li>Presencial</li>
-    <li>Virtual</li>
-  </ul>
-
-  <!-- Barra inferior: scroll + dots -->
+  <!-- Barra inferior: dots -->
   <div class="hero__footer">
-    <a href="#metodo" class="hero__scroll">
-      <span class="hero__scroll-line"></span>
-      <span class="hero__scroll-label">Scroll</span>
-    </a>
-
-    <ul class="hero__dots" data-hero-dots aria-hidden="true">
+    <ul class="hero__dots" data-hero-dots data-hero-intro-ui aria-hidden="true">
       <li class="is-active"></li>
       <li></li>
       <li></li>
@@ -100,6 +117,9 @@ const ROTATING_WORDS = ["propósito", "ciencia", "método", "resultados"];
     overflow: hidden;
     color: var(--color-text-on-dark);
     isolation: isolate;
+    /* Ancho del logo vertical intro (mismo viewBox que logo-vertical-mask.svg) */
+    --intro-logo-w: clamp(80px, 14vw, 160px);
+    --intro-logo-h: calc(var(--intro-logo-w) * 2855 / 4498);
   }
 
   /* Anti-FOUC: ocultamos los elementos de entrada SOLO si hay JS y el
@@ -108,27 +128,88 @@ const ROTATING_WORDS = ["propósito", "ciencia", "método", "resultados"];
   @media (prefers-reduced-motion: no-preference) {
     :global(html.js) [data-hero-nav],
     :global(html.js) [data-hero-reveal],
+    :global(html.js) [data-hero-intro-ui],
     :global(html.js) .hero__rotator {
       opacity: 0;
     }
   }
 
-  /* ---------- Fondo ---------- */
-  .hero__bg {
+  /* 1) Máscara logo-vertical-mask.svg en .hero__logo-mask (arriba) */
+  .hero__logo-mask {
     position: absolute;
     inset: 0;
-    z-index: -2;
+    z-index: 0;
+    background: var(--color-bg-dark);
+    -webkit-mask-image: url("/logo-vertical-mask.svg");
+    mask-image: url("/logo-vertical-mask.svg");
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center center;
+    mask-position: center center;
+    -webkit-mask-size: var(--intro-logo-w) auto;
+    mask-size: var(--intro-logo-w) auto;
+    -webkit-mask-mode: alpha;
+    mask-mode: alpha;
   }
-  .hero__bg img {
+
+  .hero.is-intro-unmasked .hero__logo-mask {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .hero__key {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    transform: scale(1.25);
+    transform-origin: center center;
+    will-change: transform;
+  }
+
+  .hero__key-bg {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: 60% center;
     will-change: transform;
   }
-  .hero__overlay {
+
+  /* 2) Logo vertical — comparte ancho y escala con la máscara (GSAP) */
+  .hero__intro-logos {
     position: absolute;
     inset: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    transform-origin: center center;
+    will-change: transform;
+  }
+
+  .hero__key-logo {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-white);
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5))
+      drop-shadow(0 0 8px rgba(0, 0, 0, 0.6));
+  }
+  .hero__key-logo :global(svg) {
+    width: var(--intro-logo-w);
+    height: auto;
+    display: block;
+  }
+
+  .hero__scene-overlay {
+    z-index: 2;
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
     background:
       linear-gradient(
         90deg,
@@ -144,8 +225,14 @@ const ROTATING_WORDS = ["propósito", "ciencia", "método", "resultados"];
       );
   }
 
+  .hero.is-intro-complete .hero__scene-overlay {
+    opacity: 1;
+  }
+
   /* ---------- Nav ---------- */
   .hero__nav {
+    position: relative;
+    z-index: 1;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -164,6 +251,8 @@ const ROTATING_WORDS = ["propósito", "ciencia", "método", "resultados"];
 
   /* ---------- Contenido ---------- */
   .hero__content {
+    position: relative;
+    z-index: 1;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -179,7 +268,7 @@ const ROTATING_WORDS = ["propósito", "ciencia", "método", "resultados"];
     font-weight: var(--fw-medium);
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--color-cta-primary);
+    color: var(--color-cta-hover);
   }
 
   .hero__headline {
@@ -255,13 +344,14 @@ const ROTATING_WORDS = ["propósito", "ciencia", "método", "resultados"];
   /* ---------- Stats (borde derecho) ---------- */
   .hero__stats {
     position: absolute;
+    z-index: 1;
     right: clamp(1.25rem, 3vw, 2.5rem);
     bottom: clamp(7rem, 16vh, 9rem);
     list-style: none;
     display: grid;
     gap: 1rem;
     padding-right: 1rem;
-    border-right: 2px solid var(--color-cta-primary);
+    border-right: 2px solid var(--color-cta-hover);
     text-align: right;
     /* El borde derecho cae sobre la zona clara de la foto → sombra para contraste */
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
@@ -289,6 +379,7 @@ const ROTATING_WORDS = ["propósito", "ciencia", "método", "resultados"];
   /* ---------- Tags (derecha) ---------- */
   .hero__tags {
     position: absolute;
+    z-index: 1;
     right: clamp(1.25rem, 3vw, 2.5rem);
     top: clamp(5.5rem, 16vh, 9rem);
     list-style: none;
@@ -307,43 +398,56 @@ const ROTATING_WORDS = ["propósito", "ciencia", "método", "resultados"];
     backdrop-filter: blur(4px);
   }
 
-  /* ---------- Footer: scroll + dots ---------- */
+  /* ---------- Footer: dots ---------- */
   .hero__footer {
+    position: relative;
+    z-index: 1;
     display: flex;
     align-items: flex-end;
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: 1rem;
   }
+
+  /* Cue de scroll — centrado bajo el logo, visible con la máscara */
   .hero__scroll {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    font-size: 0.72rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    opacity: 0.7;
+    color: var(--color-text-on-dark);
+    text-decoration: none;
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
   }
-  .hero__scroll-line {
-    width: 1px;
-    height: 2.5rem;
-    background: linear-gradient(
-      to bottom,
-      var(--color-white),
-      transparent
-    );
-    position: relative;
-    overflow: hidden;
-  }
-  .hero__scroll-line::after {
-    content: "";
+
+  .hero__scroll--intro {
     position: absolute;
-    inset: 0;
-    background: var(--color-cta-primary);
-    animation: scroll-cue 2s ease-in-out infinite;
+    z-index: 2;
+    left: 50%;
+    bottom: clamp(1.25rem, 3vw, 2.5rem);
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.85rem;
+    font-size: clamp(0.85rem, 1.5vw, 1.1rem);
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    opacity: 0.9;
   }
-  @keyframes scroll-cue {
-    0% { transform: translateY(-100%); }
-    100% { transform: translateY(100%); }
+
+  .hero__scroll-arrow {
+    display: block;
+    width: clamp(1.5rem, 3vw, 2.25rem);
+    height: clamp(1.5rem, 3vw, 2.25rem);
+    color: var(--color-white);
+    animation: scroll-arrow-bounce 2s ease-in-out infinite;
+  }
+  .hero__scroll-arrow svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.65));
+  }
+  @keyframes scroll-arrow-bounce {
+    0%, 100% { transform: translateY(0); opacity: 0.85; }
+    50% { transform: translateY(6px); opacity: 1; }
   }
 
   .hero__dots {
@@ -375,23 +479,69 @@ const ROTATING_WORDS = ["propósito", "ciencia", "método", "resultados"];
   }
 
   /* ---------- Responsive ---------- */
+  @media (max-width: 768px) {
+    .hero {
+      --intro-logo-w: clamp(150px, 46vw, 210px);
+    }
+  }
+
   @media (max-width: 1024px) {
     .hero__stats,
     .hero__tags {
       display: none;
     }
   }
+
   @media (max-width: 560px) {
+    .hero {
+      --intro-logo-w: clamp(172px, 58vw, 240px);
+      padding-inline: clamp(1rem, 4vw, 1.25rem);
+    }
+
     .hero__content {
       align-items: flex-start;
     }
     .hero__dots {
       display: none;
     }
+
+    .hero__scroll--intro {
+      gap: 0.7rem;
+      font-size: clamp(0.68rem, 3.1vw, 0.82rem);
+      letter-spacing: 0.12em;
+      bottom: clamp(1rem, 4vw, 1.35rem);
+      max-width: min(92vw, 18rem);
+      text-align: center;
+    }
+
+    .hero__scroll--intro .hero__scroll-arrow {
+      width: clamp(1.6rem, 5.5vw, 2.1rem);
+      height: clamp(1.6rem, 5.5vw, 2.1rem);
+    }
+  }
+
+  @media (max-width: 380px) {
+    .hero {
+      --intro-logo-w: clamp(160px, 62vw, 220px);
+    }
+
+    .hero__scroll--intro {
+      letter-spacing: 0.08em;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .hero__scroll-line::after {
+    .hero__logo-mask {
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+    .hero__key {
+      transform: none;
+    }
+    .hero__scene-overlay {
+      opacity: 1;
+    }
+    .hero__scroll-arrow {
       animation: none;
     }
   }
