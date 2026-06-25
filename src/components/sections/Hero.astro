@@ -432,11 +432,14 @@ const ROTATING_WORDS = ["propósito", "ciencia", "dirección", "resultados"];
     transition:
       background 0.3s ease,
       border-color 0.3s ease,
+      color 0.3s ease,
       transform 0.3s ease;
   }
   .hero__enter:hover {
-    background: var(--color-cta);
-    border-color: var(--color-cta);
+    color: var(--color-black);
+    background: var(--color-white);
+    border-color: var(--color-white);
+    text-shadow: none;
     transform: translateX(-50%) translateY(-2px);
   }
 
