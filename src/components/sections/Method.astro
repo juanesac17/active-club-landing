@@ -7,12 +7,13 @@
  * Capa 2 (method.js): entrada con stagger por scroll (ScrollTrigger, one-time) +
  * spotlight verde que sigue al cursor (solo pointer:fine, custom props --mx/--my).
  */
+import logotipoSvg from "../../assets/images/logotipo-blanco.svg?raw";
 
 // Los 3 pilares del doc §5 — Sección 3. Contenido tal cual.
 const PILLARS = [
   {
-    title: "Personalización real",
-    desc: "Cada sesión está diseñada para ti, tus metas y tu estado físico actual.",
+    title: "Personalización",
+    desc: "Cada sesión está diseñada para ti, tus metas, patologías y tu estado físico actual.",
   },
   {
     title: "Ciencia aplicada",
@@ -33,6 +34,7 @@ const PILLARS = [
           <li class="method__card">
             <span class="method__glow" aria-hidden="true" />
             <div class="method__card-body">
+              <span class="method__logo" set:html={logotipoSvg} aria-hidden="true" />
               <h3 class="method__card-title">{pillar.title}</h3>
               <p class="method__desc">{pillar.desc}</p>
             </div>
@@ -121,6 +123,21 @@ const PILLARS = [
     display: flex;
     flex-direction: column;
     gap: 0.85rem;
+  }
+
+  /* Logotipo centrado encima del título de la card. */
+  .method__logo {
+    align-self: center;
+    width: clamp(2.75rem, 6vw, 4rem);
+    margin-bottom: 0.35rem;
+  }
+
+  /* El SVG va por set:html → no recibe scope: estilarlo con :global. */
+  .method__logo :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+    fill: var(--color-text-on-dark);
   }
 
   .method__card-title {
