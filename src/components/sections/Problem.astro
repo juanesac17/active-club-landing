@@ -1,0 +1,97 @@
+---
+/**
+ * Sección 2 — Problema / Promesa (el "valle emocional").
+ * Frases centradas y grandes, una a la vez; frase puente (giro) en naranja.
+ * Capa 2 (problem.js): reveal por caracteres con SplitText + ScrollTrigger (one-time).
+ */
+
+// Pain points en segunda persona. Cada uno entra al scrollear, una frase a la vez.
+const PAINS = [
+  "¿Llevas meses en el gym y no ves resultados?",
+  "¿No sabes si estás entrenando bien o solo cansándote?",
+  "¿Empiezas con motivación y a las semanas lo abandonas?",
+];
+---
+
+<section class="problem" id="problema">
+  <div class="problem__inner">
+    <div class="problem__pains">
+      {PAINS.map((pain) => <p class="problem__pain">{pain}</p>)}
+    </div>
+
+    <p class="problem__bridge">
+      Eso cambia cuando entrenas con un método, no con suposiciones.
+    </p>
+  </div>
+</section>
+
+<style>
+  .problem {
+    position: relative;
+    background: var(--color-bg-dark);
+    color: var(--color-text-on-dark);
+    padding-block: clamp(7rem, 22vh, 14rem);
+    padding-inline: clamp(1.25rem, 6vw, 6rem);
+    overflow: hidden;
+  }
+
+  .problem__inner {
+    max-width: 64rem;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    /* Espacio entre la cascada de frases y el giro. */
+    gap: clamp(6rem, 16vh, 11rem);
+  }
+
+  /* ---------- Pain points: centrados, grandes, una a la vez ---------- */
+  .problem__pains {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Mucho aire entre frases → cada una tiene su momento de scroll. */
+    gap: clamp(5rem, 14vh, 9rem);
+  }
+
+  .problem__pain {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(2rem, 6.5vw, 5rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    max-width: 22ch;
+    color: var(--color-cta-hover);
+  }
+
+  /* ---------- Frase puente (el giro) ---------- */
+  /* Highlight tipográfico puro en naranja: SIN padding/borde/fondo para que
+     nunca se lea como botón (naranja es el color de CTA de la marca). */
+  .problem__bridge {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    max-width: 22ch;
+    color: var(--color-cta-primary);
+  }
+
+  @media (max-width: 768px) {
+    .problem__pain {
+      font-size: clamp(1.75rem, 8vw, 2.75rem);
+      max-width: 18ch;
+    }
+    .problem__pains {
+      gap: clamp(4rem, 12vh, 6rem);
+    }
+  }
+</style>
+
+<script>
+  import { initProblem } from "../../scripts/animations/problem.js";
+  initProblem();
+</script>
