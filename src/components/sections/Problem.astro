@@ -8,8 +8,8 @@
 // Pain points en segunda persona. Cada uno entra al scrollear, una frase a la vez.
 const PAINS = [
   "¿Llevas meses en el gym y no ves resultados?",
-  "¿No sabes si estás entrenando bien o solo cansándote?",
-  "¿Empiezas con motivación y a las semanas lo abandonas?",
+  "¿No sabes si estás entrenando bien o solo te estás cansando?",
+  "¿Empiezas con motivación y al poco tiempo lo abandonas?",
 ];
 ---
 
@@ -22,6 +22,20 @@ const PAINS = [
     <p class="problem__bridge">
       Eso cambia cuando entrenas con un método, no con suposiciones.
     </p>
+
+    <div class="problem__footer">
+      <p class="problem__footer-text">¿Por qué Active Club es diferente?</p>
+      <span class="problem__footer-arrow" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M12 4v13M7 13l5 5 5-5"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+      </span>
+    </div>
   </div>
 </section>
 
@@ -63,7 +77,7 @@ const PAINS = [
     letter-spacing: -0.01em;
     text-wrap: balance;
     max-width: 22ch;
-    color: var(--color-cta-hover);
+    color: var(--color-text-on-dark);
   }
 
   /* ---------- Frase puente (el giro) ---------- */
@@ -77,7 +91,50 @@ const PAINS = [
     letter-spacing: -0.01em;
     text-wrap: balance;
     max-width: 22ch;
-    color: var(--color-cta-primary);
+    color: var(--color-accent);
+  }
+
+  /* ---------- Pie de sección ---------- */
+  .problem__footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--color-white);
+  }
+
+  .problem__footer-text {
+    font-family: var(--font-body);
+    font-weight: var(--fw-medium);
+    font-size: clamp(0.875rem, 2vw, 1rem);
+    letter-spacing: 0.06em;
+    text-wrap: balance;
+    color: var(--color-white);
+  }
+
+  .problem__footer-arrow {
+    display: block;
+    width: clamp(1.1rem, 2vw, 1.4rem);
+    height: clamp(1.1rem, 2vw, 1.4rem);
+    color: var(--color-white);
+    animation: problem-arrow-bounce 2s ease-in-out infinite;
+  }
+
+  .problem__footer-arrow svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  @keyframes problem-arrow-bounce {
+    0%, 100% { transform: translateY(0); opacity: 0.85; }
+    50% { transform: translateY(4px); opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .problem__footer-arrow {
+      animation: none;
+    }
   }
 
   @media (max-width: 768px) {
