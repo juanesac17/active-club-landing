@@ -189,6 +189,15 @@ h3 {
   scroll-margin-top: 5rem;
 }
 
+/* Bloqueo de scroll mientras el gate de intro está activo (intro.js) */
+html.intro-lock,
+html.intro-lock body {
+  overflow: hidden;
+  height: 100%;
+  touch-action: none;
+  overscroll-behavior: none;
+}
+
 /* -------------------------------------------------------------
    Movimiento reducido — respeta la preferencia del sistema
    ------------------------------------------------------------- */

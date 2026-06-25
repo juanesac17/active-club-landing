@@ -74,7 +74,11 @@ export function initHero() {
         if (entrancePlayed) return;
         entrancePlayed = true;
 
-        entranceTl = gsap.timeline({ defaults: { ease: "power3.out" } });
+        entranceTl = gsap.timeline({
+          defaults: { ease: "power3.out" },
+          onComplete: () =>
+            hero.dispatchEvent(new CustomEvent("hero:entered", { bubbles: false })),
+        });
         entranceTl
           .fromTo(
             "[data-hero-nav]",
