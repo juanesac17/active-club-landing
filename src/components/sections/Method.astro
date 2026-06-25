@@ -1,0 +1,159 @@
+---
+/**
+ * Sección 3 — El Método / Diferenciadores.
+ * Responde la pregunta que deja la Sección 2: "¿Por qué Active Club es diferente?".
+ * 3 pilares como cards grandes: solo nombre del pilar + descripción.
+ *
+ * Capa 2 (method.js): entrada con stagger por scroll (ScrollTrigger, one-time) +
+ * spotlight verde que sigue al cursor (solo pointer:fine, custom props --mx/--my).
+ */
+
+// Los 3 pilares del doc §5 — Sección 3. Contenido tal cual.
+const PILLARS = [
+  {
+    title: "Personalización real",
+    desc: "Cada sesión está diseñada para ti, tus metas y tu estado físico actual.",
+  },
+  {
+    title: "Ciencia aplicada",
+    desc: "Cada ejercicio tiene una razón. El plan se construye con base en evidencia, no en tendencias.",
+  },
+  {
+    title: "Ajuste continuo",
+    desc: "Se usan métodos de percepción de esfuerzo para ajustar la carga en cada sesión según cómo te sientes.",
+  },
+];
+---
+
+<section class="method" id="metodo">
+  <div class="method__inner">
+    <ul class="method__grid" role="list">
+      {
+        PILLARS.map((pillar) => (
+          <li class="method__card">
+            <span class="method__glow" aria-hidden="true" />
+            <div class="method__card-body">
+              <h3 class="method__card-title">{pillar.title}</h3>
+              <p class="method__desc">{pillar.desc}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .method {
+    position: relative;
+    background: var(--color-bg-dark);
+    color: var(--color-text-on-dark);
+    padding-top: clamp(2.5rem, 6vh, 4rem);
+    padding-bottom: clamp(6rem, 18vh, 11rem);
+    padding-inline: clamp(1.25rem, 6vw, 6rem);
+    overflow: hidden;
+  }
+
+  .method__inner {
+    max-width: 78rem;
+    margin-inline: auto;
+  }
+
+  /* ---------- Grid de 3 cards ---------- */
+  .method__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1.25rem, 2.5vw, 2rem);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* ---------- Card ---------- */
+  .method__card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: clamp(15rem, 32vh, 21rem);
+    padding: clamp(1.75rem, 3vw, 2.75rem);
+    border-radius: 1.25rem;
+    border: 2px solid color-mix(in srgb, var(--color-accent) 45%, transparent);
+    background: rgba(255, 255, 255, 0.02);
+    transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
+  }
+
+  .method__card:hover {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 2.75rem color-mix(in srgb, var(--color-accent) 25%, transparent);
+  }
+
+  /* Lift al señalar — solo si el usuario no pidió reducir movimiento. */
+  @media (prefers-reduced-motion: no-preference) {
+    .method__card:hover {
+      transform: translateY(-0.5rem);
+    }
+  }
+
+  /* ---------- Spotlight verde que sigue al cursor ---------- */
+  /* --mx/--my las actualiza method.js en pointermove (solo pointer:fine). */
+  .method__glow {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    background: radial-gradient(
+      20rem circle at var(--mx, 50%) var(--my, 50%),
+      color-mix(in srgb, var(--color-accent) 45%, transparent),
+      transparent 62%
+    );
+  }
+
+  .method__card:hover .method__glow {
+    opacity: 1;
+  }
+
+  .method__card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .method__card-title {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    color: var(--color-text-on-dark);
+  }
+
+  .method__desc {
+    font-family: var(--font-body);
+    font-weight: var(--fw-light);
+    font-size: clamp(0.95rem, 1.6vw, 1.05rem);
+    line-height: 1.55;
+    color: color-mix(in srgb, var(--color-white) 72%, transparent);
+  }
+
+  /* ---------- Responsive: apilar en mobile ---------- */
+  @media (max-width: 768px) {
+    .method__grid {
+      grid-template-columns: 1fr;
+    }
+    .method__card {
+      min-height: auto;
+      gap: 2.5rem;
+    }
+  }
+</style>
+
+<script>
+  import { initMethod } from "../../scripts/animations/method.js";
+  initMethod();
+</script>
