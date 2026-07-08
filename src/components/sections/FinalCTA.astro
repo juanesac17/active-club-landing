@@ -1,0 +1,136 @@
+---
+/**
+ * Secciones 7+8 fusionadas — Prueba social + CTA final.
+ * Cierre de la landing: prueba social → provocación → primer paso → remate
+ * (tranquilidad + botón). id="contacto": todos los CTAs de las demás
+ * secciones ya apuntan aquí.
+ *
+ * Capa 2 (finalcta.js): reveal por caracteres (SplitText) de las 3 frases
+ * display + fade-up del remate.
+ */
+import Button from "../ui/Button.astro";
+
+// TODO: reemplazar por el link wa.me real cuando esté el número (whatsapp.js)
+// y restaurar `external` en el Button (hoy es self-anchor: abrirlo en otra
+// pestaña duplicaría la página).
+const WHATSAPP_URL = "#contacto";
+---
+
+<section class="finalcta" id="contacto" aria-labelledby="finalcta-title">
+  <div class="finalcta__inner">
+    <h2 id="finalcta-title" class="finalcta__proof finalcta__split">
+      La mayoría de quienes entrenan con Active Club llegan por recomendación de alguien que ya lo vive
+    </h2>
+    <p class="finalcta__challenge finalcta__split">Y tú... ¿Qué esperas para vivirlo también?</p>
+    <p class="finalcta__step finalcta__split">Tu primer paso no cuesta nada. Solo una conversación</p>
+    <div class="finalcta__closing">
+      <p class="finalcta__reassurance">
+        Sin compromisos. Primero hablamos, defines tus metas y decidimos juntos si es el momento.
+      </p>
+      <Button href={WHATSAPP_URL} variant="outline" class="finalcta__cta">¡Empecemos!</Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .finalcta {
+    position: relative;
+    background: var(--color-bg-dark);
+    color: var(--color-text-on-dark);
+    padding-block: clamp(6rem, 16vh, 10rem) clamp(7rem, 18vh, 11rem);
+    padding-inline: clamp(1.25rem, 6vw, 6rem);
+    /* Requerido: los offsets en x de los caracteres no deben crear scroll horizontal. */
+    overflow: hidden;
+  }
+
+  .finalcta__inner {
+    max-width: 64rem;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: clamp(3.5rem, 9vh, 6rem);
+  }
+
+  /* ---------- Prueba social ---------- */
+  .finalcta__proof {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(1.65rem, 4.4vw, 3.5rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    max-width: 28ch;
+  }
+
+  /* ---------- Provocación ---------- */
+  .finalcta__challenge {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(1.75rem, 5vw, 3.25rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    max-width: 22ch;
+    color: var(--color-accent);
+  }
+
+  /* ---------- Primer paso ---------- */
+  .finalcta__step {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(1.4rem, 3.6vw, 2.5rem);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    max-width: 24ch;
+  }
+
+  /* ---------- Remate: tranquilidad + botón ---------- */
+  .finalcta__closing {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(1.75rem, 4vh, 2.5rem);
+  }
+
+  .finalcta__reassurance {
+    font-family: var(--font-body);
+    font-weight: var(--fw-light);
+    font-size: clamp(0.9rem, 1.7vw, 1.05rem);
+    line-height: 1.6;
+    text-wrap: balance;
+    max-width: 46ch;
+    color: color-mix(in srgb, var(--color-white) 72%, transparent);
+  }
+
+  /* .finalcta__cta: sin override de padding/tamaño. Astro no propaga el
+     data-astro-cid de esta sección a los elementos que Button renderiza
+     internamente (solo lleva el scope-id propio de Button.astro), así que
+     una regla `.finalcta__cta[data-astro-cid-...]` aquí nunca matchea el
+     <a> real — sería CSS muerto (mismo problema ya presente y no detectado
+     en `.process__cta` de Process.astro). El botón usa el tamaño default
+     de su variante. */
+
+  @media (max-width: 768px) {
+    .finalcta__proof {
+      font-size: clamp(1.5rem, 6.5vw, 2.25rem);
+      max-width: 22ch;
+    }
+    .finalcta__challenge {
+      font-size: clamp(1.5rem, 7vw, 2rem);
+    }
+    .finalcta__step {
+      font-size: clamp(1.25rem, 6vw, 1.75rem);
+    }
+    .finalcta__inner {
+      gap: clamp(2.75rem, 8vh, 4rem);
+    }
+  }
+</style>
+
+<script>
+  import { initFinalCta } from "../../scripts/animations/finalcta.js";
+  initFinalCta();
+</script>
