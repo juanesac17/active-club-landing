@@ -28,3 +28,7 @@ pnpm-debug.log*
 
 # fuentes de imágenes sin optimizar (reemplazadas por sus .webp)
 src/assets/images/img*.jpg
+
+.atl/*
+.claude
+opencode.json
