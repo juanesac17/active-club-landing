@@ -1,0 +1,219 @@
+---
+/**
+ * Sección 6 — ¿Cómo funciona el proceso?
+ * Explica los 4 pasos del proceso de onboarding en zigzag (izq/der/der/izq),
+ * conectados por flechas. El orden visual (zigzag) es puramente decorativo:
+ * el DOM sigue el orden real 1 → 2 → 3 → 4 para lectores de pantalla.
+ *
+ * Capa 2 (process.js): entrada secuencial por scroll (ScrollTrigger, one-time)
+ * de cada card + flecha, en el orden del DOM.
+ */
+import Button from "../ui/Button.astro";
+
+// TODO: reemplazar por el link wa.me real cuando esté el número (whatsapp.js).
+const WHATSAPP_URL = "#contacto";
+
+const ARROW = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h13M13 7l5 5-5 5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+---
+
+<section class="process" id="proceso" aria-labelledby="proceso-title">
+  <div class="process__inner">
+    <header class="process__header">
+      <h2 class="process__title" id="proceso-title">¿Cómo funciona el proceso?</h2>
+    </header>
+    <div class="process__grid">
+      <article class="process__card process__card--1" data-dir="left" aria-label="Paso 1 de 4">
+        <h3 class="process__step-label">Primero</h3>
+        <p class="process__step-text">Tenemos nuestra primera conversación</p>
+        <Button href={WHATSAPP_URL} variant="outline" external class="process__cta">
+          Escríbeme por WhatsApp
+        </Button>
+      </article>
+      <span class="process__arrow process__arrow--1" aria-hidden="true" set:html={ARROW} />
+      <article class="process__card process__card--2" data-dir="right" aria-label="Paso 2 de 4">
+        <h3 class="process__step-label">Segundo</h3>
+        <p class="process__step-text">Hablamos de tus objetivos, tu historial y tu condición actual</p>
+      </article>
+      <span class="process__arrow process__arrow--2" aria-hidden="true" set:html={ARROW} />
+      <article class="process__card process__card--3" data-dir="right" aria-label="Paso 3 de 4">
+        <h3 class="process__step-label">Tercero</h3>
+        <p class="process__step-text">Diseñamos tu plan personalizado. Creado a tu medida</p>
+      </article>
+      <span class="process__arrow process__arrow--3" aria-hidden="true" set:html={ARROW} />
+      <article class="process__card process__card--4" data-dir="left" aria-label="Paso 4 de 4">
+        <h3 class="process__step-label">Y por último...</h3>
+        <p class="process__step-text">Empezamos a entrenar y ajustamos sobre la marcha</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<style>
+  .process {
+    position: relative;
+    background: var(--color-bg-dark);
+    color: var(--color-text-on-dark);
+    overflow: hidden;
+  }
+
+  .process__inner {
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 6vw, 6rem);
+    padding-block: clamp(5rem, 14vh, 9rem);
+  }
+
+  /* ---------- Encabezado ---------- */
+  .process__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: clamp(2.5rem, 6vh, 4rem);
+  }
+
+  .process__title {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(2rem, 5.5vw, 3.75rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    text-align: center;
+  }
+
+  /* ---------- Grid en zigzag: 3x3 con flechas en los gutters ---------- */
+  .process__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(2.5rem, 6vw, 4.5rem) minmax(0, 1fr);
+    grid-template-rows: auto clamp(2.5rem, 6vw, 4.5rem) auto;
+    align-items: stretch;
+  }
+
+  .process__card--1 {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .process__card--2 {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .process__card--3 {
+    grid-column: 3;
+    grid-row: 3;
+  }
+
+  .process__card--4 {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .process__arrow--1 {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .process__arrow--2 {
+    grid-column: 3;
+    grid-row: 2;
+    transform: rotate(90deg);
+  }
+
+  .process__arrow--3 {
+    grid-column: 2;
+    grid-row: 3;
+    transform: scaleX(-1);
+  }
+
+  /* ---------- Flechas de conexión ---------- */
+  .process__arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    justify-self: center;
+    width: clamp(1.5rem, 3vw, 2.25rem);
+    height: clamp(1.5rem, 3vw, 2.25rem);
+    color: color-mix(in srgb, var(--color-white) 55%, transparent);
+  }
+
+  .process__arrow :global(svg) {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ---------- Card de paso ---------- */
+  .process__card {
+    position: relative;
+    padding: clamp(1.75rem, 3vw, 2.25rem);
+    border-radius: 1.25rem;
+    border: 2px solid color-mix(in srgb, var(--color-accent) 45%, transparent);
+    background: rgba(255, 255, 255, 0.02);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.85rem;
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+  }
+
+  .process__card:hover {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 2.25rem color-mix(in srgb, var(--color-accent) 25%, transparent);
+  }
+
+  .process__step-label {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(1.25rem, 2.4vw, 1.6rem);
+    line-height: 1.1;
+  }
+
+  .process__step-text {
+    font-family: var(--font-body);
+    font-weight: var(--fw-light);
+    font-size: clamp(1rem, 1.8vw, 1.15rem);
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--color-white) 72%, transparent);
+  }
+
+  .process__cta {
+    margin-top: 0.5rem;
+    align-self: center;
+  }
+
+  /* ---------- Responsive: apilar en mobile, sin flechas ---------- */
+  @media (max-width: 768px) {
+    .process__grid {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+      gap: clamp(1.5rem, 5vh, 2.5rem);
+    }
+
+    .process__card--1,
+    .process__card--2,
+    .process__card--3,
+    .process__card--4 {
+      grid-column: 1;
+      grid-row: auto;
+    }
+
+    .process__arrow {
+      display: none;
+    }
+  }
+
+  /* ---------- Reduced motion: sin transiciones ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    .process__card {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  import { initProcess } from "../../scripts/animations/process.js";
+  initProcess();
+</script>
