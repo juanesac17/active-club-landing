@@ -2,10 +2,11 @@ import { gsap, SplitText } from "./gsap.config.js";
 
 /**
  * Secciones 7+8 — Prueba social + CTA final.
- * Reveal por CARACTERES (SplitText) atado a ScrollTrigger para las 3 frases
- * display (prueba social → provocación → primer paso), adaptado del pen de
- * referencia pero ONE-TIME y deliberadamente más lento (duration/stagger
- * mayores) para que se sienta como un cierre, no como un efecto llamativo.
+ * Reveal con SplitText atado a ScrollTrigger para las 3 frases display:
+ * la prueba social (frase larga) entra por LÍNEAS con giro 3D (rotationX,
+ * pen de referencia de lines) y provocación + primer paso por CARACTERES
+ * (pen de chars, deliberadamente más lento). Todo ONE-TIME, para que se
+ * sienta como un cierre, no como un efecto llamativo.
  *
  * El remate (tranquilidad + botón) usa un fade-up simple, no char-split:
  * a ese tamaño de fuente el split por caracteres se lee como jitter, y el
@@ -52,8 +53,28 @@ export function initFinalCta() {
       document.fonts.ready.then(() => {
         ctx = gsap.context(() => {
           splitLines.forEach((line) => {
-            const split = SplitText.create(line, { type: "chars, words, lines" });
+            const isProof = line.classList.contains("finalcta__proof");
+            const split = SplitText.create(line, {
+              type: isProof ? "lines" : "chars, words, lines",
+            });
             splits.push(split);
+
+            // Prueba social (frase larga): por líneas con giro 3D. La
+            // perspective en el contenedor es necesaria para que el
+            // rotationX tenga profundidad real (el pen la hereda de su CSS).
+            if (isProof) {
+              gsap.set(line, { perspective: 400 });
+              gsap.from(split.lines, {
+                rotationX: -100,
+                transformOrigin: "50% 50% -160px",
+                opacity: 0,
+                duration: 1.5,
+                ease: "power3",
+                stagger: 0.25,
+                scrollTrigger: { trigger: line, start: "top 75%", once: true },
+              });
+              return;
+            }
 
             gsap.from(split.chars, {
               x: xOffset,
