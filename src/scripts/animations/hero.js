@@ -32,7 +32,7 @@ export function initHero() {
     (ctx) => {
       const { reduce } = ctx.conditions;
       const reveals = gsap.utils.toArray(
-        "[data-hero-nav], [data-hero-reveal], [data-hero-intro-ui], .hero__rotator"
+        "[data-hero-reveal], [data-hero-intro-ui], .hero__rotator"
       );
 
       if (reduce) {
@@ -55,7 +55,6 @@ export function initHero() {
         entranceTl = null;
 
         gsap.killTweensOf(reveals);
-        gsap.set("[data-hero-nav]", { autoAlpha: 0, y: -18 });
         gsap.set("[data-hero-reveal], [data-hero-intro-ui], .hero__rotator", {
           autoAlpha: 0,
           y: 24,
@@ -81,15 +80,9 @@ export function initHero() {
         });
         entranceTl
           .fromTo(
-            "[data-hero-nav]",
-            { autoAlpha: 0, y: -18 },
-            { autoAlpha: 1, y: 0, duration: 0.6 }
-          )
-          .fromTo(
-            reveals.filter((el) => !el.matches("[data-hero-nav]")),
+            reveals,
             { autoAlpha: 0, y: 24 },
-            { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.12 },
-            "-=0.3"
+            { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.12 }
           )
           .add(startRotation, "-=0.2");
       };
