@@ -1,6 +1,6 @@
 # Active Club — Decisiones de Proyecto
 
-> Documento de referencia técnica y estratégica para el desarrollo de la Landing Page. Versión 1.0
+> Documento de referencia técnica y estratégica para el desarrollo de la Landing Page. Versión 1.1 — actualizado contra `docs/Identidad de marca.pdf`
 
 ---
 
@@ -21,8 +21,9 @@ Construir una Landing Page para **Active Club**, un servicio de asesoría person
 |Atributo|Decisión|
 |---|---|
 |Tipo|Landing Page estática de una sola página|
-|Audiencia|Personas sedentarias que quieren empezar, deportistas que quieren mejorar rendimiento, personas que entrenan sin ver resultados|
-|Canal de conversión|WhatsApp (`wa.me`)|
+|Audiencia emocional|Personas que sienten que su esfuerzo necesita dirección: las que entrenan sin avanzar, las que quieren empezar pero no saben cómo, y las que buscan recuperar o mejorar su condición física desde un proceso planificado y acompañado (no desde una rutina genérica). El usuario debe sentir confianza, claridad, tranquilidad, cercanía, motivación realista y seguridad de que su proceso será individual.|
+|Eje comunicativo|Active Club acompaña a cada persona a mejorar su movimiento, condición física, bienestar y rendimiento mediante un proceso planificado, progresivo y adaptado a su realidad. La promesa no es conseguir cambios rápidos, sino ayudar a construir resultados que puedan sostenerse en el tiempo. El diferencial es la combinación entre conocimiento, seguimiento y trato humano: el entrenamiento se convierte en un proceso con dirección.|
+|Canal de conversión|WhatsApp (`wa.me`) — canal principal de conversación y agendamiento de valoración|
 |Modalidades del servicio|Presencial y virtual|
 |Idioma|Español|
 
@@ -104,7 +105,7 @@ El proyecto se puede deployar en **Vercel**, **Netlify** o **Cloudflare Pages** 
 - **Modo:** Dark-first — fondo negro/oscuro como base dominante
 - **Estética:** fotografía de alto contraste, tipografía grande como elemento gráfico
 - **Elementos gráficos:** líneas en outline, juego de pesos tipográficos, emojis como categorizadores (no decorativos)
-- **Tono visual:** serio, energético, confiable — sin caer en lo genérico del fitness marketing
+- **Tono visual:** cálido, profesional, humano — transmitir acompañamiento y proceso, no energía genérica de fitness marketing. Confianza, claridad y cercanía por encima de espectacularidad.
 
 ---
 
@@ -118,9 +119,12 @@ El hilo narrativo de la landing es: **"Tú tienes una meta. Yo tengo el método.
 
 |Elemento|Contenido|
 |---|---|
-|Headline|Conecta con el deseo, no con el servicio. Ej: _"Entrena con propósito. Progresa con ciencia."_|
-|Subtítulo|Qué es Active Club y para quién. Ej: _"Asesoría personalizada para mejorar tu rendimiento físico, con un método respaldado por evidencia."_|
-|CTA principal|Botón directo a WhatsApp. Texto: _"Quiero empezar"_|
+|Texto superior (eyebrow)|`ENTRENAMIENTO PERSONAL · MOVIMIENTO · BIENESTAR · RENDIMIENTO`|
+|Headline|Opción recomendada del documento de marca: _"Entrena con propósito. Avanza con confianza."_|
+|Subtítulo|_"Entrenamiento, planificación y acompañamiento adaptados a tu cuerpo, tus objetivos y tu momento actual."_ + _"Mejora tu fuerza, movimiento, bienestar y rendimiento mediante un proceso diseñado para ti."_|
+|CTA principal|Agenda tu valoración|
+|CTA secundario|Conoce cómo trabajamos|
+|Texto breve de confianza|_"No necesitas estar en forma para comenzar. El proceso parte de tu nivel actual."_|
 |Visual|Fotografía de impacto alto contraste — entrenador en acción o movimiento|
 
 ---
@@ -152,13 +156,14 @@ Tres pilares presentados como cards o elementos visuales:
 
 ### Sección 4 — Para Quién Es Active Club
 
-**Objetivo:** Hablarle a los distintos perfiles sin que nadie se sienta excluido.
+**Objetivo:** Hablarle a los distintos perfiles sin que nadie se sienta excluido. El tono debe transmitir inclusión y posibilidad, dejando claro que no importa el punto de partida.
 
 |Elemento|Contenido|
 |---|---|
-|Perfiles|_"Para el que quiere empezar desde cero sin perderse"_ / _"Para el deportista que quiere rendir más"_ / _"Para el que entrena hace tiempo pero siente que no avanza"_|
-|Modalidades|Presencial y virtual — una línea que explique que se adapta al contexto del usuario|
-|CTA secundario|_"¿Te identificas? Hablemos."_ → WhatsApp|
+|Headline de sección|_"Hay una forma de comenzar desde tu nivel"_|
+|Perfiles|Estás comenzando · Quieres recuperar tu condición física · Quieres mejorar tu bienestar · Practicas running · Practicas otro deporte · Tienes un objetivo de rendimiento · Necesitas mayor individualización|
+|Modalidades|Presencial y virtual — se adapta al contexto del usuario|
+|CTA secundario|Comienza tu proceso|
 
 ---
 
@@ -197,11 +202,7 @@ Flujo de 4 pasos:
 
 > **Estado actual:** No hay testimonios formales disponibles.
 
-**Decisión tomada:** Usar una frase que haga referencia al modelo de crecimiento orgánico real de la marca:
-
-_"La mayoría de quienes entrenan con Active Club llegan por recomendación de alguien que ya lo vive."_
-
-Esta frase actúa como testimonio indirecto: implica que los resultados hablan solos sin necesitar prueba explícita. Se revisará esta sección cuando haya testimonios reales disponibles para agregar.
+**Decisión tomada (alineada con el documento de marca):** No se publican testimonios ficticios. Esta sección solo se incorporará cuando existan historias, fotografías y resultados autorizados por usuarios reales. Mientras tanto, se sustituye por el Manifiesto de marca (Sección 9 del PDF): _"Entrenar también es aprender a confiar en tu cuerpo"_ — que cumple el rol de refuerzo emocional antes del cierre sin inventar pruebas sociales.
 
 ---
 
@@ -211,15 +212,46 @@ Esta frase actúa como testimonio indirecto: implica que los resultados hablan s
 
 |Elemento|Contenido|
 |---|---|
-|Headline|_"Tu primer paso no cuesta nada. Solo una conversación."_|
-|Descripción|_"Sin compromisos. Primero hablamos, defines tus metas y decidimos juntos si es el momento."_|
-|CTA|Botón grande a WhatsApp: _"Empecemos"_|
+|Headline|_"Tu proceso puede comenzar hoy"_|
+|Descripción|_"No necesitas tener experiencia, estar en tu mejor condición física ni conocer todos los ejercicios. Solo necesitas un punto de partida y la disposición para comenzar."_ + _"Conoceremos tu caso antes de recomendarte un servicio."_|
+|CTA principal|Agenda tu valoración (WhatsApp)|
+|CTA secundario|Habla con nosotros por WhatsApp|
 
 ---
 
 ### Elemento Permanente — WhatsApp FAB
 
-Botón flotante de WhatsApp visible en toda la página, especialmente en mobile. Es el único canal de conversión y debe estar siempre accesible sin necesidad de hacer scroll.
+Botón flotante de WhatsApp visible en toda la página, especialmente en mobile. Es el canal permanente de conversación y debe estar siempre accesible sin necesidad de hacer scroll.
+
+---
+
+### Menú Principal (Header)
+
+Según el documento de marca, el menú es fijo con máximo seis opciones y un botón destacado:
+
+- Inicio
+- Active Club
+- Metodología
+- Servicios
+- Preguntas frecuentes
+- Contacto
+
+**Botón destacado:** `Agenda tu valoración`
+
+---
+
+### Servicios de Active Club (referencia)
+
+Catálogo de servicios definido por el documento de marca. Cada servicio tiene su propio copy, beneficio principal y CTA. La landing debe poder presentarlos de forma diferenciada:
+
+| # | Servicio | Copy principal | CTA |
+|---|---|---|---|
+| 1 | Entrenamiento personal | _"Entrenamiento diseñado alrededor de ti"_ | Conoce el entrenamiento personal |
+| 2 | Valoración física y del movimiento | _"Conoce tu punto de partida"_ | Agenda tu valoración |
+| 3 | Planificación y seguimiento | _"Un plan que evoluciona contigo"_ | Solicita información |
+| 4 | Preparación física para corredores | _"Corre con un cuerpo mejor preparado"_ | Mejora tu preparación |
+| 5 | Preparación física para deportistas | _"Entrena para las demandas de tu deporte"_ | Cuéntanos cuál es tu objetivo |
+| 6 | Fuerza, movilidad y acondicionamiento | _"Muévete con mayor libertad y confianza"_ | Encuentra tu programa |
 
 ---
 
