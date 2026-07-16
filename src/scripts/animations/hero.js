@@ -4,7 +4,7 @@ import { initIntro } from "./intro.js";
 /**
  * Animaciones del Hero (capa 2).
  * - Intro invertida (intro.js): máscara crece, UI entra al ~80%.
- * - Palabra rotatoria sincronizada con los dots.
+ * - Franja de propuesta rápida con rotator de palabras (cada 2.8s).
  * - Parallax sutil sobre la foto de la escena enmascarada.
  */
 const HOLD = 2.8;
@@ -16,10 +16,9 @@ export function initHero() {
 
   const cleanupIntro = initIntro();
 
-  const rotator = hero.querySelector("[data-hero-rotator]");
-  const wordEl = rotator?.querySelector(".hero__word");
+  const rotator = hero.querySelector("[data-hero-pitch-rotator]");
+  const wordEl = rotator?.querySelector(".hero__pitch-word");
   const words = safeWords(rotator);
-  const dots = [...hero.querySelectorAll("[data-hero-dots] li")];
   const bgImg = hero.querySelector("[data-hero-bg]");
 
   const mm = gsap.matchMedia();
@@ -32,7 +31,7 @@ export function initHero() {
     (ctx) => {
       const { reduce } = ctx.conditions;
       const reveals = gsap.utils.toArray(
-        "[data-hero-reveal], [data-hero-intro-ui], .hero__rotator"
+        "[data-hero-reveal], [data-hero-intro-ui], .hero__pitch-word"
       );
 
       if (reduce) {
@@ -55,18 +54,19 @@ export function initHero() {
         entranceTl = null;
 
         gsap.killTweensOf(reveals);
-        gsap.set("[data-hero-reveal], [data-hero-intro-ui], .hero__rotator", {
+        gsap.set("[data-hero-reveal], [data-hero-intro-ui], .hero__pitch-word", {
           autoAlpha: 0,
           y: 24,
         });
 
-        rotator?.querySelectorAll(".hero__word.is-leaving").forEach((el) => el.remove());
+        rotator
+          ?.querySelectorAll(".hero__pitch-word.is-leaving")
+          .forEach((el) => el.remove());
         if (wordEl && words.length) {
           i = 0;
           wordEl.textContent = words[0];
           gsap.set(wordEl, { yPercent: 0, autoAlpha: 1 });
         }
-        dots.forEach((d, idx) => d.classList.toggle("is-active", idx === 0));
       };
 
       const playEntrance = () => {
@@ -107,10 +107,17 @@ export function initHero() {
 
         gsap
           .timeline({ defaults: { ease: "power2.inOut", duration: 0.55 } })
-          .fromTo(wordEl, { yPercent: 110, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1 }, 0)
-          .to(leaving, { yPercent: -110, autoAlpha: 0, onComplete: () => leaving.remove() }, 0);
-
-        dots.forEach((d, idx) => d.classList.toggle("is-active", idx === i));
+          .fromTo(
+            wordEl,
+            { yPercent: 110, autoAlpha: 0 },
+            { yPercent: 0, autoAlpha: 1 },
+            0
+          )
+          .to(
+            leaving,
+            { yPercent: -110, autoAlpha: 0, onComplete: () => leaving.remove() },
+            0
+          );
       }
 
       let cleanupParallax = () => {};
