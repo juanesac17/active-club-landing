@@ -1,0 +1,359 @@
+---
+/**
+ * Sección 6 — Servicios.
+ * Infinite card slider con GSAP: card activa grande al centro y solo
+ * la anterior y la siguiente visibles al fondo, más pequeñas y tenues.
+ * Cards con el mismo lenguaje visual que Method.astro (borde blanco
+ * translúcido, fondo sutil, radio 1.25rem); el verde de marca queda
+ * como acento en el copy.
+ *
+ * Controlado por botones anterior/siguiente y por drag (sin ScrollTrigger:
+ * el scroll de la página no se secuestra).
+ *
+ * Capa 2 (services.js): seamlessLoop + scrub.invalidate().restart()
+ * sobre el playhead. Cards animan xPercent, scale y opacity según
+ * avanzan por el centro del stage.
+ *
+ * LOOP = 3 copias de SERVICES (como en el HTML de referencia) para que
+ * haya cards suficientes a izquierda y derecha del centro cuando se
+ * entra por primera vez o al hacer wrap.
+ */
+
+// 6 servicios del PDF §5 — Sección 5.
+const SERVICES = [
+  {
+    title: "Entrenamiento personal",
+    copy: "Entrenamiento diseñado alrededor de ti",
+    benefit: "Entrenar con dirección, acompañamiento y progresiones adecuadas.",
+    cta: "Conoce el entrenamiento personal",
+  },
+  {
+    title: "Valoración física y del movimiento",
+    copy: "Conoce tu punto de partida",
+    benefit: "Tomar decisiones con mayor información antes de planificar.",
+    cta: "Agenda tu valoración",
+  },
+  {
+    title: "Planificación y seguimiento",
+    copy: "Un plan que evoluciona contigo",
+    benefit: "Mantener una ruta clara sin depender de rutinas improvisadas.",
+    cta: "Solicita información",
+  },
+  {
+    title: "Preparación física para corredores",
+    copy: "Corre con un cuerpo mejor preparado",
+    benefit: "Mejorar las capacidades físicas para entrenar y competir.",
+    cta: "Mejora tu preparación",
+  },
+  {
+    title: "Preparación física para deportistas",
+    copy: "Entrena para las demandas de tu deporte",
+    benefit: "Fuerza, potencia, resistencia, movilidad y control adaptados a tu disciplina.",
+    cta: "Cuéntanos cuál es tu objetivo",
+  },
+  {
+    title: "Fuerza, movilidad y acondicionamiento",
+    copy: "Muévete con mayor libertad y confianza",
+    benefit: "Sentirte más capaz en tus actividades diarias y deportivas.",
+    cta: "Encuentra tu programa",
+  },
+];
+
+// 3 copias para que el seamlessLoop tenga cards a los lados y el wrap
+// del final al principio sea invisible.
+const LOOP = [...SERVICES, ...SERVICES, ...SERVICES];
+---
+
+<section class="services" id="servicios" aria-labelledby="services-title">
+  <header class="services__header">
+    <h2 class="services__title" id="services-title">Servicios</h2>
+    <p class="services__subtitle">Encuentra tu manera de avanzar</p>
+  </header>
+
+  <div
+    class="services__stage"
+    data-services-stage
+    role="region"
+    aria-label="Carrusel de servicios"
+  >
+    <ul class="services__track" role="list">
+      {
+        LOOP.map((service, i) => {
+          return (
+            <li
+              class="services__card"
+              aria-hidden={i >= SERVICES.length ? "true" : undefined}
+            >
+              <h3 class="services__card-title">{service.title}</h3>
+              <p class="services__card-copy">{service.copy}</p>
+              <p class="services__card-benefit">{service.benefit}</p>
+              <a href="#contacto" class="services__card-cta">
+                {service.cta}
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+    <div class="services__drag-proxy" data-services-drag-proxy></div>
+  </div>
+
+  <div class="services__nav" aria-label="Navegación del carrusel">
+    <button
+      type="button"
+      class="services__nav-btn services__nav-btn--prev"
+      data-services-prev
+      aria-label="Servicio anterior"
+    >
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+    <button
+      type="button"
+      class="services__nav-btn services__nav-btn--next"
+      data-services-next
+      aria-label="Siguiente servicio"
+    >
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+  </div>
+</section>
+
+<style>
+  .services {
+    position: relative;
+    background: var(--color-bg-dark);
+    color: var(--color-text-on-dark);
+    padding-block: clamp(5rem, 14vh, 9rem) clamp(3rem, 8vh, 5rem);
+    padding-inline: clamp(1.25rem, 6vw, 6rem);
+    overflow: hidden;
+    /* Stage alto para dar protagonismo al coverflow (estilo galería). */
+  }
+
+  /* ---------- Header ---------- */
+  .services__header {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(0.5rem, 1.5vh, 1rem);
+    margin-bottom: clamp(2rem, 4vh, 3rem);
+  }
+
+  .services__title {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(1.75rem, 4.5vw, 3rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    color: var(--color-text-on-dark);
+  }
+
+  .services__subtitle {
+    font-family: var(--font-display);
+    font-weight: var(--fw-medium);
+    font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+    color: color-mix(in srgb, var(--color-white) 60%, transparent);
+  }
+
+  /* ---------- Stage: viewport del coverflow ---------- */
+  .services__stage {
+    /* Ancho de la card activa: el track y las cards heredan de aquí. */
+    --card-w: clamp(15rem, 24vw, 20rem);
+    position: relative;
+    width: 100%;
+    height: clamp(28rem, 70vh, 48rem);
+    overflow: hidden;
+    cursor: grab;
+  }
+
+  .services__stage:active {
+    cursor: grabbing;
+  }
+
+  /* Proxy invisible que recibe el drag de Draggable. */
+  .services__drag-proxy {
+    visibility: hidden;
+    position: absolute;
+  }
+
+  /* ---------- Track: contenedor de las cards ----------
+     Ancho fijo (= card) centrado en el stage, como en el patrón del
+     CodePen. IMPORTANTE: las cards NO llevan translate(-50%,-50%)
+     propio — GSAP parsea ese translate porcentual como xPercent/yPercent
+     y el tween de xPercent lo sobrescribe, descentrando todo. */
+  .services__track {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: var(--card-w);
+    aspect-ratio: 5 / 7; /* tipo póster vertical, más ancho que antes */
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* ---------- Card (mismo lenguaje visual que .method__step) ---------- */
+  .services__card {
+    /* Llena el track; GSAP controla xPercent, scale y opacity. */
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* bloque de contenido centrado verticalmente */
+    gap: clamp(0.65rem, 1.5vh, 1rem);
+    padding: clamp(1.5rem, 2.5vw, 2.25rem);
+    text-align: center;
+    border-radius: 1.25rem;
+    border: 2px solid color-mix(in srgb, var(--color-white) 45%, transparent);
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--color-text-on-dark);
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+  }
+
+  .services__card-title {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(1.25rem, 1.9vw, 1.5rem);
+    line-height: 1.2;
+    letter-spacing: -0.005em;
+    text-wrap: balance;
+    color: var(--color-text-on-dark);
+    margin: 0;
+  }
+
+  .services__card-copy {
+    font-family: var(--font-display);
+    font-weight: var(--fw-medium);
+    font-size: clamp(1.05rem, 1.45vw, 1.2rem);
+    line-height: 1.3;
+    color: var(--color-accent);
+    margin: 0;
+  }
+
+  .services__card-benefit {
+    font-family: var(--font-body);
+    font-weight: var(--fw-light);
+    font-size: clamp(1rem, 1.4vw, 1.15rem);
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--color-white) 72%, transparent);
+    margin: 0;
+  }
+
+  .services__card-cta {
+    font-family: var(--font-body);
+    font-weight: var(--fw-medium);
+    font-size: clamp(0.85rem, 1.05vw, 0.95rem);
+    letter-spacing: 0.04em;
+    text-align: center;
+    color: var(--color-white);
+    text-decoration: none;
+    border: 1px solid color-mix(in srgb, var(--color-white) 55%, transparent);
+    border-radius: 999px;
+    padding: 0.7rem 1.2rem;
+    align-self: stretch;
+    margin-top: clamp(0.5rem, 1vh, 0.85rem); /* pegado al contenido, no al fondo */
+    transition:
+      background 0.3s ease,
+      border-color 0.3s ease,
+      color 0.3s ease;
+  }
+
+  .services__card-cta:hover {
+    color: var(--color-black);
+    background: var(--color-white);
+    border-color: var(--color-white);
+  }
+
+  .services__card-cta:focus-visible {
+    outline: 2px solid var(--color-cta-hover);
+    outline-offset: 3px;
+  }
+
+  /* ---------- Botones de navegación: centrados bajo el carrusel ---------- */
+  .services__nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: clamp(0.75rem, 2vw, 1.25rem);
+    margin-top: clamp(1.5rem, 3vh, 2rem);
+  }
+
+  .services__nav-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(2.75rem, 4.5vw, 3.5rem);
+    height: clamp(2.75rem, 4.5vw, 3.5rem);
+    border: 1.5px solid color-mix(in srgb, var(--color-white) 35%, transparent);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-white);
+    cursor: pointer;
+    transition:
+      background 0.3s ease,
+      border-color 0.3s ease,
+      color 0.3s ease,
+      transform 0.3s ease;
+  }
+
+  .services__nav-btn:hover {
+    background: var(--color-white);
+    color: var(--color-black);
+    border-color: var(--color-white);
+    transform: scale(1.05);
+  }
+
+  .services__nav-btn:active {
+    transform: scale(0.97);
+  }
+
+  .services__nav-btn:focus-visible {
+    outline: 2px solid var(--color-cta-hover);
+    outline-offset: 3px;
+  }
+
+  .services__nav-btn svg {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  /* ---------- Reduced motion: scroll horizontal nativo ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    .services__stage {
+      overflow-x: auto;
+      height: auto;
+    }
+    .services__track {
+      position: static;
+      transform: none;
+      display: flex;
+      gap: clamp(1rem, 2vw, 1.5rem);
+      width: max-content;
+      aspect-ratio: auto;
+      padding: 1rem;
+    }
+    .services__card {
+      position: static;
+      width: clamp(15rem, 70vw, 20rem);
+      height: auto;
+      aspect-ratio: 5 / 7;
+    }
+    .services__nav {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import { initServices } from "../../scripts/animations/services.js";
+  initServices();
+</script>
