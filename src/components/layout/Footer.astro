@@ -1,0 +1,203 @@
+---
+/**
+ * Footer — reveal sticky.
+ * El footer vive detrás de la página: position: sticky + bottom: 0 +
+ * z-index: -1. Queda fijado al fondo del viewport desde el inicio,
+ * pero las secciones (todas con fondo opaco) se pintan por encima;
+ * al llegar al final del scroll la última sección "se levanta" y lo
+ * revela. Sin JS: el efecto es 100% CSS y funciona con scroll nativo.
+ *
+ * Debe medir menos que el viewport para revelarse completo.
+ *
+ * Fondo decorativo: wordmark de Active Club en blanco translúcido.
+ */
+import wordmarkSvg from "../../assets/images/wordmark.svg?raw";
+
+// Íconos de marca (currentColor) cargados de una sola vez.
+const icons = import.meta.glob("../../assets/icons/*.svg", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+});
+const iconHtml = (name: string) => icons[`../../assets/icons/${name}.svg`];
+
+// TODO: reemplazar por las URLs reales cuando estén disponibles.
+const SOCIALS = [
+  { icon: "whatsapp", label: "WhatsApp", href: "#contacto" },
+  { icon: "instagram", label: "Instagram", href: "#" },
+  { icon: "facebook", label: "Facebook", href: "#" },
+];
+
+// Año del build: suficiente para un sitio estático que se re-despliega.
+const YEAR = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="footer__wordmark" aria-hidden="true" set:html={wordmarkSvg} />
+
+  <div class="footer__inner">
+    <div class="footer__top">
+      <p class="footer__claim">Entrena con propósito. Avanza con confianza.</p>
+
+      <ul class="footer__socials" role="list">
+        {
+          SOCIALS.map((s) => (
+            <li>
+              <a
+                class="footer__social-link"
+                href={s.href}
+                aria-label={s.label}
+                target={s.href.startsWith("http") ? "_blank" : undefined}
+                rel={s.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                set:html={iconHtml(s.icon)}
+              />
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="footer__bottom">
+      <p class="footer__copy">
+        © {YEAR} Active Club. Todos los derechos reservados.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  /* Oculto mientras el gate del intro está activo: la máscara del hero
+     deja ver lo que hay detrás, y el footer vive fijado al fondo del
+     viewport desde el inicio. El intro-lock se suelta DESPUÉS de que la
+     máscara desaparece (UNMASK_AT < hero:entered), así que no hay flash. */
+  :global(html.intro-lock) .footer {
+    visibility: hidden;
+  }
+
+  .footer {
+    /* Reveal: fijo al fondo del viewport, detrás del contenido. */
+    position: sticky;
+    bottom: 0;
+    z-index: -1;
+    min-height: clamp(20rem, 55vh, 30rem);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--color-black) 88%, var(--color-white));
+    color: var(--color-text-on-dark);
+  }
+
+  /* ---------- Wordmark decorativo de fondo ---------- */
+  .footer__wordmark {
+    position: absolute;
+    left: 50%;
+    bottom: clamp(0.5rem, 2vh, 1.5rem);
+    transform: translateX(-50%);
+    width: min(96%, 90rem);
+    color: var(--color-white);
+    opacity: 0.08;
+    pointer-events: none;
+  }
+
+  .footer__wordmark :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* ---------- Contenido ---------- */
+  .footer__inner {
+    position: relative; /* por encima del wordmark */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: clamp(2rem, 5vh, 3.5rem);
+    max-width: 72rem;
+    width: 100%;
+    margin-inline: auto;
+    padding-block: clamp(3rem, 7vh, 5rem) clamp(1.5rem, 3vh, 2.25rem);
+    padding-inline: clamp(1.25rem, 6vw, 6rem);
+  }
+
+  .footer__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    flex-wrap: wrap;
+  }
+
+  .footer__claim {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    max-width: 24ch;
+    margin: 0;
+  }
+
+  /* ---------- Redes ---------- */
+  .footer__socials {
+    display: flex;
+    gap: 0.85rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .footer__social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    color: var(--color-text-on-dark);
+    border: 1px solid color-mix(in srgb, var(--color-white) 35%, transparent);
+    transition:
+      border-color 0.25s ease,
+      background-color 0.25s ease,
+      color 0.25s ease;
+  }
+
+  .footer__social-link:hover {
+    border-color: var(--color-accent);
+    background-color: var(--color-accent);
+    color: var(--color-black);
+  }
+
+  .footer__social-link:focus-visible {
+    outline: 2px solid var(--color-cta-hover);
+    outline-offset: 3px;
+  }
+
+  .footer__social-link :global(svg) {
+    width: 20px;
+    height: 20px;
+    display: block;
+  }
+
+  /* ---------- Copyright ---------- */
+  .footer__bottom {
+    border-top: 1px solid color-mix(in srgb, var(--color-white) 15%, transparent);
+    padding-top: clamp(1rem, 2vh, 1.5rem);
+  }
+
+  .footer__copy {
+    font-family: var(--font-body);
+    font-weight: var(--fw-light);
+    font-size: clamp(0.8rem, 1vw, 0.9rem);
+    color: color-mix(in srgb, var(--color-white) 55%, transparent);
+    margin: 0;
+  }
+
+  /* ---------- Reduced motion ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    .footer__social-link {
+      transition: none;
+    }
+  }
+</style>

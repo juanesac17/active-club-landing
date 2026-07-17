@@ -85,5 +85,8 @@ const socialImage = new URL(image, base);
     <main id="main-content">
       <slot />
     </main>
+    <!-- Footer fuera de <main>: semántica correcta y el reveal sticky
+         necesita ser hermano del contenido que se pinta encima. -->
+    <slot name="footer" />
   </body>
 </html>
