@@ -1,0 +1,322 @@
+---
+/**
+ * Sección 7 — Planes.
+ * 3 planes (Starter, Active, Elite) en cards simples con el mismo
+ * lenguaje visual que Method.astro. El plan Active va destacado con
+ * borde verde y badge "Más popular".
+ *
+ * Capa 2 (plans.js): spotlight verde que sigue al cursor dentro de
+ * cada card (CSS vars --spot-x/--spot-y + radial-gradient en ::after).
+ */
+
+const PLANS = [
+  {
+    name: "Starter",
+    price: "Consultar",
+    features: [
+      "Acceso a entrenamientos virtuales",
+      "Plan personalizado",
+      "Seguimiento mensual",
+      "Soporte por WhatsApp",
+    ],
+    featured: false,
+  },
+  {
+    name: "Active",
+    price: "Consultar",
+    features: [
+      "Todo lo del plan Starter",
+      "4 sesiones presenciales/mes",
+      "Ajustes de rutina quincenal",
+      "Comunidad privada",
+      "Seguimiento nutricional básico",
+    ],
+    featured: true,
+  },
+  {
+    name: "Elite",
+    price: "Consultar",
+    features: [
+      "Todo lo del plan Active",
+      "Sesiones presenciales ilimitadas",
+      "Coach dedicado 24/7",
+      "Plan nutricional completo",
+      "Evaluación física mensual",
+      "Acceso a eventos exclusivos",
+    ],
+    featured: false,
+  },
+];
+---
+
+<section class="plans" id="planes" aria-labelledby="plans-title">
+  <div class="plans__inner">
+    <header class="plans__header">
+      <h2 class="plans__title" id="plans-title">Planes que se adaptan a ti</h2>
+    </header>
+
+    <ul class="plans__grid" role="list">
+      {
+        PLANS.map((plan) => (
+          <li
+            class="plans__card"
+            data-featured={plan.featured ? "true" : undefined}
+          >
+            {plan.featured && <span class="plans__badge">Más popular</span>}
+            <h3 class="plans__name">{plan.name}</h3>
+            <p class="plans__price">{plan.price}</p>
+            <ul class="plans__features" role="list">
+              {plan.features.map((feature) => (
+                <li class="plans__feature">
+                  <svg
+                    class="plans__check"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M5 13l4 4L19 7"
+                      stroke="currentColor"
+                      stroke-width="2.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            <a href="#contacto" class="plans__cta">
+              Seleccionar plan
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .plans {
+    position: relative;
+    background: var(--color-bg-dark);
+    color: var(--color-text-on-dark);
+    padding-block: clamp(7rem, 22vh, 14rem);
+    padding-inline: clamp(1.25rem, 6vw, 6rem);
+    overflow: hidden;
+  }
+
+  .plans__inner {
+    max-width: 78rem;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(3rem, 7vh, 5rem);
+  }
+
+  /* ---------- Encabezado ---------- */
+  .plans__header {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .plans__title {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+   font-size: clamp(2rem, 5.5vw, 3.75rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    max-width: 26ch;
+    color: var(--color-text-on-dark);
+  }
+
+  /* ---------- Grid de planes ---------- */
+  .plans__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1rem, 2vw, 1.75rem);
+    align-items: stretch;
+  }
+
+  /* ---------- Card (mismo lenguaje visual que .method__step) ---------- */
+  .plans__card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    padding: clamp(1.5rem, 2.5vw, 2.25rem);
+    border-radius: 1.25rem;
+    border: 2px solid color-mix(in srgb, var(--color-white) 45%, transparent);
+    background: rgba(255, 255, 255, 0.02);
+    overflow: hidden; /* recorta el spotlight al radio de la card */
+    transition: border-color 0.3s ease;
+  }
+
+  .plans__card[data-featured] {
+    border-color: var(--color-accent);
+  }
+
+  /* Spotlight verde que sigue al cursor (plans.js actualiza las vars). */
+  .plans__card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+      14rem circle at var(--spot-x, 50%) var(--spot-y, 50%),
+      color-mix(in srgb, var(--color-accent) 16%, transparent),
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+  }
+
+  .plans__card:hover::after {
+    opacity: 1;
+  }
+
+  .plans__card:hover {
+    border-color: color-mix(in srgb, var(--color-accent) 70%, transparent);
+  }
+
+  /* ---------- Badge "Más popular" ---------- */
+  .plans__badge {
+    align-self: flex-start;
+    font-family: var(--font-body);
+    font-weight: var(--fw-medium);
+    font-size: clamp(0.7rem, 0.85vw, 0.8rem);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-black);
+    background: var(--color-accent);
+    border-radius: 999px;
+    padding: 0.35rem 0.85rem;
+    margin-bottom: 0.35rem;
+  }
+
+  /* ---------- Contenido ---------- */
+  .plans__name {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(1.25rem, 1.9vw, 1.5rem);
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--color-text-on-dark);
+    margin: 0;
+  }
+
+  .plans__price {
+    font-family: var(--font-display);
+    font-weight: var(--fw-medium);
+    font-size: clamp(1.05rem, 1.45vw, 1.2rem);
+    color: color-mix(in srgb, var(--color-white) 60%, transparent);
+    margin: 0 0 0.5rem;
+  }
+
+  .plans__features {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.65rem, 1.2vh, 0.9rem);
+  }
+
+  .plans__feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-family: var(--font-body);
+    font-weight: var(--fw-light);
+    font-size: clamp(0.95rem, 1.3vw, 1.05rem);
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--color-white) 72%, transparent);
+  }
+
+  .plans__check {
+    flex-shrink: 0;
+    width: 1.1em;
+    height: 1.1em;
+    margin-top: 0.2em;
+    color: var(--color-accent);
+  }
+
+  /* ---------- CTA ---------- */
+  .plans__cta {
+    font-family: var(--font-body);
+    font-weight: var(--fw-medium);
+    font-size: clamp(0.85rem, 1.05vw, 0.95rem);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    color: var(--color-white);
+    border: 1px solid color-mix(in srgb, var(--color-white) 55%, transparent);
+    border-radius: 999px;
+    padding: 0.8rem 1.2rem;
+    margin-top: clamp(1.25rem, 2.5vh, 2rem);
+    align-self: stretch;
+    position: relative; /* por encima del spotlight ::after */
+    z-index: 1;
+    transition:
+      background 0.3s ease,
+      border-color 0.3s ease,
+      color 0.3s ease;
+  }
+
+  .plans__cta:hover {
+    color: var(--color-black);
+    background: var(--color-white);
+    border-color: var(--color-white);
+  }
+
+  .plans__cta:focus-visible {
+    outline: 2px solid var(--color-cta-hover);
+    outline-offset: 3px;
+  }
+
+  /* CTA del plan destacado: sólido en verde de marca. */
+  .plans__card[data-featured] .plans__cta {
+    color: var(--color-black);
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .plans__card[data-featured] .plans__cta:hover {
+    background: color-mix(in srgb, var(--color-accent) 80%, var(--color-white));
+    border-color: color-mix(in srgb, var(--color-accent) 80%, var(--color-white));
+  }
+
+  /* El CTA queda anclado abajo para igualar las 3 cards. */
+  .plans__cta {
+    margin-top: auto;
+  }
+
+  .plans__features {
+    margin-bottom: clamp(1.25rem, 2.5vh, 2rem);
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 900px) {
+    .plans__grid {
+      grid-template-columns: 1fr;
+      max-width: 28rem;
+      margin-inline: auto;
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  import { initPlans } from "../../scripts/animations/plans.js";
+  initPlans();
+</script>
