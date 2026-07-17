@@ -25,68 +25,68 @@
 
   /* Las familias viven acá (Tailwind necesita poseer --font-*
      para generar las utilidades font-display / font-body). */
-  --font-display: "Space Grotesk", system-ui, sans-serif;
-  --font-body: "Outfit", system-ui, sans-serif;
+  --font-display: "MADE Outer Sans", "Space Grotesk", system-ui, sans-serif;
+  --font-body: "TT Firs Neue", "Outfit", system-ui, sans-serif;
 }
 
 /* -------------------------------------------------------------
-   Tipografías — Sustitutos OSS (SIL OFL, self-hosted)
+   Tipografías de marca (PDF §Tipografía, self-hosted en woff2)
    Archivos .woff2 en /public/fonts (servidos desde la raíz).
    font-display: swap → el texto se ve con la fuente del sistema
    mientras carga, sin bloquear el render.
 
-   Display → Space Grotesk  
-   Body    → Outfit         
+   Display → MADE Outer Sans (títulos, números, frases de impacto)
+   Body    → TT Firs Neue    (navegación, subtítulos, párrafos, botones)
    ------------------------------------------------------------- */
 
-/* Display — Space Grotesk */
+/* Display — MADE Outer Sans */
 @font-face {
-  font-family: "Space Grotesk";
-  src: url("/fonts/space-grotesk-regular.woff2") format("woff2");
+  font-family: "MADE Outer Sans";
+  src: url("/fonts/made-outer-sans-regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: "Space Grotesk";
-  src: url("/fonts/space-grotesk-medium.woff2") format("woff2");
+  font-family: "MADE Outer Sans";
+  src: url("/fonts/made-outer-sans-medium.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: "Space Grotesk";
-  src: url("/fonts/space-grotesk-bold.woff2") format("woff2");
+  font-family: "MADE Outer Sans";
+  src: url("/fonts/made-outer-sans-bold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 
-/* Body — Outfit */
+/* Body — TT Firs Neue */
 @font-face {
-  font-family: "Outfit";
-  src: url("/fonts/outfit-light.woff2") format("woff2");
+  font-family: "TT Firs Neue";
+  src: url("/fonts/tt-firs-neue-light.woff2") format("woff2");
   font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: "Outfit";
-  src: url("/fonts/outfit-regular.woff2") format("woff2");
+  font-family: "TT Firs Neue";
+  src: url("/fonts/tt-firs-neue-regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: "Outfit";
-  src: url("/fonts/outfit-medium.woff2") format("woff2");
+  font-family: "TT Firs Neue";
+  src: url("/fonts/tt-firs-neue-medium.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: "Outfit";
-  src: url("/fonts/outfit-bold.woff2") format("woff2");
+  font-family: "TT Firs Neue";
+  src: url("/fonts/tt-firs-neue-bold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
