@@ -160,7 +160,7 @@ const PLANS = [
   }
 
   .plans__card[data-featured] {
-    border-color: var(--color-accent);
+    border-color: var(--color-cta-hover);
   }
 
   /* Spotlight verde que sigue al cursor (plans.js actualiza las vars). */
@@ -171,7 +171,7 @@ const PLANS = [
     border-radius: inherit;
     background: radial-gradient(
       14rem circle at var(--spot-x, 50%) var(--spot-y, 50%),
-      color-mix(in srgb, var(--color-accent) 16%, transparent),
+      color-mix(in srgb, var(--color-cta-hover) 16%, transparent),
       transparent 70%
     );
     opacity: 0;
@@ -184,7 +184,7 @@ const PLANS = [
   }
 
   .plans__card:hover {
-    border-color: color-mix(in srgb, var(--color-accent) 70%, transparent);
+    border-color: color-mix(in srgb, var(--color-cta-hover) 70%, transparent);
   }
 
   /* ---------- Badge "Más popular" ---------- */
@@ -196,7 +196,7 @@ const PLANS = [
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--color-black);
-    background: var(--color-accent);
+    background: var(--color-cta-hover);
     border-radius: 999px;
     padding: 0.35rem 0.85rem;
     margin-bottom: 0.35rem;
@@ -247,7 +247,7 @@ const PLANS = [
     width: 1.1em;
     height: 1.1em;
     margin-top: 0.2em;
-    color: var(--color-accent);
+    color: var(--color-cta-hover);
   }
 
   /* ---------- CTA ---------- */
@@ -287,13 +287,13 @@ const PLANS = [
   /* CTA del plan destacado: sólido en verde de marca. */
   .plans__card[data-featured] .plans__cta {
     color: var(--color-black);
-    background: var(--color-accent);
-    border-color: var(--color-accent);
+    background: var(--color-cta-hover);
+    border-color: var(--color-cta-hover);
   }
 
   .plans__card[data-featured] .plans__cta:hover {
-    background: color-mix(in srgb, var(--color-accent) 80%, var(--color-white));
-    border-color: color-mix(in srgb, var(--color-accent) 80%, var(--color-white));
+    background: color-mix(in srgb, var(--color-cta-hover) 80%, var(--color-white));
+    border-color: color-mix(in srgb, var(--color-cta-hover) 80%, var(--color-white));
   }
 
   /* El CTA queda anclado abajo para igualar las 3 cards. */
