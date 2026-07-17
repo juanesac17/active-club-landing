@@ -5,9 +5,10 @@
  *
  * Carrusel en loop continuo (marquee CSS puro, sin JS): el array PROFILES se
  * renderiza dos veces y el track se desplaza translateX(0 → -50%) en linear
- * infinite (no se detiene en hover). Cada card se ilumina en verde al hover
+ * infinite. Al hacer hover sobre el carrusel la animación se pausa en el
+ * sitio (animation-play-state). Cada card se ilumina en verde al hover
  * (borde + halo + glow interno). Con prefers-reduced-motion se detiene y el
- * viewport pasa a scroll manual. Cierra con modalidades + CTA a WhatsApp.
+ * viewport pasa a scroll manual. Cierra con el texto de cierre + CTA.
  */
 import Button from "../ui/Button.astro";
 
@@ -20,13 +21,43 @@ const icons = import.meta.glob("../../assets/icons/*.svg", {
 });
 const iconHtml = (name: string) => icons[`../../assets/icons/${name}.svg`];
 
-// Perfiles del doc §5 — Sección 4. Extensible.
+// Perfiles del PDF de marca §8 — ¿Para quién es Active Club? Extensible.
 const PROFILES = [
-  { icon: "dumbbell", text: "Para el que quiere empezar desde cero sin perderse" },
-  { icon: "bolt", text: "Para el atleta que quiere rendir más en su deporte" },
-  { icon: "stopwatch", text: "Para el que entrena hace tiempo pero siente que no avanza" },
-  { icon: "mat", text: "Para quien entrena con una patología o lesión y necesita un plan adaptado" },
-  { icon: "kettlebell", text: "Para quien quiere mejorar su composición corporal" },
+  {
+    icon: "dumbbell",
+    title: "Estás comenzando",
+    text: "Quieres entrenar, pero no sabes qué ejercicios realizar ni cómo organizar el proceso.",
+  },
+  {
+    icon: "mat",
+    title: "Quieres recuperar tu condición física",
+    text: "Buscas volver a moverte, recuperar fuerza y sentirte mejor después de un periodo de inactividad.",
+  },
+  {
+    icon: "kettlebell",
+    title: "Quieres mejorar tu bienestar",
+    text: "Te interesa desarrollar fuerza, movilidad, energía y hábitos que puedas sostener.",
+  },
+  {
+    icon: "stopwatch",
+    title: "Practicas running",
+    text: "Quieres complementar tu carrera con fuerza, movilidad, planificación y preparación física.",
+  },
+  {
+    icon: "boxing-gloves",
+    title: "Practicas otro deporte",
+    text: "Necesitas desarrollar capacidades físicas relacionadas con las demandas de tu disciplina.",
+  },
+  {
+    icon: "bolt",
+    title: "Tienes un objetivo de rendimiento",
+    text: "Buscas prepararte para una competencia, mejorar una marca o trabajar capacidades específicas.",
+  },
+  {
+    icon: "hand-grip",
+    title: "Necesitas mayor individualización",
+    text: "Tienes antecedentes, necesidades o limitaciones que requieren adaptar el entrenamiento.",
+  },
 ];
 
 // Loop sin costura: dos copias seguidas. El segundo set es aria-hidden.
@@ -40,9 +71,8 @@ const WHATSAPP_URL = "#contacto";
   <div class="forwho__inner">
     <header class="forwho__header">
       <h2 class="forwho__title" id="forwho-title">¿Para quién es Active Club?</h2>
-      <p class="forwho__desc">
-        Para distintos perfiles sin que nadie se sienta excluido.
-      </p>
+      <p class="forwho__desc">Hay una forma de comenzar desde tu nivel.</p>
+      <p class="forwho__desc">Active Club puede acompañarte si:</p>
     </header>
   </div>
 
@@ -56,7 +86,8 @@ const WHATSAPP_URL = "#contacto";
           >
             <span class="forwho__glow" aria-hidden="true" />
             <span class="forwho__icon" set:html={iconHtml(profile.icon)} aria-hidden="true" />
-            <p class="forwho__profile">{profile.text}</p>
+            <h3 class="forwho__profile">{profile.title}</h3>
+            <p class="forwho__profile-desc">{profile.text}</p>
           </li>
         ))
       }
@@ -65,7 +96,11 @@ const WHATSAPP_URL = "#contacto";
 
   <div class="forwho__inner">
     <div class="forwho__cta">
-      <p class="forwho__modes">Entrenamiento presencial o virtual · Adaptado a tus necesidades</p>
+      <p class="forwho__modes">
+        No importa si estás dando tus primeros pasos o si ya entrenas para
+        competir. El punto de partida cambia; el compromiso con tu proceso se
+        mantiene.
+      </p>
       <Button href={WHATSAPP_URL} variant="outline" external>
         ¿Te identificas? Hablemos.
       </Button>
@@ -150,6 +185,11 @@ const WHATSAPP_URL = "#contacto";
     animation: forwho-marquee 32s linear infinite;
   }
 
+  /* Pausa en el sitio mientras el cursor está sobre el carrusel. */
+  .forwho__viewport:hover .forwho__track {
+    animation-play-state: paused;
+  }
+
   @keyframes forwho-marquee {
     from {
       transform: translateX(0);
@@ -208,7 +248,7 @@ const WHATSAPP_URL = "#contacto";
     display: block;
     align-self: center;
     width: clamp(2.25rem, 5vw, 3rem);
-    color: var(--color-accent);
+    color: var(--color-white);
   }
 
   .forwho__icon :global(svg) {
@@ -225,6 +265,16 @@ const WHATSAPP_URL = "#contacto";
     letter-spacing: -0.01em;
     text-wrap: balance;
     color: var(--color-text-on-dark);
+    margin: 0;
+  }
+
+  .forwho__profile-desc {
+    font-family: var(--font-body);
+    font-weight: var(--fw-light);
+    font-size: clamp(0.9rem, 1.3vw, 1rem);
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--color-white) 72%, transparent);
+    margin: 0;
   }
 
   /* ---------- CTA + modalidades ---------- */
@@ -236,12 +286,15 @@ const WHATSAPP_URL = "#contacto";
     text-align: center;
   }
 
+  /* Cierre: dos frases largas — caja normal para mantener legibilidad
+     (el uppercase con tracking era para la línea corta de modalidades). */
   .forwho__modes {
     font-family: var(--font-body);
     font-weight: var(--fw-medium);
     font-size: clamp(0.9rem, 1.8vw, 1.05rem);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    line-height: 1.6;
+    max-width: 56ch;
+    text-wrap: balance;
     color: color-mix(in srgb, var(--color-white) 80%, transparent);
   }
 
