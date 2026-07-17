@@ -1,32 +1,49 @@
 ---
 /**
  * Sección 2 — Quiénes somos.
- * Título grande, 3 párrafos con reveal por caracteres (SplitText)
- * y CTA al final. Animación clonada de Problem, con tamaño de
- * letra más pequeño en los párrafos.
+ * Layout de 2 columnas en desktop: texto a la izquierda,
+ * placeholder vertical a la derecha (pendiente de imagen real).
+ * En mobile se apila.
  * Capa 2 (about.js): reveal por chars + ScrollTrigger (one-time).
  */
 
 const PARAGRAPHS = [
-  "Active Club es una marca de entrenamiento personal, preparación física y bienestar que acompaña a personas y deportistas en la construcción de una mejor condición física y una relación más consciente con su cuerpo.",
-  "Cada proceso parte de conocer tu historia, necesidades, capacidades y objetivos. A partir de esta información, diseñamos una planificación que integra fuerza, movilidad, acondicionamiento físico, seguimiento y educación.",
-  "No trabajamos con rutinas genéricas ni medimos el servicio únicamente por el tiempo de una sesión. Evaluamos tu progreso, ajustamos el plan y te acompañamos para que puedas moverte mejor, sentirte más seguro y avanzar hacia resultados sostenibles.",
+  "Active Club es una marca de entrenamiento personal, preparación física y bienestar que acompaña a personas y deportistas a construir una mejor condición física y una relación más consciente con su cuerpo.",
+  "Cada proceso parte de tu historia, necesidades, capacidades y objetivos. Diseñamos una planificación que integra fuerza, movilidad, acondicionamiento físico, seguimiento y educación, y la ajustamos según tu respuesta para que avances con dirección y resultados sostenibles.",
 ];
 ---
 
 <section class="about" id="quienes-somos">
   <div class="about__inner">
-    <h2 class="about__title">Mucho más que una sesión de entrenamiento</h2>
+    <div class="about__text">
+      <h2 class="about__title">Mucho más que una sesión de entrenamiento</h2>
 
-    <div class="about__paragraphs">
-      {PARAGRAPHS.map((text) => (
-        <p class="about__paragraph">{text}</p>
-      ))}
+      <div class="about__paragraphs">
+        {PARAGRAPHS.map((text) => (
+          <p class="about__paragraph">{text}</p>
+        ))}
+      </div>
+
+      <a href="#contacto" class="about__cta">
+        Quiero conocer mi punto de partida
+      </a>
     </div>
 
-    <a href="#contacto" class="about__cta">
-      Quiero conocer mi punto de partida
-    </a>
+    <div class="about__media" role="img" aria-label="Imagen de Active Club — pendiente">
+      <div class="about__placeholder">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.25" />
+          <circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="1.25" />
+          <path d="m21 15-4.5-4.5L7 20" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <span class="about__placeholder-label">Imagen de marca</span>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -42,23 +59,29 @@ const PARAGRAPHS = [
   }
 
   .about__inner {
-    max-width: 64rem;
+    max-width: 78rem;
     margin-inline: auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  .about__text {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: clamp(2rem, 5vh, 3.5rem);
+    align-items: flex-start;
+    gap: clamp(1.5rem, 3.5vh, 2.5rem);
   }
 
   .about__title {
     font-family: var(--font-display);
     font-weight: var(--fw-bold);
-    font-size: clamp(2.5rem, 7vw, 5.5rem);
+    font-size: clamp(2rem, 5.5vw, 4rem);
     line-height: 1.05;
     letter-spacing: -0.015em;
     text-wrap: balance;
-    max-width: 22ch;
+    max-width: 18ch;
     color: var(--color-text-on-dark);
   }
 
@@ -66,17 +89,16 @@ const PARAGRAPHS = [
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    /* Aire entre párrafos → cada uno tiene su momento de scroll */
-    gap: clamp(2.5rem, 7vh, 4.5rem);
+    gap: clamp(1.5rem, 3.5vh, 2.25rem);
     width: 100%;
-    max-width: 58rem;
+    max-width: 36rem;
   }
 
   .about__paragraph {
     font-family: var(--font-body);
     font-weight: var(--fw-light);
-    font-size: clamp(1.25rem, 1.9vw, 1.75rem);
-    line-height: 1.5;
+    font-size: clamp(1.1rem, 1.5vw, 1.4rem);
+    line-height: 1.55;
     text-wrap: balance;
     color: var(--color-text-on-dark);
     opacity: 0.88;
@@ -84,7 +106,7 @@ const PARAGRAPHS = [
 
   .about__cta {
     display: inline-block;
-    margin-top: clamp(1.5rem, 4vh, 2.5rem);
+    margin-top: clamp(0.75rem, 2vh, 1.25rem);
     padding: 0.95rem 1.95rem;
     border: 1px solid color-mix(in srgb, var(--color-white) 55%, transparent);
     border-radius: 999px;
@@ -116,13 +138,55 @@ const PARAGRAPHS = [
     border-radius: 999px;
   }
 
+  .about__media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Placeholder vertical — se reemplaza cuando llegue la imagen real. */
+  .about__placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.85rem;
+    width: 100%;
+    max-width: clamp(220px, 26vw, 360px);
+    aspect-ratio: 3 / 4; /* proporción vertical */
+    border-radius: 1.25rem;
+    border: 1.5px dashed color-mix(in srgb, var(--color-white) 22%, transparent);
+    background: rgba(255, 255, 255, 0.025);
+    color: color-mix(in srgb, var(--color-white) 35%, transparent);
+  }
+
+  .about__placeholder svg {
+    width: clamp(2rem, 4vw, 2.75rem);
+    height: auto;
+  }
+
+  .about__placeholder-label {
+    font-family: var(--font-body);
+    font-weight: var(--fw-medium);
+    font-size: clamp(0.75rem, 1vw, 0.9rem);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
   @media (max-width: 768px) {
-    .about__title {
-      font-size: clamp(2rem, 8vw, 3rem);
-      max-width: 18ch;
+    .about__inner {
+      grid-template-columns: 1fr;
+      gap: clamp(2rem, 5vh, 3rem);
+    }
+    .about__text {
+      align-items: center;
+      text-align: center;
     }
     .about__paragraphs {
-      gap: clamp(2rem, 6vh, 3rem);
+      max-width: 36rem;
+    }
+    .about__placeholder {
+      max-width: clamp(180px, 50vw, 260px);
     }
   }
 </style>
