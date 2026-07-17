@@ -11,19 +11,17 @@ interface Props {
   href: string;
   variant?: "primary" | "outline" | "ghost";
   class?: string;
-  /** Abre en pestaña nueva + rel de seguridad (para wa.me). */
-  external?: boolean;
 }
 
 const {
   href,
   variant = "primary",
   class: className = "",
-  external = false,
 } = Astro.props;
 
-const target = external ? "_blank" : undefined;
-const rel = external ? "noopener noreferrer" : undefined;
+const isExternalHref = /^https?:\/\//i.test(href);
+const target = isExternalHref ? "_blank" : undefined;
+const rel = isExternalHref ? "noopener noreferrer" : undefined;
 ---
 
 <a

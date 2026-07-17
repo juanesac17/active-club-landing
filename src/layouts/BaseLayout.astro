@@ -5,6 +5,7 @@
  * Header / Footer / WhatsAppFAB se ensamblan en la página, no acá.
  */
 import "../styles/global.css";
+import { BRAND_DATA } from "../data/brand";
 
 interface Props {
   /** Título de la pestaña y og:title. */
@@ -16,9 +17,9 @@ interface Props {
 }
 
 const {
-  title = "Active Club — Entrena con propósito, progresa con ciencia",
-  description = "Asesoría personalizada para mejorar tu rendimiento físico, con un método respaldado por evidencia. Presencial y virtual.",
-  image = "/og-image.jpg",
+  title = BRAND_DATA.site.defaultTitle,
+  description = BRAND_DATA.site.defaultDescription,
+  image = BRAND_DATA.assets.socialImage,
 } = Astro.props;
 
 // Astro.site se define en astro.config cuando haya dominio. Hasta entonces,
@@ -29,7 +30,7 @@ const socialImage = new URL(image, base);
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={BRAND_DATA.site.language}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -38,7 +39,7 @@ const socialImage = new URL(image, base);
     <script is:inline>
       document.documentElement.classList.add("js");
     </script>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={BRAND_DATA.assets.favicon} />
     <meta name="generator" content={Astro.generator} />
 
     <!-- Primarios -->
@@ -46,7 +47,7 @@ const socialImage = new URL(image, base);
     <meta name="description" content={description} />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <link rel="canonical" href={canonicalURL} />
-    <meta name="theme-color" content="#1A1A1A" />
+    <meta name="theme-color" content={BRAND_DATA.site.themeColor} />
 
     <!-- Preload de fuentes críticas above-the-fold (evita FOUT en el Hero).
          crossorigin es obligatorio: las fuentes se piden en modo CORS. -->
@@ -67,8 +68,8 @@ const socialImage = new URL(image, base);
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
-    <meta property="og:locale" content="es_ES" />
-    <meta property="og:site_name" content="Active Club" />
+    <meta property="og:locale" content={BRAND_DATA.site.ogLocale} />
+    <meta property="og:site_name" content={BRAND_DATA.site.name} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />

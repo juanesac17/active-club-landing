@@ -5,27 +5,33 @@
  * Estado B (scroll fuera del hero): position: fixed, fondo opaco con blur.
  * La transición la maneja src/scripts/animations/header.js (ScrollTrigger).
  */
-import navLogoSvg from "../../assets/images/logo-horizontal.svg?raw";
+import { BRAND_DATA } from "../../data/brand";
 
-const NAV_ITEMS = [
-  { label: "Quiénes somos", href: "#quienes-somos" },
-  { label: "Metodología", href: "#metodo" },
-  { label: "Problema", href: "#problema" },
-  { label: "Para quién", href: "#para-quien" },
-  { label: "Servicios", href: "#servicios" },
-  { label: "Planes", href: "#planes" },
-  { label: "Preguntas frecuentes", href: "#preguntas" },
-];
+const { assets, navigation } = BRAND_DATA;
+const isExternalHref = (href: string) => /^https?:\/\//i.test(href);
 ---
 
 <div class="header" data-header>
   <nav class="header__pill" data-header-pill aria-label="Navegación principal">
-    <a href="#hero" class="header__logo" aria-label="Active Club — inicio" set:html={navLogoSvg}></a>
+    <a
+      href={navigation.home.href}
+      class="header__logo"
+      aria-label={navigation.home.label}
+      target={isExternalHref(navigation.home.href) ? "_blank" : undefined}
+      rel={isExternalHref(navigation.home.href) ? "noopener noreferrer" : undefined}
+      set:html={assets.navigationLogoSvg}
+    ></a>
 
     <ul class="header__links" data-header-links>
-      {NAV_ITEMS.map((item) => (
+      {navigation.items.map((item) => (
         <li>
-          <a href={item.href} class="header__link" data-header-link>
+          <a
+            href={item.href}
+            class="header__link"
+            data-header-link
+            target={isExternalHref(item.href) ? "_blank" : undefined}
+            rel={isExternalHref(item.href) ? "noopener noreferrer" : undefined}
+          >
             {item.label}
           </a>
         </li>
@@ -53,9 +59,15 @@ const NAV_ITEMS = [
     hidden
   >
     <ul>
-      {NAV_ITEMS.map((item) => (
+      {navigation.items.map((item) => (
         <li>
-          <a href={item.href} class="header__mobile-link" data-header-mobile-link>
+          <a
+            href={item.href}
+            class="header__mobile-link"
+            data-header-mobile-link
+            target={isExternalHref(item.href) ? "_blank" : undefined}
+            rel={isExternalHref(item.href) ? "noopener noreferrer" : undefined}
+          >
             {item.label}
           </a>
         </li>

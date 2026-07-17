@@ -11,44 +11,37 @@
  *
  * Fondo decorativo: wordmark de Active Club en blanco translúcido.
  */
-import wordmarkSvg from "../../assets/images/wordmark.svg?raw";
+import { BRAND_DATA, type BrandIconName } from "../../data/brand";
 
-// Íconos de marca (currentColor) cargados de una sola vez.
-const icons = import.meta.glob("../../assets/icons/*.svg", {
-  query: "?raw",
-  import: "default",
-  eager: true,
-});
-const iconHtml = (name: string) => icons[`../../assets/icons/${name}.svg`];
-
-// TODO: reemplazar por las URLs reales cuando estén disponibles.
-const SOCIALS = [
-  { icon: "whatsapp", label: "WhatsApp", href: "#contacto" },
-  { icon: "instagram", label: "Instagram", href: "#" },
-  { icon: "facebook", label: "Facebook", href: "#" },
-];
+const { assets, footer } = BRAND_DATA;
+const iconHtml = (name: BrandIconName) => assets.icons[name];
+const isExternalHref = (href: string) => /^https?:\/\//i.test(href);
 
 // Año del build: suficiente para un sitio estático que se re-despliega.
 const YEAR = new Date().getFullYear();
 ---
 
 <footer class="footer">
-  <div class="footer__wordmark" aria-hidden="true" set:html={wordmarkSvg} />
+  <div
+    class="footer__wordmark"
+    aria-hidden="true"
+    set:html={assets.footerWordmarkSvg}
+  />
 
   <div class="footer__inner">
     <div class="footer__top">
-      <p class="footer__claim">Entrena con propósito. Avanza con confianza.</p>
+      <p class="footer__claim">{footer.claim}</p>
 
       <ul class="footer__socials" role="list">
         {
-          SOCIALS.map((s) => (
+          footer.socials.map((s) => (
             <li>
               <a
                 class="footer__social-link"
                 href={s.href}
                 aria-label={s.label}
-                target={s.href.startsWith("http") ? "_blank" : undefined}
-                rel={s.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                target={isExternalHref(s.href) ? "_blank" : undefined}
+                rel={isExternalHref(s.href) ? "noopener noreferrer" : undefined}
                 set:html={iconHtml(s.icon)}
               />
             </li>
@@ -59,7 +52,7 @@ const YEAR = new Date().getFullYear();
 
     <div class="footer__bottom">
       <p class="footer__copy">
-        © {YEAR} Active Club. Todos los derechos reservados.
+        © {YEAR} {footer.copyright}
       </p>
     </div>
   </div>
