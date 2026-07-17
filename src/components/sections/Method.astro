@@ -1,47 +1,73 @@
 ---
 /**
- * Sección 3 — El Método / Diferenciadores.
- * Responde la pregunta que deja la Sección 2: "¿Por qué Active Club es diferente?".
- * 3 pilares como cards grandes: solo nombre del pilar + descripción.
+ * Sección 4 — Metodología Active Club.
+ * Los 6 pasos del PDF (Sección 5) en un grid de 3x2:
+ * cada paso con número + título + beneficio. Entrada secuencial
+ * con stagger al scrollear.
  *
- * Capa 2 (method.js): entrada con stagger por scroll (ScrollTrigger, one-time) +
- * spotlight verde que sigue al cursor (solo pointer:fine, custom props --mx/--my).
+ * Capa 2 (method.js): entrada por scroll (ScrollTrigger, one-time)
+ * de las 6 cards, una tras otra. Sin spotlight, sin hover lift:
+ * el foco está en el contenido, no en la decoración.
  */
-import logotipoSvg from "../../assets/images/logotipo-blanco.svg?raw";
 
-// Los 3 pilares del doc §5 — Sección 3. Contenido tal cual.
-const PILLARS = [
+const STEPS = [
   {
-    title: "Personalización",
-    desc: "Cada sesión está diseñada para ti, tus metas, patologías y tu estado físico actual.",
+    n: "01",
+    title: "Conocemos tu historia",
+    benefit: "Partimos de tu realidad, no de suposiciones.",
   },
   {
-    title: "Ciencia aplicada",
-    desc: "Cada ejercicio tiene una razón. El plan se construye con base en evidencia, no en tendencias.",
+    n: "02",
+    title: "Evaluamos tu punto de partida",
+    benefit: "Identificamos prioridades y establecemos referencias iniciales.",
   },
   {
-    title: "Ajuste continuo",
-    desc: "Se usan métodos de percepción de esfuerzo para ajustar la carga en cada sesión según cómo te sientes.",
+    n: "03",
+    title: "Definimos tus objetivos",
+    benefit: "Sabes hacia dónde avanzas y qué estamos trabajando.",
+  },
+  {
+    n: "04",
+    title: "Diseñamos tu plan",
+    benefit: "Recibes un proceso aplicable a tu vida, no una rutina difícil de sostener.",
+  },
+  {
+    n: "05",
+    title: "Entrenamos y acompañamos",
+    benefit: "Entrenas con mayor seguridad, comprensión y confianza.",
+  },
+  {
+    n: "06",
+    title: "Medimos, ajustamos y avanzamos",
+    benefit: "El plan no permanece estático; evoluciona contigo.",
   },
 ];
 ---
 
 <section class="method" id="metodo">
   <div class="method__inner">
-    <ul class="method__grid" role="list">
+    <header class="method__header">
+      <h2 class="method__title">Metodología Active Club</h2>
+      <p class="method__subtitle">Un proceso con dirección</p>
+    </header>
+
+    <ol class="method__grid" role="list">
       {
-        PILLARS.map((pillar) => (
-          <li class="method__card">
-            <span class="method__glow" aria-hidden="true" />
-            <div class="method__card-body">
-              <span class="method__logo" set:html={logotipoSvg} aria-hidden="true" />
-              <h3 class="method__card-title">{pillar.title}</h3>
-              <p class="method__desc">{pillar.desc}</p>
-            </div>
+        STEPS.map((step) => (
+          <li class="method__step">
+            <span class="method__num" aria-hidden="true">{step.n}</span>
+            <h3 class="method__step-title">{step.title}</h3>
+            <p class="method__benefit">
+              <span class="method__benefit-label"></span> {step.benefit}
+            </p>
           </li>
         ))
       }
-    </ul>
+    </ol>
+
+    <div class="method__footer">
+      <a href="#contacto" class="method__cta">Comienza tu proceso</a>
+    </div>
   </div>
 </section>
 
@@ -50,8 +76,7 @@ const PILLARS = [
     position: relative;
     background: var(--color-bg-dark);
     color: var(--color-text-on-dark);
-    padding-top: clamp(2.5rem, 6vh, 4rem);
-    padding-bottom: clamp(6rem, 18vh, 11rem);
+    padding-block: clamp(7rem, 22vh, 14rem);
     padding-inline: clamp(1.25rem, 6vw, 6rem);
     overflow: hidden;
   }
@@ -59,113 +84,135 @@ const PILLARS = [
   .method__inner {
     max-width: 78rem;
     margin-inline: auto;
-  }
-
-  /* ---------- Grid de 3 cards ---------- */
-  .method__grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: clamp(1.25rem, 2.5vw, 2rem);
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  /* ---------- Card ---------- */
-  .method__card {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    min-height: clamp(15rem, 32vh, 21rem);
-    padding: clamp(1.75rem, 3vw, 2.75rem);
-    border-radius: 1.25rem;
-    border: 2px solid color-mix(in srgb, var(--color-accent) 45%, transparent);
-    background: rgba(255, 255, 255, 0.02);
-    transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
+    gap: clamp(3rem, 7vh, 5rem);
   }
 
-  .method__card:hover {
-    border-color: var(--color-accent);
-    box-shadow: 0 0 2.75rem color-mix(in srgb, var(--color-accent) 25%, transparent);
-  }
-
-  /* Lift al señalar — solo si el usuario no pidió reducir movimiento. */
-  @media (prefers-reduced-motion: no-preference) {
-    .method__card:hover {
-      transform: translateY(-0.5rem);
-    }
-  }
-
-  /* ---------- Spotlight verde que sigue al cursor ---------- */
-  /* --mx/--my las actualiza method.js en pointermove (solo pointer:fine). */
-  .method__glow {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    border-radius: inherit;
-    opacity: 0;
-    transition: opacity 0.45s ease;
-    background: radial-gradient(
-      20rem circle at var(--mx, 50%) var(--my, 50%),
-      color-mix(in srgb, var(--color-accent) 45%, transparent),
-      transparent 62%
-    );
-  }
-
-  .method__card:hover .method__glow {
-    opacity: 1;
-  }
-
-  .method__card-body {
+  /* ---------- Encabezado ---------- */
+  .method__header {
+    text-align: center;
     display: flex;
     flex-direction: column;
-    gap: 0.85rem;
+    align-items: center;
+    gap: clamp(0.5rem, 1.5vh, 1rem);
   }
 
-  /* Logotipo centrado encima del título de la card. */
-  .method__logo {
-    align-self: center;
-    width: clamp(2.75rem, 6vw, 4rem);
-    margin-bottom: 0.35rem;
-  }
-
-  /* El SVG va por set:html → no recibe scope: estilarlo con :global. */
-  .method__logo :global(svg) {
-    display: block;
-    width: 100%;
-    height: auto;
-    fill: var(--color-text-on-dark);
-  }
-
-  .method__card-title {
+  .method__title {
     font-family: var(--font-display);
     font-weight: var(--fw-bold);
-    font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+    font-size: clamp(1.75rem, 4.5vw, 3rem);
     line-height: 1.1;
     letter-spacing: -0.01em;
     text-wrap: balance;
+    max-width: 26ch;
     color: var(--color-text-on-dark);
   }
 
-  .method__desc {
-    font-family: var(--font-body);
-    font-weight: var(--fw-light);
-    font-size: clamp(0.95rem, 1.6vw, 1.05rem);
-    line-height: 1.55;
-    color: color-mix(in srgb, var(--color-white) 72%, transparent);
+  .method__subtitle {
+    font-family: var(--font-display);
+    font-weight: var(--fw-medium);
+    font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+    color: color-mix(in srgb, var(--color-white) 60%, transparent);
   }
 
-  /* ---------- Responsive: apilar en mobile ---------- */
+  /* ---------- Grid 3x2 de pasos ---------- */
+  .method__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1rem, 2vw, 1.75rem);
+  }
+
+  .method__step {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    padding: clamp(1.5rem, 2.5vw, 2.25rem);
+    border-radius: 1.25rem;
+    border: 2px solid color-mix(in srgb, var(--color-accent) 45%, transparent);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .method__num {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(1.75rem, 3vw, 2.4rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--color-accent);
+  }
+
+  .method__step-title {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: clamp(1.1rem, 1.7vw, 1.35rem);
+    line-height: 1.2;
+    letter-spacing: -0.005em;
+    color: var(--color-text-on-dark);
+    margin: 0;
+  }
+
+  .method__benefit {
+    font-family: var(--font-body);
+    font-weight: var(--fw-light);
+    font-size: clamp(0.95rem, 1.3vw, 1.05rem);
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--color-white) 72%, transparent);
+    margin: 0;
+  }
+
+  .method__benefit-label {
+    font-weight: var(--fw-medium);
+    color: var(--color-text-on-dark);
+  }
+
+  /* ---------- CTA al final ---------- */
+  .method__footer {
+    display: flex;
+    justify-content: center;
+  }
+
+  .method__cta {
+    display: inline-block;
+    padding: 0.95rem 1.95rem;
+    border: 1px solid color-mix(in srgb, var(--color-white) 55%, transparent);
+    border-radius: 999px;
+    color: var(--color-white);
+    font-family: var(--font-body);
+    font-weight: var(--fw-medium);
+    font-size: clamp(0.85rem, 1.4vw, 1rem);
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    background: color-mix(in srgb, var(--color-bg-dark) 35%, transparent);
+    backdrop-filter: blur(6px);
+    transition:
+      background 0.3s ease,
+      border-color 0.3s ease,
+      color 0.3s ease,
+      transform 0.3s ease;
+  }
+
+  .method__cta:hover {
+    color: var(--color-black);
+    background: var(--color-white);
+    border-color: var(--color-white);
+    transform: translateY(-2px);
+  }
+
+  .method__cta:focus-visible {
+    outline: 2px solid var(--color-cta-hover);
+    outline-offset: 4px;
+    border-radius: 999px;
+  }
+
+  /* ---------- Responsive ---------- */
   @media (max-width: 768px) {
     .method__grid {
       grid-template-columns: 1fr;
-    }
-    .method__card {
-      min-height: auto;
-      gap: 2.5rem;
     }
   }
 </style>

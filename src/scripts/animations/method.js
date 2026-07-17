@@ -1,18 +1,12 @@
 import { gsap } from "./gsap.config.js";
 
 /**
- * Sección 3 — El Método.
- * Capa 2: dos efectos independientes sobre las cards de los pilares.
+ * Sección 4 — Metodología Active Club.
+ * Entrada secuencial de los 6 pasos con stagger al scrollear el grid.
+ * Sin spotlight ni hover lift: el foco está en el contenido del paso.
  *
- *  1. Entrada con stagger por scroll (ScrollTrigger one-time): las 3 cards
- *     aparecen una detrás de otra al cruzar el viewport. Fade + slide-up.
- *  2. Spotlight verde que sigue al cursor: actualiza las custom props
- *     --mx/--my de cada card en pointermove. El glow (radial-gradient en CSS)
- *     vive en .method__glow y solo se ve en :hover.
- *
- * Sigue el patrón del proyecto: gsap.matchMedia() (reduced-motion + pointer)
- * + gsap.context() (cleanup). El spotlight solo se monta con pointer:fine y
- * sin reduced-motion (es puro hover decorativo).
+ * Patrón del proyecto: gsap.matchMedia() (reduced-motion) + gsap.context()
+ * (cleanup) + ScrollTrigger one-time.
  */
 export function initMethod() {
   const section = document.querySelector(".method");
@@ -25,54 +19,51 @@ export function initMethod() {
     {
       reduce: "(prefers-reduced-motion: reduce)",
       ok: "(prefers-reduced-motion: no-preference)",
-      fine: "(pointer: fine)",
     },
     (context) => {
-      const { reduce, fine } = context.conditions;
-      const cards = gsap.utils.toArray(".method__card", section);
+      const { reduce } = context.conditions;
+      const steps = gsap.utils.toArray(".method__step", section);
+      const cta = section.querySelector(".method__cta");
 
-      // reduced-motion: cards visibles, sin animar y sin spotlight.
+      // reduced-motion: contenido visible, sin animar.
       if (reduce) {
-        gsap.set(cards, { autoAlpha: 1, clearProps: "transform" });
+        gsap.set([...steps, cta], { autoAlpha: 1, clearProps: "transform" });
         return;
       }
 
-      const ctx = gsap.context(() => {
-        // Entrada escalonada: una card detrás de otra al entrar la sección.
-        gsap.from(cards, {
+      let ctx;
+      ctx = gsap.context(() => {
+        // Los 6 pasos entran con stagger cuando el grid aparece en viewport.
+        gsap.from(steps, {
           autoAlpha: 0,
-          y: 40,
+          y: 32,
           duration: 0.7,
           ease: "power2.out",
-          stagger: 0.4,
-          // Limpia el transform inline al terminar para que el lift en :hover (CSS) funcione.
-          clearProps: "transform",
+          stagger: 0.12,
           scrollTrigger: {
             trigger: section.querySelector(".method__grid"),
-            start: "top 50%",
+            start: "top 75%",
             once: true,
           },
         });
+
+        // CTA entra después de los pasos.
+        if (cta) {
+          gsap.from(cta, {
+            autoAlpha: 0,
+            y: 16,
+            duration: 0.6,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: cta,
+              start: "top 85%",
+              once: true,
+            },
+          });
+        }
       }, section);
 
-      // Spotlight: solo con puntero fino (mouse/trackpad). En touch no aporta.
-      const cleanups = [];
-      if (fine) {
-        cards.forEach((card) => {
-          const onMove = (e) => {
-            const rect = card.getBoundingClientRect();
-            card.style.setProperty("--mx", `${e.clientX - rect.left}px`);
-            card.style.setProperty("--my", `${e.clientY - rect.top}px`);
-          };
-          card.addEventListener("pointermove", onMove);
-          cleanups.push(() => card.removeEventListener("pointermove", onMove));
-        });
-      }
-
-      return () => {
-        ctx.revert();
-        cleanups.forEach((fn) => fn());
-      };
+      return () => ctx.revert();
     },
     section
   );
