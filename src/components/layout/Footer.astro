@@ -1,15 +1,8 @@
 ---
 /**
- * Footer — reveal sticky.
- * El footer vive detrás de la página: position: sticky + bottom: 0 +
- * z-index: -1. Queda fijado al fondo del viewport desde el inicio,
- * pero las secciones (todas con fondo opaco) se pintan por encima;
- * al llegar al final del scroll la última sección "se levanta" y lo
- * revela. Sin JS: el efecto es 100% CSS y funciona con scroll nativo.
- *
- * Debe medir menos que el viewport para revelarse completo.
- *
- * Fondo decorativo: wordmark de Active Club en blanco translúcido.
+ * Footer compacto en flujo normal.
+ * Cierra la página con contexto light después del FinalCTA oscuro.
+ * Fondo decorativo: wordmark de Active Club en negro translúcido.
  */
 import { BRAND_DATA, type BrandIconName } from "../../data/brand";
 
@@ -21,11 +14,11 @@ const isExternalHref = (href: string) => /^https?:\/\//i.test(href);
 const YEAR = new Date().getFullYear();
 ---
 
-<footer class="footer">
+<footer class="footer" data-theme="light">
   <div
     class="footer__wordmark"
     aria-hidden="true"
-    set:html={assets.footerWordmarkSvg}
+    set:html={assets.wordmarkSvg}
   />
 
   <div class="footer__inner">
@@ -59,36 +52,25 @@ const YEAR = new Date().getFullYear();
 </footer>
 
 <style>
-  /* Oculto mientras el gate del intro está activo: la máscara del hero
-     deja ver lo que hay detrás, y el footer vive fijado al fondo del
-     viewport desde el inicio. El intro-lock se suelta DESPUÉS de que la
-     máscara desaparece (UNMASK_AT < hero:entered), así que no hay flash. */
-  :global(html.intro-lock) .footer {
-    visibility: hidden;
-  }
-
   .footer {
-    /* Reveal: fijo al fondo del viewport, detrás del contenido. */
-    position: sticky;
-    bottom: 0;
-    z-index: -1;
-    min-height: clamp(20rem, 55vh, 30rem);
+    position: relative;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    background: color-mix(in srgb, var(--color-black) 88%, var(--color-white));
-    color: var(--color-text-on-dark);
+    background: var(--surface);
+    color: var(--on-surface);
   }
 
   /* ---------- Wordmark decorativo de fondo ---------- */
   .footer__wordmark {
     position: absolute;
+    z-index: 0;
     left: 50%;
-    bottom: clamp(0.5rem, 2vh, 1.5rem);
+    bottom: clamp(0.25rem, 1vh, 0.75rem);
     transform: translateX(-50%);
     width: min(96%, 90rem);
-    color: var(--color-white);
-    opacity: 0.08;
+    color: var(--on-surface);
+    opacity: 0.1;
     pointer-events: none;
   }
 
@@ -100,16 +82,17 @@ const YEAR = new Date().getFullYear();
 
   /* ---------- Contenido ---------- */
   .footer__inner {
-    position: relative; /* por encima del wordmark */
+    position: relative;
+    z-index: 1; /* por encima del wordmark */
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: clamp(2rem, 5vh, 3.5rem);
+    gap: clamp(1.5rem, 3vh, 2.25rem);
     max-width: 72rem;
     width: 100%;
     margin-inline: auto;
-    padding-block: clamp(3rem, 7vh, 5rem) clamp(1.5rem, 3vh, 2.25rem);
+    padding-block: clamp(2rem, 4vh, 3rem) clamp(1rem, 2vh, 1.5rem);
     padding-inline: clamp(1.25rem, 6vw, 6rem);
   }
 
@@ -117,14 +100,14 @@ const YEAR = new Date().getFullYear();
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: clamp(1.5rem, 4vw, 3rem);
+    gap: clamp(1rem, 3vw, 2rem);
     flex-wrap: wrap;
   }
 
   .footer__claim {
     font-family: var(--font-display);
     font-weight: var(--fw-bold);
-    font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+    font-size: clamp(1.1rem, 2vw, 1.5rem);
     line-height: 1.2;
     letter-spacing: -0.01em;
     text-wrap: balance;
@@ -135,7 +118,7 @@ const YEAR = new Date().getFullYear();
   /* ---------- Redes ---------- */
   .footer__socials {
     display: flex;
-    gap: 0.85rem;
+    gap: 0.65rem;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -145,11 +128,11 @@ const YEAR = new Date().getFullYear();
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    color: var(--color-text-on-dark);
-    border: 1px solid color-mix(in srgb, var(--color-white) 35%, transparent);
+    color: var(--on-surface);
+    border: 1px solid var(--border-strong);
     transition:
       border-color 0.25s ease,
       background-color 0.25s ease,
@@ -157,33 +140,33 @@ const YEAR = new Date().getFullYear();
   }
 
   .footer__social-link:hover {
-    border-color: var(--color-accent);
-    background-color: var(--color-accent);
-    color: var(--color-black);
+    border-color: var(--action-primary);
+    background-color: var(--action-primary);
+    color: var(--on-action);
   }
 
   .footer__social-link:focus-visible {
-    outline: 2px solid var(--color-cta-hover);
+    outline: 2px solid var(--focus-ring);
     outline-offset: 3px;
   }
 
   .footer__social-link :global(svg) {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     display: block;
   }
 
   /* ---------- Copyright ---------- */
   .footer__bottom {
-    border-top: 1px solid color-mix(in srgb, var(--color-white) 15%, transparent);
-    padding-top: clamp(1rem, 2vh, 1.5rem);
+    border-top: 1px solid var(--border-default);
+    padding-top: clamp(0.75rem, 1.5vh, 1rem);
   }
 
   .footer__copy {
     font-family: var(--font-body);
-    font-weight: var(--fw-light);
-    font-size: clamp(0.8rem, 1vw, 0.9rem);
-    color: color-mix(in srgb, var(--color-white) 55%, transparent);
+    font-weight: var(--fw-medium);
+    font-size: clamp(0.75rem, 0.9vw, 0.85rem);
+    color: var(--on-surface-muted);
     margin: 0;
   }
 

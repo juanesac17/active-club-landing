@@ -1,217 +1,197 @@
 ---
-/**
- * Sección 4 — Metodología Active Club.
- * Los 6 pasos del PDF (Sección 5) en un grid de 3x2:
- * cada paso con número + título + beneficio. Entrada secuencial
- * con stagger al scrollear.
- *
- * Capa 2 (method.js): entrada por scroll (ScrollTrigger, one-time)
- * de las 6 cards, una tras otra. Sin spotlight, sin hover lift:
- * el foco está en el contenido, no en la decoración.
- */
-
 const STEPS = [
   {
     n: "01",
-    title: "Conocemos tu historia",
-    benefit: "Partimos de tu realidad, no de suposiciones.",
+    title: "Conocemos tu contexto",
+    description: "Entendemos tu historia, disponibilidad y objetivos.",
   },
   {
     n: "02",
-    title: "Evaluamos tu punto de partida",
-    benefit: "Identificamos prioridades y establecemos referencias iniciales.",
+    title: "Evaluamos y planificamos",
+    description: "Definimos prioridades y una ruta realista.",
   },
   {
     n: "03",
-    title: "Definimos tus objetivos",
-    benefit: "Sabes hacia dónde avanzas y qué estamos trabajando.",
+    title: "Entrenamos y acompañamos",
+    description: "Aplicamos el plan con dirección y confianza.",
   },
   {
     n: "04",
-    title: "Diseñamos tu plan",
-    benefit: "Recibes un proceso aplicable a tu vida, no una rutina difícil de sostener.",
-  },
-  {
-    n: "05",
-    title: "Entrenamos y acompañamos",
-    benefit: "Entrenas con mayor seguridad, comprensión y confianza.",
-  },
-  {
-    n: "06",
-    title: "Medimos, ajustamos y avanzamos",
-    benefit: "El plan no permanece estático; evoluciona contigo.",
+    title: "Medimos y ajustamos",
+    description: "El proceso evoluciona según tu respuesta.",
   },
 ];
 ---
 
-<section class="method" id="metodo">
+<section class="method" id="metodo" aria-labelledby="method-title" data-theme="dark">
   <div class="method__inner">
     <header class="method__header">
-      <h2 class="method__title">Metodología Active Club</h2>
-      <p class="method__subtitle">Un proceso con dirección</p>
+      <h2 class="method__title" id="method-title">Un método que evoluciona contigo</h2>
+      <p class="method__intro">
+        Active Club integra entrenamiento personal, preparación física y bienestar
+        en un proceso construido desde tu historia, capacidades y objetivos.
+      </p>
     </header>
 
     <ol class="method__grid" role="list">
-      {
-        STEPS.map((step) => (
-          <li class="method__step">
-            <span class="method__num" aria-hidden="true">{step.n}</span>
-            <h3 class="method__step-title">{step.title}</h3>
-            <p class="method__benefit">
-              <span class="method__benefit-label"></span> {step.benefit}
-            </p>
-          </li>
-        ))
-      }
+      {STEPS.map((step, index) => (
+        <li class="method__step">
+          <span class="method__num" aria-hidden="true">{step.n}</span>
+          <h3 class="method__step-title">{step.title}</h3>
+          <p class="method__description">{step.description}</p>
+          {index < STEPS.length - 1 && (
+            <span class="method__arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 12h14m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          )}
+        </li>
+      ))}
     </ol>
-
-    <div class="method__footer">
-      <a href="#contacto" class="method__cta">Comienza tu proceso</a>
-    </div>
   </div>
 </section>
 
 <style>
   .method {
     position: relative;
-    background: var(--color-bg-dark);
-    color: var(--color-text-on-dark);
+    overflow: hidden;
     padding-block: clamp(4rem, 10vh, 6rem);
     padding-inline: clamp(1.25rem, 6vw, 6rem);
-    overflow: hidden;
+    color: var(--on-surface);
+    background: var(--surface);
   }
 
   .method__inner {
-    max-width: 78rem;
+    position: relative;
+    z-index: 1;
+    max-width: 82rem;
     margin-inline: auto;
     display: flex;
     flex-direction: column;
     gap: clamp(3rem, 7vh, 5rem);
   }
 
-  /* ---------- Encabezado ---------- */
   .method__header {
-    text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: clamp(0.5rem, 1.5vh, 1rem);
+    gap: 1.25rem;
+    text-align: center;
   }
 
   .method__title {
+    max-width: 22ch;
+    color: var(--on-surface);
     font-family: var(--font-display);
-    font-weight: var(--fw-bold);
     font-size: clamp(2rem, 5.5vw, 3.75rem);
+    font-weight: var(--fw-bold);
     line-height: 1.05;
     letter-spacing: -0.01em;
     text-wrap: balance;
-    color: var(--color-text-on-dark);
   }
 
-  .method__subtitle {
-    font-family: var(--font-display);
+  .method__intro {
+    max-width: 62ch;
+    color: var(--on-surface-muted);
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 1.7vw, 1.2rem);
     font-weight: var(--fw-medium);
-    font-size: clamp(1.1rem, 1.8vw, 1.4rem);
-    color: color-mix(in srgb, var(--color-white) 60%, transparent);
+    line-height: 1.6;
+    text-wrap: balance;
   }
 
-  /* ---------- Grid 3x2 de pasos ---------- */
   .method__grid {
-    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(1.5rem, 2.8vw, 2.5rem);
     margin: 0;
     padding: 0;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: clamp(1rem, 2vw, 1.75rem);
+    list-style: none;
   }
 
   .method__step {
     position: relative;
+    min-height: 17rem;
     display: flex;
     flex-direction: column;
-    gap: 0.65rem;
-    padding: clamp(1.5rem, 2.5vw, 2.25rem);
+    gap: 0.75rem;
+    padding: clamp(1.4rem, 2.2vw, 2rem);
+    border: 2px solid var(--border-default);
     border-radius: 1.25rem;
-    border: 2px solid color-mix(in srgb, var(--color-white) 45%, transparent);
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--surface-raised);
+    box-shadow: var(--shadow-card);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .method__step:hover {
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-card-hover);
   }
 
   .method__num {
+    color: var(--highlight);
     font-family: var(--font-display);
-    font-weight: var(--fw-bold);
     font-size: clamp(1.75rem, 3vw, 2.4rem);
+    font-weight: var(--fw-bold);
     line-height: 1;
-    letter-spacing: -0.02em;
-    color: var(--color-cta-hover);
   }
 
   .method__step-title {
+    margin: 0;
+    color: var(--on-surface);
     font-family: var(--font-display);
-    font-weight: var(--fw-bold);
     font-size: clamp(1.1rem, 1.7vw, 1.35rem);
+    font-weight: var(--fw-bold);
     line-height: 1.2;
-    letter-spacing: -0.005em;
-    color: var(--color-text-on-dark);
-    margin: 0;
+    text-wrap: balance;
   }
 
-  .method__benefit {
+  .method__description {
+    margin: auto 0 0;
+    color: var(--on-surface-muted);
     font-family: var(--font-body);
-    font-weight: var(--fw-light);
     font-size: clamp(0.95rem, 1.3vw, 1.05rem);
+    font-weight: var(--fw-light);
     line-height: 1.5;
-    color: color-mix(in srgb, var(--color-white) 72%, transparent);
-    margin: 0;
   }
 
-  .method__benefit-label {
-    font-weight: var(--fw-medium);
-    color: var(--color-text-on-dark);
+  .method__arrow {
+    position: absolute;
+    top: 50%;
+    right: clamp(-1.25rem, -1.4vw, -0.75rem);
+    z-index: 2;
+    width: clamp(1.25rem, 2vw, 1.75rem);
+    color: var(--highlight);
+    transform: translate(50%, -50%);
   }
 
-  /* ---------- CTA al final ---------- */
-  .method__footer {
-    display: flex;
-    justify-content: center;
+  .method__arrow svg {
+    display: block;
+    width: 100%;
+    height: auto;
   }
 
-  .method__cta {
-    display: inline-block;
-    padding: 0.95rem 1.95rem;
-    border: 1px solid color-mix(in srgb, var(--color-white) 55%, transparent);
-    border-radius: 999px;
-    color: var(--color-white);
-    font-family: var(--font-body);
-    font-weight: var(--fw-medium);
-    font-size: clamp(0.85rem, 1.4vw, 1rem);
-    letter-spacing: 0.04em;
-    text-decoration: none;
-    background: color-mix(in srgb, var(--color-bg-dark) 35%, transparent);
-    backdrop-filter: blur(6px);
-    transition:
-      background 0.3s ease,
-      border-color 0.3s ease,
-      color 0.3s ease,
-      transform 0.3s ease;
-  }
-
-  .method__cta:hover {
-    color: var(--color-black);
-    background: var(--color-white);
-    border-color: var(--color-white);
-    transform: translateY(-2px);
-  }
-
-  .method__cta:focus-visible {
-    outline: 2px solid var(--color-cta-hover);
-    outline-offset: 4px;
-    border-radius: 999px;
-  }
-
-  /* ---------- Responsive ---------- */
-  @media (max-width: 768px) {
+  @media (max-width: 1023px) {
     .method__grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 38rem);
+      justify-content: center;
+      gap: 3.25rem;
+    }
+
+    .method__step {
+      min-height: auto;
+    }
+
+    .method__description {
+      margin-top: 0.5rem;
+    }
+
+    .method__arrow {
+      top: auto;
+      right: 50%;
+      bottom: -2.55rem;
+      transform: translateX(50%) rotate(90deg);
     }
   }
 </style>

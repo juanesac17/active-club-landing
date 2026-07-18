@@ -1,6 +1,6 @@
 /**
  * Sección 7 — Planes.
- * Spotlight verde que sigue al cursor dentro de cada card: actualiza
+ * Spotlight neutral que sigue al cursor dentro de cada card: actualiza
  * las CSS vars --spot-x/--spot-y y el ::after (radial-gradient) del
  * componente hace el resto. Sin GSAP: es un efecto 1:1 con el puntero,
  * no una animación con timeline.

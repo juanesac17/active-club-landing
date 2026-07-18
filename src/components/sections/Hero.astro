@@ -6,22 +6,19 @@
 import Button from "../ui/Button.astro";
 import heroBg from "../../assets/images/hero-bg.webp";
 import introLogoSvg from "../../assets/images/logo-vertical.svg?raw";
-
-// TODO: reemplazar por el link wa.me real cuando esté el número (whatsapp.js).
-const WHATSAPP_URL = "#contacto";
+import { BRAND_DATA } from "../../data/brand";
 
 // Palabras de la franja rápida (rotator). Estáticamente se muestra la primera;
 // GSAP rota cada 2.8s.
 const QUICK_PITCH_WORDS = [
-  "Evaluación",
-  "Planificación",
-  "Entrenamiento",
-  "Medición",
-  "Ajuste",
+  "Evaluamos",
+  "Planificamos",
+  "Entrenamos",
+  "Ajustamos",
 ];
 ---
 
-<section class="hero" id="hero">
+<section class="hero" id="hero" data-theme="dark">
   <!-- Escena enmascarada (máscara pequeña → enorme) -->
   <div class="hero__logo-mask" id="hero-logo-mask" aria-hidden="true">
     <div class="hero__key" id="hero-key">
@@ -62,7 +59,7 @@ const QUICK_PITCH_WORDS = [
   <!-- Contenido principal -->
   <div class="hero__content">
     <p class="hero__eyebrow" data-hero-reveal>
-      ENTRENAMIENTO PERSONAL · MOVIMIENTO · BIENESTAR · RENDIMIENTO
+      ENTRENAMIENTO PERSONAL · BIENESTAR · RENDIMIENTO
     </p>
 
     <!-- Franja de propuesta rápida con rotator — elemento dominante -->
@@ -77,26 +74,22 @@ const QUICK_PITCH_WORDS = [
     </p>
 
     <h1 class="hero__headline" data-hero-reveal>
-      Entrena con propósito. Avanza con confianza.
+      Un entrenamiento que se adapta a ti.
     </h1>
 
     <div class="hero__subtitle" data-hero-reveal>
       <p>
-        Entrenamiento, planificación y acompañamiento adaptados a tu cuerpo,
-        tus objetivos y tu momento actual.
-      </p>
-      <p>
-        Mejora tu fuerza, movimiento, bienestar y rendimiento mediante un
-        proceso diseñado para ti.
+        Tu contexto cambia. Tu plan también. Evaluamos, acompañamos y ajustamos
+        cada entrenamiento para cuidar tu bienestar y ayudarte a avanzar.
       </p>
     </div>
 
     <div class="hero__actions" data-hero-reveal>
-      <Button href={WHATSAPP_URL} variant="outline">
-        Agenda tu valoración
+      <Button href={BRAND_DATA.links.contact.href} variant="outline">
+        Agendar cita por WhatsApp
       </Button>
       <a href="#metodo" class="hero__secondary">
-        <span>Conoce cómo trabajamos</span>
+        <span>Conocer la metodología</span>
       </a>
     </div>
   </div>
@@ -110,7 +103,7 @@ const QUICK_PITCH_WORDS = [
     flex-direction: column;
     padding: clamp(1.25rem, 3vw, 2.5rem);
     overflow: hidden;
-    color: var(--color-text-on-dark);
+    color: var(--on-surface);
     isolation: isolate;
     /* Ancho del logo vertical intro (mismo viewBox que logo-vertical-mask.svg) */
     --intro-logo-w: clamp(80px, 14vw, 160px);
@@ -133,7 +126,7 @@ const QUICK_PITCH_WORDS = [
     position: absolute;
     inset: 0;
     z-index: 0;
-    background: var(--color-bg-dark);
+    background: var(--color-black);
     -webkit-mask-image: url("/logo-vertical-mask.svg");
     mask-image: url("/logo-vertical-mask.svg");
     -webkit-mask-repeat: no-repeat;
@@ -207,14 +200,14 @@ const QUICK_PITCH_WORDS = [
     background:
       linear-gradient(
         90deg,
-        var(--color-bg-dark) 0%,
-        color-mix(in srgb, var(--color-bg-dark) 80%, transparent) 38%,
-        color-mix(in srgb, var(--color-bg-dark) 30%, transparent) 70%,
+        var(--color-black) 0%,
+        color-mix(in srgb, var(--color-black) 80%, transparent) 38%,
+        color-mix(in srgb, var(--color-black) 30%, transparent) 70%,
         transparent 100%
       ),
       linear-gradient(
         0deg,
-        var(--color-bg-dark) 2%,
+        var(--color-black) 2%,
         transparent 45%
       );
   }
@@ -249,12 +242,12 @@ const QUICK_PITCH_WORDS = [
   .hero__headline {
     font-family: var(--font-display);
     font-weight: var(--fw-bold);
-    font-size: clamp(1rem, 1.6vw, 1.3rem);
-    line-height: 1.4;
-    letter-spacing: 0;
+    font-size: clamp(2.5rem, 7vw, 5.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.025em;
     text-transform: none;
-    color: var(--color-text-on-dark);
-    opacity: 0.92;
+    color: var(--on-surface);
+    opacity: 1;
     text-wrap: balance;
   }
 
@@ -262,11 +255,11 @@ const QUICK_PITCH_WORDS = [
   .hero__pitch {
     font-family: var(--font-display);
     font-weight: var(--fw-bold);
-    font-size: clamp(2.2rem, 11vw, 6.5rem);
-    line-height: 0.95;
-    letter-spacing: -0.02em;
+    font-size: clamp(1.25rem, 3.5vw, 2.5rem);
+    line-height: 1;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: var(--color-cta-hover);
+    color: var(--highlight);
     margin-top: 0.25rem;
   }
   .hero__pitch-rotator {
@@ -310,7 +303,7 @@ const QUICK_PITCH_WORDS = [
     position: relative;
     font-size: 0.95rem;
     font-weight: var(--fw-regular);
-    color: var(--color-text-on-dark);
+    color: var(--on-surface);
     opacity: 0.85;
     padding-bottom: 4px;
   }
@@ -343,14 +336,14 @@ const QUICK_PITCH_WORDS = [
     align-items: center;
     gap: 0.7rem;
     padding: 0.85rem 1.85rem;
-    border: 1px solid color-mix(in srgb, var(--color-white) 55%, transparent);
+    border: 1px solid var(--border-strong);
     border-radius: 999px;
     color: var(--color-white);
     font-size: clamp(0.8rem, 1.4vw, 1rem);
     font-weight: var(--fw-medium);
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    background: color-mix(in srgb, var(--color-bg-dark) 35%, transparent);
+    background: color-mix(in srgb, var(--color-black) 35%, transparent);
     backdrop-filter: blur(6px);
     text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
     transition:
@@ -388,7 +381,7 @@ const QUICK_PITCH_WORDS = [
   /* ---------- Foco visible (teclado) ---------- */
   .hero__secondary:focus-visible,
   .hero__enter:focus-visible {
-    outline: 2px solid var(--color-cta-hover);
+    outline: 2px solid var(--focus-ring);
     outline-offset: 4px;
     border-radius: 999px;
   }

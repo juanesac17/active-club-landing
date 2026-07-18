@@ -1,127 +1,57 @@
 ---
-/**
- * Sección 8 — Preguntas frecuentes.
- * Acordeón accesible: botón con aria-expanded + panel que anima su
- * altura con grid-template-rows (0fr → 1fr), sin medir alturas en JS.
- * Un solo ítem abierto a la vez; el primero abre por defecto.
- *
- * Capa 2 (faq.js): toggle de aria-expanded/data-open y cierre del
- * resto de ítems.
- *
- * Contenido: PDF de identidad de marca §11 — Preguntas frecuentes.
- */
-
 const FAQS = [
   {
-    q: "¿Necesito experiencia previa para comenzar?",
-    a: [
-      "No. Active Club acompaña tanto a personas que están comenzando como a deportistas con experiencia. El proceso se diseña a partir de tu nivel actual, no del nivel que crees que deberías tener.",
-    ],
+    question: "¿Cuánto cuestan los planes?",
+    answer:
+      "El valor depende del servicio, modalidad, frecuencia y acompañamiento que necesites. Escríbenos por WhatsApp para conocer tu objetivo y preparar una cotización.",
   },
   {
-    q: "¿Qué sucede antes de iniciar el entrenamiento?",
-    a: [
-      "Primero conversamos sobre tu historia, objetivos, disponibilidad, experiencia y antecedentes. Dependiendo del servicio, realizamos una valoración inicial para establecer prioridades y organizar el proceso.",
-    ],
+    question: "¿Necesito experiencia previa?",
+    answer:
+      "No. El proceso comienza desde tu nivel actual, tanto si estás empezando como si ya entrenas.",
   },
   {
-    q: "¿Todas las personas reciben el mismo entrenamiento?",
-    a: [
-      "No. Algunos ejercicios pueden coincidir, pero su selección, dificultad, volumen, intensidad y progresión dependen de las necesidades de cada persona.",
-    ],
+    question: "¿Puedo entrenar con una lesión o antecedente médico?",
+    answer:
+      "Depende del caso. Cuéntanos cualquier diagnóstico, dolor o antecedente. Algunas situaciones requieren autorización médica. Active Club no reemplaza atención clínica o fisioterapéutica.",
   },
   {
-    q: "¿Cuánto dura una sesión?",
-    a: [
-      "La duración depende del servicio y de la planificación. Antes de comenzar te informaremos la duración, frecuencia recomendada y condiciones específicas del programa.",
-    ],
-  },
-  {
-    q: "¿Cómo se realiza el seguimiento?",
-    a: [
-      "Registramos información relevante de las sesiones y revisamos aspectos como cumplimiento, percepción del esfuerzo, evolución de capacidades y respuesta al entrenamiento. Estos datos permiten ajustar el proceso.",
-    ],
-  },
-  {
-    q: "¿Puedo entrenar para mejorar en mi deporte?",
-    a: [
-      "Sí. La preparación se organiza según tu disciplina, experiencia, calendario, objetivos y demandas físicas. Active Club puede acompañar a deportistas recreativos, amateurs y de rendimiento.",
-    ],
-  },
-  {
-    q: "¿Puedo entrenar si tengo una lesión o un antecedente médico?",
-    a: [
-      "Depende del caso. Es importante informar cualquier diagnóstico, procedimiento, dolor o antecedente antes de comenzar. Algunas situaciones requieren autorización médica o acompañamiento de profesionales de la salud.",
-      "Active Club no reemplaza servicios médicos, fisioterapéuticos ni procesos clínicos.",
-    ],
-  },
-  {
-    q: "¿Qué modalidades están disponibles?",
-    a: [
-      "La disponibilidad de entrenamiento presencial, planificación, seguimiento u otras modalidades debe confirmarse directamente con Active Club, ya que puede variar según el servicio, la ubicación y los horarios disponibles.",
-    ],
+    question: "¿Qué modalidades están disponibles?",
+    answer:
+      "Trabajamos de forma presencial y virtual. La disponibilidad depende del servicio, ubicación y horarios.",
   },
 ];
 
-// Dos columnas independientes de 4: abrir un ítem solo desplaza su columna.
-const COLUMNS = [FAQS.slice(0, 4), FAQS.slice(4, 8)];
+const COLUMNS = [FAQS.slice(0, 2), FAQS.slice(2)];
 ---
 
-<section class="faq" id="preguntas" aria-labelledby="faq-title">
+<section class="faq" id="preguntas" aria-labelledby="faq-title" data-theme="light">
   <div class="faq__inner">
     <header class="faq__header">
-      <h2 class="faq__title" id="faq-title">Preguntas frecuentes</h2>
+      <h2 class="faq__title" id="faq-title">Antes de comenzar</h2>
     </header>
 
     <div class="faq__columns">
-      {
-        COLUMNS.map((column, c) => (
-          <ul class="faq__list" role="list">
-            {column.map((item, j) => {
-              const i = c * 4 + j;
-              return (
-                <li class="faq__item" data-open={i === 0 ? "true" : undefined}>
-                  <h3 class="faq__heading">
-                    <button
-                      type="button"
-                      class="faq__question"
-                      id={`faq-q-${i}`}
-                      aria-expanded={i === 0 ? "true" : "false"}
-                      aria-controls={`faq-a-${i}`}
-                      data-faq-toggle
-                    >
-                      <span class="faq__question-text">{item.q}</span>
-                      <span class="faq__icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path
-                            d="M12 5v14m0 0l-6-6m6 6l6-6"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                        </svg>
-                      </span>
-                    </button>
-                  </h3>
-                  <div
-                    class="faq__answer"
-                    id={`faq-a-${i}`}
-                    role="region"
-                    aria-labelledby={`faq-q-${i}`}
-                  >
-                    <div class="faq__answer-inner">
-                      {item.a.map((paragraph) => (
-                        <p>{paragraph}</p>
-                      ))}
-                    </div>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        ))
-      }
+      {COLUMNS.map((column, columnIndex) => (
+        <div class="faq__list">
+          {column.map((item, itemIndex) => {
+            const index = columnIndex * 2 + itemIndex;
+            return (
+              <details class="faq__item" open={index === 0}>
+                <summary class="faq__question">
+                  <span>{item.question}</span>
+                  <span class="faq__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 5v14m0 0-6-6m6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </span>
+                </summary>
+                <div class="faq__answer"><p>{item.answer}</p></div>
+              </details>
+            );
+          })}
+        </div>
+      ))}
     </div>
   </div>
 </section>
@@ -129,11 +59,11 @@ const COLUMNS = [FAQS.slice(0, 4), FAQS.slice(4, 8)];
 <style>
   .faq {
     position: relative;
-    background: var(--color-bg-dark);
-    color: var(--color-text-on-dark);
+    overflow: hidden;
     padding-block: clamp(4rem, 10vh, 6rem);
     padding-inline: clamp(1.25rem, 6vw, 6rem);
-    overflow: hidden;
+    color: var(--on-surface);
+    background: var(--surface);
   }
 
   .faq__inner {
@@ -144,39 +74,116 @@ const COLUMNS = [FAQS.slice(0, 4), FAQS.slice(4, 8)];
     gap: clamp(3rem, 7vh, 5rem);
   }
 
-  /* ---------- Encabezado ---------- */
   .faq__header {
     text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
   }
 
   .faq__title {
+    color: var(--on-surface);
     font-family: var(--font-display);
-    font-weight: var(--fw-bold);
     font-size: clamp(2rem, 5.5vw, 3.75rem);
+    font-weight: var(--fw-bold);
     line-height: 1.05;
     letter-spacing: -0.01em;
     text-wrap: balance;
-    color: var(--color-text-on-dark);
   }
 
-  /* ---------- Dos columnas de 4 ítems ---------- */
   .faq__columns {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: clamp(0.75rem, 1.5vh, 1.1rem) clamp(1rem, 2vw, 1.75rem);
-    align-items: start; /* cada columna crece independiente */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1rem, 2vw, 1.75rem);
+    align-items: start;
   }
 
   .faq__list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
+    display: grid;
     gap: clamp(0.75rem, 1.5vh, 1.1rem);
+  }
+
+  .faq__item {
+    overflow: clip;
+    border: 2px solid var(--border-default);
+    border-radius: 1.25rem;
+    background: var(--surface-raised);
+    box-shadow: var(--shadow-card);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .faq__item[open] {
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-card-featured);
+  }
+
+  .faq__item:hover {
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  .faq__item[open]:hover {
+    box-shadow: var(--shadow-card-featured);
+  }
+
+  .faq__question {
+    min-height: 4.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: clamp(1.1rem, 2vw, 1.5rem) clamp(1.25rem, 2.2vw, 1.75rem);
+    color: var(--on-surface);
+    font-family: var(--font-display);
+    font-size: clamp(1rem, 1.6vw, 1.2rem);
+    font-weight: var(--fw-bold);
+    line-height: 1.3;
+    text-wrap: balance;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .faq__question::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__question:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: -4px;
+    border-radius: 1.15rem;
+  }
+
+  .faq__icon {
+    flex: 0 0 auto;
+    width: clamp(2.25rem, 3vw, 2.75rem);
+    height: clamp(2.25rem, 3vw, 2.75rem);
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    color: var(--on-surface);
+    background: color-mix(in srgb, var(--on-surface) 8%, transparent);
+    transition: color 0.3s ease, background 0.3s ease, transform 0.35s ease;
+  }
+
+  .faq__icon svg {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  .faq__item[open] .faq__icon {
+    color: var(--on-positive);
+    background: var(--positive-surface);
+    transform: rotate(180deg);
+  }
+
+  .faq__answer {
+    padding: 0 clamp(1.25rem, 2.2vw, 1.75rem) clamp(1.1rem, 2vw, 1.5rem);
+  }
+
+  .faq__answer p {
+    margin: 0;
+    color: var(--on-surface-muted);
+    font-family: var(--font-body);
+    font-size: clamp(0.95rem, 1.3vw, 1.05rem);
+    font-weight: var(--fw-medium);
+    line-height: 1.6;
   }
 
   @media (max-width: 900px) {
@@ -185,133 +192,10 @@ const COLUMNS = [FAQS.slice(0, 4), FAQS.slice(4, 8)];
     }
   }
 
-  /* ---------- Ítem (mismo lenguaje visual que .method__step) ---------- */
-  .faq__item {
-    border-radius: 1.25rem;
-    border: 2px solid color-mix(in srgb, var(--color-white) 45%, transparent);
-    background: rgba(255, 255, 255, 0.02);
-    transition: border-color 0.3s ease;
-  }
-
-  .faq__item[data-open] {
-    border-color: color-mix(in srgb, var(--color-accent) 70%, transparent);
-  }
-
-  .faq__heading {
-    margin: 0;
-  }
-
-  /* ---------- Botón de pregunta ---------- */
-  .faq__question {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    width: 100%;
-    padding: clamp(1.1rem, 2vw, 1.5rem) clamp(1.25rem, 2.2vw, 1.75rem);
-    background: transparent;
-    border: 0;
-    cursor: pointer;
-    text-align: left;
-    color: var(--color-text-on-dark);
-  }
-
-  .faq__question:focus-visible {
-    outline: 2px solid var(--color-cta-hover);
-    outline-offset: -4px;
-    border-radius: 1.25rem;
-  }
-
-  .faq__question-text {
-    font-family: var(--font-display);
-    font-weight: var(--fw-bold);
-    font-size: clamp(1rem, 1.6vw, 1.2rem);
-    line-height: 1.3;
-    text-wrap: balance;
-  }
-
-  /* ---------- Ícono circular con flecha ---------- */
-  .faq__icon {
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: clamp(2.25rem, 3vw, 2.75rem);
-    height: clamp(2.25rem, 3vw, 2.75rem);
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--color-white) 10%, transparent);
-    color: var(--color-white);
-    transition:
-      background 0.3s ease,
-      color 0.3s ease,
-      transform 0.35s ease;
-  }
-
-  .faq__icon svg {
-    width: 1.1rem;
-    height: 1.1rem;
-  }
-
-  /* Abierto: flecha hacia arriba e invertido al acento, como la referencia. */
-  .faq__item[data-open] .faq__icon {
-    background: var(--color-accent);
-    color: var(--color-black);
-    transform: rotate(180deg);
-  }
-
-  .faq__question:hover .faq__icon {
-    background: color-mix(in srgb, var(--color-white) 20%, transparent);
-  }
-
-  .faq__item[data-open] .faq__question:hover .faq__icon {
-    background: color-mix(in srgb, var(--color-accent) 80%, var(--color-white));
-  }
-
-  /* ---------- Respuesta: animación de altura con grid rows ---------- */
-  .faq__answer {
-    display: grid;
-    grid-template-rows: 0fr;
-    transition: grid-template-rows 0.4s ease;
-  }
-
-  .faq__item[data-open] .faq__answer {
-    grid-template-rows: 1fr;
-  }
-
-  .faq__answer-inner {
-    overflow: hidden;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    padding-inline: clamp(1.25rem, 2.2vw, 1.75rem);
-  }
-
-  /* El padding inferior solo existe abierto para no dejar hueco cerrado. */
-  .faq__item[data-open] .faq__answer-inner {
-    padding-bottom: clamp(1.1rem, 2vw, 1.5rem);
-  }
-
-  .faq__answer-inner p {
-    font-family: var(--font-body);
-    font-weight: var(--fw-light);
-    font-size: clamp(0.95rem, 1.3vw, 1.05rem);
-    line-height: 1.6;
-    color: color-mix(in srgb, var(--color-white) 72%, transparent);
-    margin: 0;
-  }
-
-  /* ---------- Reduced motion ---------- */
   @media (prefers-reduced-motion: reduce) {
-    .faq__answer,
-    .faq__icon,
-    .faq__item {
+    .faq__item,
+    .faq__icon {
       transition: none;
     }
   }
 </style>
-
-<script>
-  import { initFaq } from "../../scripts/animations/faq.js";
-  initFaq();
-</script>

@@ -1,11 +1,9 @@
-import facebookIconSvg from "../assets/icons/facebook.svg?raw";
 import instagramIconSvg from "../assets/icons/instagram.svg?raw";
 import whatsappIconSvg from "../assets/icons/whatsapp.svg?raw";
-import navigationLogoSvg from "../assets/images/logo-horizontal.svg?raw";
-import footerWordmarkSvg from "../assets/images/wordmark.svg?raw";
+import navigationLogoSvg from "../assets/images/logotipo-blanco.svg?raw";
+import wordmarkSvg from "../assets/images/wordmark.svg?raw";
 
 export const BRAND_ICONS = {
-  facebook: facebookIconSvg,
   instagram: instagramIconSvg,
   whatsapp: whatsappIconSvg,
 } as const;
@@ -30,7 +28,6 @@ export interface BrandLinks {
   readonly home: Link;
   readonly contact: Link;
   readonly instagram: Link;
-  readonly facebook: Link;
 }
 
 export interface NavigationItem extends Link {}
@@ -48,7 +45,7 @@ export interface BrandAssets {
   readonly favicon: string;
   readonly socialImage: string;
   readonly navigationLogoSvg: string;
-  readonly footerWordmarkSvg: string;
+  readonly wordmarkSvg: string;
   readonly icons: Readonly<Record<BrandIconName, string>>;
 }
 
@@ -68,16 +65,21 @@ export interface BrandData {
 
 const BRAND_LINKS = {
   home: { label: "Active Club — inicio", href: "#hero" },
-  contact: { label: "WhatsApp", href: "#contacto" },
-  instagram: { label: "Instagram", href: "#" },
-  facebook: { label: "Facebook", href: "#" },
+  contact: {
+    label: "WhatsApp",
+    href: "https://wa.me/573045999963?text=Hola%2C%20quiero%20agendar%20una%20cita%20con%20Active%20Club.%20Me%20gustar%C3%ADa%20conocer%20qu%C3%A9%20opci%C3%B3n%20se%20adapta%20mejor%20a%20mis%20objetivos%20y%20recibir%20informaci%C3%B3n%20sobre%20los%20planes.",
+  },
+  instagram: {
+    label: "Instagram",
+    href: "https://www.instagram.com/activeclub.col/",
+  },
 } as const satisfies BrandLinks;
 
 export const BRAND_DATA = {
   site: {
     name: "Active Club",
     language: "es",
-    defaultTitle: "Active Club — Entrena con propósito, progresa con ciencia",
+    defaultTitle: "Active Club — Entrena con propósito. Avanza con confianza.",
     defaultDescription:
       "Asesoría personalizada para mejorar tu rendimiento físico, con un método respaldado por evidencia. Presencial y virtual.",
     ogLocale: "es_ES",
@@ -87,20 +89,17 @@ export const BRAND_DATA = {
     favicon: "/favicon.svg",
     socialImage: "/og-image.jpg",
     navigationLogoSvg,
-    footerWordmarkSvg,
+    wordmarkSvg,
     icons: BRAND_ICONS,
   },
   links: BRAND_LINKS,
   navigation: {
     home: BRAND_LINKS.home,
     items: [
-      { label: "Quiénes somos", href: "#quienes-somos" },
-      { label: "Metodología", href: "#metodo" },
-      { label: "Problema", href: "#problema" },
+      { label: "Método", href: "#metodo" },
       { label: "Para quién", href: "#para-quien" },
       { label: "Servicios", href: "#servicios" },
       { label: "Planes", href: "#planes" },
-      { label: "Preguntas frecuentes", href: "#preguntas" },
     ],
   },
   footer: {
@@ -108,7 +107,6 @@ export const BRAND_DATA = {
     socials: [
       { ...BRAND_LINKS.contact, icon: "whatsapp" },
       { ...BRAND_LINKS.instagram, icon: "instagram" },
-      { ...BRAND_LINKS.facebook, icon: "facebook" },
     ],
     copyright: "Active Club. Todos los derechos reservados.",
   },

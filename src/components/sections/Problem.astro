@@ -1,30 +1,39 @@
 ---
 /**
  * Sección 3 — El problema que ayudamos a resolver.
- * Título + bajada introductoria + 3 párrafos (resumidos) + 3 cards
- * con mensajes destacados.
+ * Título, un párrafo y tres mensajes destacados.
  *
  * Animaciones (problem.js):
  *  - Párrafos: reveal por LÍNEAS con giro 3D (clonado de FinalCTA).
- *  - Cards: sin entrada con scroll; solo hover verde (clonado de Method:
- *    spotlight radial, borde highlight, lift).
+ *  - Mensajes destacados: sin entrada con scroll; énfasis tipográfico.
  */
+import problemLogoUrl from "../../assets/images/logotipo-negro.svg?url";
 
 const PARAGRAPHS = [
-  "Tu esfuerzo necesita dirección. Entrenar con frecuencia no siempre significa avanzar: has probado rutinas, comenzado varias veces o entrenado sin saber si los ejercicios, las cargas y la progresión son las adecuadas. Te cuesta mantener la constancia, sientes inseguridad al moverte o no sabes cómo acercarte a tu objetivo.",
-  "No siempre es falta de esfuerzo. Hace falta un proceso que considere tu punto de partida, tu contexto y cómo responde tu cuerpo. Convertimos tus objetivos en una ruta clara, medible y adaptable.",
+  "Entrenar más no siempre significa avanzar. Sin un proceso que considere tu punto de partida, tu tiempo y la respuesta de tu cuerpo, es fácil perder constancia y confianza.",
 ];
 
 const HIGHLIGHTS = [
-  "No necesitas otra rutina genérica.",
-  "Necesitas saber qué hacer, por qué hacerlo y cómo avanzar.",
-  "Tu entrenamiento debe adaptarse a ti, no al contrario.",
+  "No necesitas encajar en un plan genérico.",
+  "Necesitas entender qué hacer y cómo avanzar.",
+  "El entrenamiento debe evolucionar contigo.",
 ];
 ---
 
-<section class="problem" id="problema">
+<section class="problem" id="problema" data-theme="light">
+  <img
+    class="problem__logo"
+    src={problemLogoUrl}
+    alt=""
+    width="2914"
+    height="2528"
+    loading="lazy"
+    decoding="async"
+    aria-hidden="true"
+  />
+
   <div class="problem__inner">
-    <h2 class="problem__title">El problema que ayudamos a resolver</h2>
+    <h2 class="problem__title">Tu esfuerzo necesita dirección, no otra rutina.</h2>
 
     <div class="problem__paragraphs">
       {PARAGRAPHS.map((text) => (
@@ -32,7 +41,6 @@ const HIGHLIGHTS = [
       ))}
     </div>
 
-    <p class="problem__highlights-label">Ten en cuenta esto:</p>
     <ul class="problem__highlights" role="list">
       {HIGHLIGHTS.map((text) => (
         <li class="problem__highlight">{text}</li>
@@ -44,8 +52,9 @@ const HIGHLIGHTS = [
 <style>
   .problem {
     position: relative;
-    background: var(--color-bg-dark);
-    color: var(--color-text-on-dark);
+    background: var(--surface);
+    color: var(--on-surface);
+    border-radius: clamp(1.75rem, 4vw, 3rem) clamp(1.75rem, 4vw, 3rem) 0 0;
     padding-top: clamp(4rem, 10vh, 6rem);
     padding-bottom: clamp(3.5rem, 9vh, 5.5rem);
     padding-inline: clamp(1.25rem, 6vw, 6rem);
@@ -53,6 +62,8 @@ const HIGHLIGHTS = [
   }
 
   .problem__inner {
+    position: relative;
+    z-index: 1;
     max-width: 72rem;
     margin-inline: auto;
     display: flex;
@@ -60,6 +71,18 @@ const HIGHLIGHTS = [
     align-items: center;
     text-align: center;
     gap: clamp(2rem, 5vh, 3.5rem);
+  }
+
+  .problem__logo {
+    position: absolute;
+    z-index: 0;
+    top: 50%;
+    right: clamp(-2rem, -1.5vw, -0.75rem);
+    width: clamp(24rem, 48vw, 44rem);
+    height: auto;
+    opacity: 0.08;
+    pointer-events: none;
+    transform: translateY(-50%);
   }
 
   /* ---------- Título (mismo tamaño que About) ---------- */
@@ -71,7 +94,7 @@ const HIGHLIGHTS = [
     letter-spacing: -0.015em;
     text-wrap: balance;
     max-width: 22ch;
-    color: var(--color-text-on-dark);
+    color: var(--on-surface);
   }
 
   /* ---------- Párrafos ---------- */
@@ -86,24 +109,14 @@ const HIGHLIGHTS = [
 
   .problem__paragraph {
     font-family: var(--font-body);
-    font-weight: var(--fw-light);
+    font-weight: var(--fw-medium);
     font-size: clamp(1.25rem, 1.9vw, 1.75rem);
     line-height: 1.5;
     text-wrap: balance;
-    color: var(--color-text-on-dark);
-    opacity: 0.88;
+    color: var(--on-surface-muted);
   }
 
   /* ---------- Mensajes destacados (lista simple) ---------- */
-  .problem__highlights-label {
-    font-family: var(--font-body);
-    font-weight: var(--fw-medium);
-    font-size: clamp(1.70rem, 2vw, 2.2rem);
-    letter-spacing: 0.05em;
-    color: color-mix(in srgb, var(--color-white) 65%, transparent);
-    margin: clamp(2rem, 5vh, 3rem) 0 0;
-  }
-
   .problem__highlights {
     list-style: none;
     margin: 0;
@@ -123,7 +136,7 @@ const HIGHLIGHTS = [
     line-height: 1.4;
     text-align: left;
     text-wrap: balance;
-    color: var(--color-text-on-dark);
+    color: var(--on-surface);
     position: relative;
     padding-left: 1.5rem;
   }
@@ -133,9 +146,18 @@ const HIGHLIGHTS = [
     position: absolute;
     left: 0;
     top: 0;
-    color: var(--color-cta-hover);
+    color: var(--highlight);
     font-size: 1.1em;
     line-height: inherit;
+  }
+
+  @media (max-width: 768px) {
+    .problem__logo {
+      top: 56%;
+      right: -0.75rem;
+      width: 88%;
+      opacity: 0.06;
+    }
   }
 </style>
 

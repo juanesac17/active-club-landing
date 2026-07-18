@@ -3,56 +3,55 @@
  * Sección 7 — Planes.
  * 3 planes (Starter, Active, Elite) en cards simples con el mismo
  * lenguaje visual que Method.astro. El plan Active va destacado con
- * borde verde y badge "Más popular".
+ * borde estructural reforzado y badge "Más popular".
  *
- * Capa 2 (plans.js): spotlight verde que sigue al cursor dentro de
+ * Capa 2 (plans.js): spotlight neutral que sigue al cursor dentro de
  * cada card (CSS vars --spot-x/--spot-y + radial-gradient en ::after).
  */
+import Button from "../ui/Button.astro";
+import { BRAND_DATA } from "../../data/brand";
 
 const PLANS = [
   {
     name: "Starter",
-    price: "Consultar",
+    focus: "Para comenzar con una ruta clara.",
     features: [
-      "Acceso a entrenamientos virtuales",
+      "Entrenamiento virtual",
       "Plan personalizado",
       "Seguimiento mensual",
-      "Soporte por WhatsApp",
     ],
     featured: false,
   },
   {
     name: "Active",
-    price: "Consultar",
+    focus: "Para combinar autonomía y acompañamiento presencial.",
     features: [
-      "Todo lo del plan Starter",
-      "4 sesiones presenciales/mes",
-      "Ajustes de rutina quincenal",
-      "Comunidad privada",
-      "Seguimiento nutricional básico",
+      "Cuatro sesiones presenciales al mes",
+      "Ajustes quincenales",
+      "Soporte por WhatsApp",
     ],
     featured: true,
   },
   {
     name: "Elite",
-    price: "Consultar",
+    focus: "Para un acompañamiento más frecuente e individualizado.",
     features: [
-      "Todo lo del plan Active",
       "Sesiones presenciales ilimitadas",
-      "Coach dedicado 24/7",
-      "Plan nutricional completo",
+      "Acompañamiento dedicado",
       "Evaluación física mensual",
-      "Acceso a eventos exclusivos",
     ],
     featured: false,
   },
 ];
 ---
 
-<section class="plans" id="planes" aria-labelledby="plans-title">
+<section class="plans" id="planes" aria-labelledby="plans-title" data-theme="light">
   <div class="plans__inner">
     <header class="plans__header">
-      <h2 class="plans__title" id="plans-title">Planes que se adaptan a ti</h2>
+      <h2 class="plans__title" id="plans-title">Elige cómo quieres comenzar</h2>
+      <p class="plans__intro">
+        Tres niveles de acompañamiento, ajustables según tu objetivo y disponibilidad.
+      </p>
     </header>
 
     <ul class="plans__grid" role="list">
@@ -64,7 +63,7 @@ const PLANS = [
           >
             {plan.featured && <span class="plans__badge">Más popular</span>}
             <h3 class="plans__name">{plan.name}</h3>
-            <p class="plans__price">{plan.price}</p>
+            <p class="plans__focus">{plan.focus}</p>
             <ul class="plans__features" role="list">
               {plan.features.map((feature) => (
                 <li class="plans__feature">
@@ -87,21 +86,29 @@ const PLANS = [
                 </li>
               ))}
             </ul>
-            <a href="#contacto" class="plans__cta">
-              Seleccionar plan
-            </a>
           </li>
         ))
       }
     </ul>
+
+    <div class="plans__conversion">
+      <p class="plans__quote-note">
+        El valor depende del servicio, modalidad, frecuencia y nivel de acompañamiento.
+        Conversemos para recomendarte una opción y preparar tu cotización.
+      </p>
+      <Button href={BRAND_DATA.links.contact.href} variant="primary">
+        Consultar y agendar por WhatsApp
+      </Button>
+    </div>
   </div>
 </section>
 
 <style>
   .plans {
     position: relative;
-    background: var(--color-bg-dark);
-    color: var(--color-text-on-dark);
+    background: var(--surface);
+    color: var(--on-surface);
+    border-radius: clamp(1.75rem, 4vw, 3rem) clamp(1.75rem, 4vw, 3rem) 0 0;
     padding-block: clamp(4rem, 10vh, 6rem);
     padding-inline: clamp(1.25rem, 6vw, 6rem);
     overflow: hidden;
@@ -121,6 +128,17 @@ const PLANS = [
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 1rem;
+  }
+
+  .plans__intro {
+    max-width: 54ch;
+    color: var(--on-surface-muted);
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 1.7vw, 1.2rem);
+    font-weight: var(--fw-medium);
+    line-height: 1.5;
+    text-wrap: balance;
   }
 
   .plans__title {
@@ -131,7 +149,7 @@ const PLANS = [
     letter-spacing: -0.01em;
     text-wrap: balance;
     max-width: 26ch;
-    color: var(--color-text-on-dark);
+    color: var(--on-surface);
   }
 
   /* ---------- Grid de planes ---------- */
@@ -153,17 +171,19 @@ const PLANS = [
     gap: 0.65rem;
     padding: clamp(1.5rem, 2.5vw, 2.25rem);
     border-radius: 1.25rem;
-    border: 2px solid color-mix(in srgb, var(--color-white) 45%, transparent);
-    background: rgba(255, 255, 255, 0.02);
+    border: 2px solid var(--border-default);
+    background: var(--surface-raised);
+    box-shadow: var(--shadow-card);
     overflow: hidden; /* recorta el spotlight al radio de la card */
-    transition: border-color 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
   }
 
   .plans__card[data-featured] {
-    border-color: var(--color-cta-hover);
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-card-featured);
   }
 
-  /* Spotlight verde que sigue al cursor (plans.js actualiza las vars). */
+  /* Spotlight neutral que sigue al cursor (plans.js actualiza las vars). */
   .plans__card::after {
     content: "";
     position: absolute;
@@ -171,7 +191,7 @@ const PLANS = [
     border-radius: inherit;
     background: radial-gradient(
       14rem circle at var(--spot-x, 50%) var(--spot-y, 50%),
-      color-mix(in srgb, var(--color-cta-hover) 16%, transparent),
+      color-mix(in srgb, var(--on-surface) 7%, transparent),
       transparent 70%
     );
     opacity: 0;
@@ -184,7 +204,12 @@ const PLANS = [
   }
 
   .plans__card:hover {
-    border-color: color-mix(in srgb, var(--color-cta-hover) 70%, transparent);
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  .plans__card[data-featured]:hover {
+    box-shadow: var(--shadow-card-featured);
   }
 
   /* ---------- Badge "Más popular" ---------- */
@@ -195,8 +220,8 @@ const PLANS = [
     font-size: clamp(0.7rem, 0.85vw, 0.8rem);
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--color-black);
-    background: var(--color-cta-hover);
+    color: var(--on-highlight);
+    background: var(--highlight-surface);
     border-radius: 999px;
     padding: 0.35rem 0.85rem;
     margin-bottom: 0.35rem;
@@ -210,16 +235,17 @@ const PLANS = [
     line-height: 1.1;
     letter-spacing: 0.02em;
     text-transform: uppercase;
-    color: var(--color-text-on-dark);
+    color: var(--on-surface);
     margin: 0;
   }
 
-  .plans__price {
-    font-family: var(--font-display);
+  .plans__focus {
+    font-family: var(--font-body);
     font-weight: var(--fw-medium);
-    font-size: clamp(1.05rem, 1.45vw, 1.2rem);
-    color: color-mix(in srgb, var(--color-white) 60%, transparent);
-    margin: 0 0 0.5rem;
+    font-size: clamp(1rem, 1.45vw, 1.15rem);
+    line-height: 1.45;
+    color: var(--on-surface-muted);
+    margin: 0 0 0.75rem;
   }
 
   .plans__features {
@@ -236,10 +262,10 @@ const PLANS = [
     align-items: flex-start;
     gap: 0.6rem;
     font-family: var(--font-body);
-    font-weight: var(--fw-light);
+    font-weight: var(--fw-medium);
     font-size: clamp(0.95rem, 1.3vw, 1.05rem);
     line-height: 1.5;
-    color: color-mix(in srgb, var(--color-white) 72%, transparent);
+    color: var(--on-surface-muted);
   }
 
   .plans__check {
@@ -247,62 +273,29 @@ const PLANS = [
     width: 1.1em;
     height: 1.1em;
     margin-top: 0.2em;
-    color: var(--color-cta-hover);
-  }
-
-  /* ---------- CTA ---------- */
-  .plans__cta {
-    font-family: var(--font-body);
-    font-weight: var(--fw-medium);
-    font-size: clamp(0.85rem, 1.05vw, 0.95rem);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    text-align: center;
-    text-decoration: none;
-    color: var(--color-white);
-    border: 1px solid color-mix(in srgb, var(--color-white) 55%, transparent);
-    border-radius: 999px;
-    padding: 0.8rem 1.2rem;
-    margin-top: clamp(1.25rem, 2.5vh, 2rem);
-    align-self: stretch;
-    position: relative; /* por encima del spotlight ::after */
-    z-index: 1;
-    transition:
-      background 0.3s ease,
-      border-color 0.3s ease,
-      color 0.3s ease;
-  }
-
-  .plans__cta:hover {
-    color: var(--color-black);
-    background: var(--color-white);
-    border-color: var(--color-white);
-  }
-
-  .plans__cta:focus-visible {
-    outline: 2px solid var(--color-cta-hover);
-    outline-offset: 3px;
-  }
-
-  /* CTA del plan destacado: sólido en verde de marca. */
-  .plans__card[data-featured] .plans__cta {
-    color: var(--color-black);
-    background: var(--color-cta-hover);
-    border-color: var(--color-cta-hover);
-  }
-
-  .plans__card[data-featured] .plans__cta:hover {
-    background: color-mix(in srgb, var(--color-cta-hover) 80%, var(--color-white));
-    border-color: color-mix(in srgb, var(--color-cta-hover) 80%, var(--color-white));
-  }
-
-  /* El CTA queda anclado abajo para igualar las 3 cards. */
-  .plans__cta {
-    margin-top: auto;
+    color: var(--positive);
   }
 
   .plans__features {
     margin-bottom: clamp(1.25rem, 2.5vh, 2rem);
+  }
+
+  .plans__conversion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    text-align: center;
+  }
+
+  .plans__quote-note {
+    max-width: 62ch;
+    color: var(--on-surface-muted);
+    font-family: var(--font-body);
+    font-size: clamp(0.95rem, 1.4vw, 1.08rem);
+    font-weight: var(--fw-medium);
+    line-height: 1.6;
+    text-wrap: balance;
   }
 
   /* ---------- Responsive ---------- */

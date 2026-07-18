@@ -4,10 +4,10 @@ import { initIntro } from "./intro.js";
 /**
  * Animaciones del Hero (capa 2).
  * - Intro invertida (intro.js): máscara crece, UI entra al ~80%.
- * - Franja de propuesta rápida con rotator de palabras (cada 2.8s).
+ * - Franja de propuesta rápida con rotator de palabras (cada 2.2s).
  * - Parallax sutil sobre la foto de la escena enmascarada.
  */
-const HOLD = 2.8;
+const HOLD = 2.2;
 
 export function initHero() {
   const hero = document.querySelector("#hero");
