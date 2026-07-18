@@ -3,46 +3,48 @@
    Variables CSS centralizadas: colores, tipografía, espaciado.
    Si cambia un color o una fuente, se cambia acá y en un solo lugar.
 
-   Nota: cuando se integre Tailwind 4, estos tokens se exponen
-   como utilidades vía @theme. Por ahora son CSS custom properties
-   planas, consumibles con var(--token).
+   Sistema de contextos de color (dark/light POR SECCIÓN):
+   - PRIMITIVOS (--color-*): valores fijos de marca. No cambian nunca.
+     Usarlos solo cuando se necesita ese color exacto (ej. el negro
+     del overlay del Hero, que es negro en cualquier contexto).
+   - TOKENS DE CONTEXTO (--surface, --on-surface, ...): se reasignan
+     según [data-theme] de la sección. Son los que consumen los
+     componentes → un componente escrito con estos tokens funciona
+     sobre fondo negro o blanco sin tocarse.
+   - LEGACY (--color-bg-dark, --color-text-on-dark, ...): valor fijo,
+     solo retrocompatibilidad mientras migramos sección por sección.
+     NO usar en código nuevo.
+
+   Nota: cuando se integre Tailwind 4, los primitivos ya se exponen
+   como utilidades vía @theme en global.css. Los tokens de contexto
+   quedan como custom properties planas (su valor cambia en runtime,
+   no tiene sentido como utility estática).
    ============================================================= */
 
 :root {
   /* ----------------------------------------------------------
-     Colores — Primarios
+     Primitivos — Colores de marca (fijos)
      ---------------------------------------------------------- */
   --color-black: #1a1a1a;
   --color-white: #ffffff;
+  --color-blue-gray: #c7d5d9; /* Soporte neutral: Header y separadores */
+  --color-green: #75ae8b;     /* Progreso, bienestar y estados positivos */
+  --color-yellow: #f5c355;    /* Énfasis, etiquetas y foco visible */
+  --color-orange: #ee8a5a;    /* Acción y conversión */
 
   /* ----------------------------------------------------------
-     Colores — Secundarios
+     Roles semánticos globales
+     Un color = una responsabilidad. Los componentes consumen
+     estos roles; los primitivos quedan como implementación.
      ---------------------------------------------------------- */
-  --color-blue-gray: #c7d5d9; /* Fondos sutiles, separadores, texto secundario */
-  --color-green: #75ae8b;     /* Acentos de bienestar, íconos, highlights */
-  --color-yellow: #f5c355;    /* Hover de CTAs, highlights tipográficos */
-  --color-orange: #ee8a5a;    /* CTA principal, energía y acción */
-
-  /* ----------------------------------------------------------
-     Colores — Tokens semánticos
-     Usar SIEMPRE estos en componentes, no los primitivos de arriba.
-     ---------------------------------------------------------- */
-  --color-bg-dark: var(--color-black);       /* Fondo base de la página */
-  --color-bg-light: var(--color-white);      /* Fondo de secciones de contraste */
-  --color-text-primary: var(--color-black);  /* Texto sobre fondo claro */
-  --color-text-on-dark: var(--color-white);  /* Texto sobre fondo oscuro */
-  --color-cta-primary: var(--color-orange);  /* Botones de acción principal */
-  --color-cta-hover: var(--color-yellow);    /* Hover en botones */
-  --color-accent: var(--color-green);        /* Acento general de la interfaz */
-
-  /* ----------------------------------------------------------
-     Tipografía — Familias
-     --font-display / --font-body se definen en el @theme de
-     global.css (Tailwind 4 las posee para generar utilidades
-     font-display / font-body). Disponibles igual como var().
-     Display → títulos de alto impacto, logo, números grandes.
-     Body    → títulos, subtítulos y cuerpo de texto.
-     ---------------------------------------------------------- */
+  --action-primary: var(--color-orange);
+  --action-hover: color-mix(in srgb, var(--color-orange) 82%, var(--color-yellow));
+  --on-action: var(--color-black);
+  --highlight-surface: var(--color-yellow);
+  --on-highlight: var(--color-black);
+  --positive-surface: var(--color-green);
+  --on-positive: var(--color-black);
+  --support-neutral: var(--color-blue-gray);
 
   /* ----------------------------------------------------------
      Tipografía — Pesos
@@ -53,4 +55,93 @@
   --fw-medium: 500;
   --fw-bold: 700;
   --fw-black: 900;
+}
+
+/* -------------------------------------------------------------
+   Contexto DARK (default de la página)
+   surface        → fondo de la sección
+   on-surface     → texto/contenido sobre ese fondo
+   on-surface-muted → texto secundario (subtítulos, captions)
+   surface-raised → cards/paneles que "flotan" sobre el fondo
+   border-subtle  → bordes y separadores discretos
+   color-scheme   → scrollbars y controles nativos acordes
+   ------------------------------------------------------------- */
+:root,
+[data-theme="dark"] {
+  --surface: var(--color-black);
+  --on-surface: var(--color-white);
+  --on-surface-muted: color-mix(in srgb, var(--color-white) 72%, transparent);
+  --surface-raised: color-mix(in srgb, var(--color-white) 6%, var(--color-black));
+  --border-default: color-mix(in srgb, var(--color-white) 18%, transparent);
+  --border-strong: color-mix(in srgb, var(--color-white) 42%, transparent);
+  --shadow-card:
+    0 18px 48px rgba(0, 0, 0, 0.34),
+    0 0 0 1px color-mix(in srgb, var(--color-white) 3%, transparent);
+  --shadow-card-hover:
+    0 24px 64px rgba(0, 0, 0, 0.46),
+    0 0 28px color-mix(in srgb, var(--color-white) 7%, transparent);
+  --shadow-card-featured:
+    0 28px 72px rgba(0, 0, 0, 0.5),
+    0 0 32px color-mix(in srgb, var(--color-white) 8%, transparent);
+  --highlight: var(--color-yellow);
+  --positive: var(--color-green);
+  --focus-ring: var(--color-yellow);
+  color-scheme: dark;
+}
+
+/* -------------------------------------------------------------
+   Contexto LIGHT (secciones de contraste)
+   ------------------------------------------------------------- */
+[data-theme="light"] {
+  --surface: var(--color-white);
+  --on-surface: var(--color-black);
+  --on-surface-muted: color-mix(in srgb, var(--color-black) 82%, transparent);
+  --surface-raised: color-mix(in srgb, var(--color-black) 4%, var(--color-white));
+  --border-default: color-mix(in srgb, var(--color-black) 14%, transparent);
+  --border-strong: color-mix(in srgb, var(--color-black) 38%, transparent);
+  --shadow-card:
+    0 16px 40px color-mix(in srgb, var(--color-black) 12%, transparent),
+    0 4px 12px color-mix(in srgb, var(--color-black) 6%, transparent);
+  --shadow-card-hover:
+    0 22px 52px color-mix(in srgb, var(--color-black) 18%, transparent),
+    0 7px 18px color-mix(in srgb, var(--color-black) 9%, transparent);
+  --shadow-card-featured:
+    0 26px 60px color-mix(in srgb, var(--color-black) 20%, transparent),
+    0 8px 20px color-mix(in srgb, var(--color-black) 10%, transparent);
+  --highlight: color-mix(in srgb, var(--color-yellow) 62%, var(--color-black));
+  --positive: color-mix(in srgb, var(--color-green) 68%, var(--color-black));
+  --focus-ring: color-mix(in srgb, var(--color-orange) 65%, var(--color-black));
+  color-scheme: light;
+}
+
+:root {
+  /* ----------------------------------------------------------
+     LEGACY — Tokens semánticos fijos (DEPRECADOS)
+     Se mantienen con su valor original para no romper los
+     componentes actuales mientras migran al sistema de contextos.
+     NO usar en código nuevo: usar --surface / --on-surface.
+     ---------------------------------------------------------- */
+  --color-bg-dark: var(--color-black);       /* legacy → --surface (contexto dark) */
+  --color-bg-light: var(--color-white);      /* legacy → --surface (contexto light) */
+  --color-text-primary: var(--color-black);  /* legacy → --on-surface (contexto light) */
+  --color-text-on-dark: var(--color-white);  /* legacy → --on-surface (contexto dark) */
+
+  /* ----------------------------------------------------------
+     Alias legacy. Solo compatibilidad temporal; el código nuevo
+     consume directamente los roles semánticos superiores.
+     ---------------------------------------------------------- */
+  --color-cta-primary: var(--action-primary);
+  --color-cta-hover: var(--action-hover);
+  --color-accent: var(--positive);
+  --border-subtle: var(--border-default);
+  --accent-emphasis: var(--highlight);
+
+  /* ----------------------------------------------------------
+     Tipografía — Familias
+     --font-display / --font-body se definen en el @theme de
+     global.css (Tailwind 4 las posee para generar utilidades
+     font-display / font-body). Disponibles igual como var().
+     Display → títulos de alto impacto, logo, números grandes.
+     Body    → títulos, subtítulos y cuerpo de texto.
+     ---------------------------------------------------------- */
 }

@@ -12,16 +12,16 @@
    Expone los tokens de marca como utilidades (bg-*, text-*,
    border-*, font-*). Referencia las variables de tokens.css
    (fuente única de verdad), así no se duplican valores.
-   Genera, entre otras: bg-cta, text-wellness, bg-highlight,
-   bg-mist, bg-ink, bg-paper, font-display, font-body.
+   Genera, entre otras: bg-action, text-positive, bg-highlight,
+   bg-support, bg-ink, bg-paper, font-display, font-body.
    ------------------------------------------------------------- */
 @theme {
   --color-ink: var(--color-black);
   --color-paper: var(--color-white);
-  --color-mist: var(--color-blue-gray);
-  --color-wellness: var(--color-green);
+  --color-support: var(--color-blue-gray);
+  --color-positive: var(--color-green);
   --color-highlight: var(--color-yellow);
-  --color-cta: var(--color-orange);
+  --color-action: var(--color-orange);
 
   /* Las familias viven acá (Tailwind necesita poseer --font-*
      para generar las utilidades font-display / font-body). */
@@ -129,17 +129,29 @@ button {
 }
 
 /* -------------------------------------------------------------
-   Base — Dark-first
-   Fondo oscuro dominante, texto claro, tipografía de cuerpo.
+   Base — contexto dark por defecto
+   El body consume el contrato contextual. Las secciones pueden
+   invertirlo declarando data-theme="light" sin afectar componentes
+   que ya usen --surface / --on-surface.
    ------------------------------------------------------------- */
 body {
-  background-color: var(--color-bg-dark);
-  color: var(--color-text-on-dark);
+  background-color: var(--surface);
+  color: var(--on-surface);
   font-family: var(--font-body);
   font-weight: var(--fw-regular);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/*
+ * Contexto visual por sección.
+ * tokens.css resuelve los valores dark/light; esta regla aplica el
+ * contrato al contenedor y deja que sus descendientes lo hereden.
+ */
+[data-theme] {
+  background-color: var(--surface);
+  color: var(--on-surface);
 }
 
 h1,

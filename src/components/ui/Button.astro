@@ -35,8 +35,8 @@ const rel = isExternalHref ? "noopener noreferrer" : undefined;
 
 <style>
   .btn {
-    --btn-fg: var(--color-black);
-    --btn-bg: var(--color-cta-primary);
+    --btn-fg: var(--on-action);
+    --btn-bg: var(--action-primary);
 
     display: inline-flex;
     align-items: center;
@@ -65,31 +65,31 @@ const rel = isExternalHref ? "noopener noreferrer" : undefined;
   }
 
   .btn:focus-visible {
-    outline: 2px solid var(--color-cta-hover);
+    outline: 2px solid var(--focus-ring);
     outline-offset: 3px;
   }
 
-  /* Primary — naranja → amarillo en hover */
+  /* Primary — siempre pertenece al rol semántico de acción. */
   .btn--primary:hover {
-    --btn-bg: var(--color-cta-hover);
+    --btn-bg: var(--action-hover);
   }
 
-  /* Outline — contorno sutil sobre fondo oscuro */
+  /* Outline — se adapta al contexto visual del contenedor. */
   .btn--outline {
-    --btn-fg: var(--color-text-on-dark);
+    --btn-fg: var(--on-surface);
     background-color: transparent;
-    border: 1px solid color-mix(in srgb, var(--color-white) 35%, transparent);
+    border: 1px solid color-mix(in srgb, var(--on-surface) 35%, transparent);
     padding: 0.7rem 1.4rem;
   }
   .btn--outline:hover {
-    --btn-fg: var(--color-black);
-    background-color: var(--color-white);
-    border-color: var(--color-white);
+    --btn-fg: var(--surface);
+    background-color: var(--on-surface);
+    border-color: var(--on-surface);
   }
 
   /* Ghost — texto con línea animada */
   .btn--ghost {
-    --btn-fg: var(--color-text-on-dark);
+    --btn-fg: var(--on-surface);
     background-color: transparent;
     padding: 0.5rem 0;
     border-radius: 0;
@@ -102,7 +102,7 @@ const rel = isExternalHref ? "noopener noreferrer" : undefined;
     bottom: -2px;
     width: 100%;
     height: 1px;
-    background-color: var(--color-cta-primary);
+    background-color: var(--action-primary);
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.3s ease;
