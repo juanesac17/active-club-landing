@@ -1,16 +1,11 @@
 ---
 /**
  * Sección 4 — ¿Para quién es Active Club?
- * Habla a los distintos perfiles sin que nadie se sienta excluido.
+ * Cuatro contextos de entrada en una matriz editorial 2×2.
  *
- * Carrusel en loop continuo (marquee CSS puro, sin JS): el array PROFILES se
- * renderiza dos veces y el track se desplaza translateX(0 → -50%) en linear
- * infinite. Al hacer hover sobre el carrusel la animación se pausa en el
- * sitio (animation-play-state). Cada card se ilumina en verde al hover
- * (borde + halo + glow interno). Con prefers-reduced-motion se detiene y el
- * viewport pasa a scroll manual. Cierra con el texto de cierre + CTA.
+ * En desktop, ScrollTrigger reproduce el reveal al entrar en el viewport.
+ * En mobile el contenido se apila sin animación.
  */
-import Button from "../ui/Button.astro";
 
 // Íconos de marca (currentColor) cargados de una sola vez. Agregar un perfil =
 // sumar un objeto a PROFILES; su `icon` debe existir en src/assets/icons/.
@@ -21,70 +16,54 @@ const icons = import.meta.glob("../../assets/icons/*.svg", {
 });
 const iconHtml = (name: string) => icons[`../../assets/icons/${name}.svg`];
 
-// Perfiles del PDF de marca §8 — ¿Para quién es Active Club? Extensible.
 const PROFILES = [
   {
     icon: "dumbbell",
-    title: "Estás comenzando",
-    text: "Quieres entrenar, pero no sabes qué ejercicios realizar ni cómo organizar el proceso.",
-  },
-  {
-    icon: "mat",
-    title: "Quieres recuperar tu condición física",
-    text: "Buscas volver a moverte, recuperar fuerza y sentirte mejor después de un periodo de inactividad.",
+    title: "Estás comenzando o retomando",
+    text: "Quieres construir constancia y entrenar con dirección.",
   },
   {
     icon: "kettlebell",
     title: "Quieres mejorar tu bienestar",
-    text: "Te interesa desarrollar fuerza, movilidad, energía y hábitos que puedas sostener.",
+    text: "Buscas más fuerza, movilidad y energía para tu día a día.",
   },
   {
     icon: "stopwatch",
-    title: "Practicas running",
-    text: "Quieres complementar tu carrera con fuerza, movilidad, planificación y preparación física.",
-  },
-  {
-    icon: "boxing-gloves",
-    title: "Practicas otro deporte",
-    text: "Necesitas desarrollar capacidades físicas relacionadas con las demandas de tu disciplina.",
-  },
-  {
-    icon: "bolt",
-    title: "Tienes un objetivo de rendimiento",
-    text: "Buscas prepararte para una competencia, mejorar una marca o trabajar capacidades específicas.",
+    title: "Practicas running u otro deporte",
+    text: "Necesitas preparar tu cuerpo para las demandas de tu disciplina.",
   },
   {
     icon: "hand-grip",
     title: "Necesitas mayor individualización",
-    text: "Tienes antecedentes, necesidades o limitaciones que requieren adaptar el entrenamiento.",
+    text: "Tu historia, objetivos o limitaciones requieren atención específica.",
   },
 ];
 
-// Loop sin costura: dos copias seguidas. El segundo set es aria-hidden.
-const LOOP = [...PROFILES, ...PROFILES];
-
-// TODO: reemplazar por el link wa.me real cuando esté el número (whatsapp.js).
-const WHATSAPP_URL = "#contacto";
 ---
 
-<section class="forwho" id="para-quien" aria-labelledby="forwho-title">
+<section
+  class="forwho"
+  id="para-quien"
+  aria-labelledby="forwho-title"
+  data-theme="light"
+  data-forwho-section
+>
   <div class="forwho__inner">
     <header class="forwho__header">
-      <h2 class="forwho__title" id="forwho-title">¿Para quién es Active Club?</h2>
-      <p class="forwho__desc">Hay una forma de comenzar desde tu nivel.</p>
-      <p class="forwho__desc">Active Club puede acompañarte si:</p>
+      <h2 class="forwho__title" id="forwho-title">Tu punto de partida también cuenta</h2>
+      <p class="forwho__desc">
+        Acompañamos distintos objetivos, niveles de experiencia y formas de entrenar.
+      </p>
     </header>
   </div>
 
-  <div class="forwho__viewport">
-    <ul class="forwho__track" role="list">
+  <div class="forwho__matrix" data-forwho-matrix>
+    <span class="forwho__divider forwho__divider--horizontal" aria-hidden="true" />
+    <span class="forwho__divider forwho__divider--vertical" aria-hidden="true" />
+    <ul class="forwho__grid" role="list">
       {
-        LOOP.map((profile, i) => (
-          <li
-            class="forwho__card"
-            aria-hidden={i >= PROFILES.length ? "true" : undefined}
-          >
-            <span class="forwho__glow" aria-hidden="true" />
+        PROFILES.map((profile) => (
+          <li class="forwho__item" data-forwho-item>
             <span class="forwho__icon" set:html={iconHtml(profile.icon)} aria-hidden="true" />
             <h3 class="forwho__profile">{profile.title}</h3>
             <p class="forwho__profile-desc">{profile.text}</p>
@@ -93,28 +72,18 @@ const WHATSAPP_URL = "#contacto";
       }
     </ul>
   </div>
-
-  <div class="forwho__inner">
-    <div class="forwho__cta">
-      <p class="forwho__modes">
-        No importa si estás dando tus primeros pasos o si ya entrenas para
-        competir. El punto de partida cambia; el compromiso con tu proceso se
-        mantiene.
-      </p>
-      <Button href={WHATSAPP_URL} variant="outline">
-        ¿Te identificas? Hablemos.
-      </Button>
-    </div>
-  </div>
 </section>
 
 <style>
   .forwho {
     position: relative;
-    background: var(--color-bg-dark);
-    color: var(--color-text-on-dark);
-    padding-block: clamp(3.5rem, 9vh, 5.5rem);
-    overflow: hidden;
+    display: grid;
+    align-content: center;
+    min-height: 100svh;
+    background: var(--surface);
+    color: var(--on-surface);
+    padding-block: clamp(6rem, 12svh, 8rem) clamp(2.5rem, 5svh, 4rem);
+    overflow: clip;
   }
 
   .forwho__inner {
@@ -139,116 +108,75 @@ const WHATSAPP_URL = "#contacto";
     line-height: 1.05;
     letter-spacing: -0.01em;
     text-wrap: balance;
-    color: var(--color-text-on-dark);
+    color: var(--on-surface);
   }
 
   .forwho__desc {
     font-family: var(--font-body);
-    font-weight: var(--fw-light);
+    font-weight: var(--fw-medium);
     font-size: clamp(1rem, 2vw, 1.25rem);
     line-height: 1.5;
     text-wrap: balance;
     max-width: 40ch;
-    color: color-mix(in srgb, var(--color-white) 72%, transparent);
+    color: var(--on-surface-muted);
   }
 
-  /* ---------- Marquee ---------- */
-  .forwho__viewport {
-    margin-block: clamp(2.25rem, 6vh, 4rem);
-    /* Aire vertical para que el halo (box-shadow) en hover no se recorte. */
-    padding-block: 1.5rem;
-    overflow: hidden;
-    /* Bordes con fade lateral: las cards entran/salen sin corte seco. */
-    -webkit-mask-image: linear-gradient(
-      to right,
-      transparent,
-      #000 8%,
-      #000 92%,
-      transparent
-    );
-    mask-image: linear-gradient(
-      to right,
-      transparent,
-      #000 8%,
-      #000 92%,
-      transparent
-    );
+  /* ---------- Matriz editorial ---------- */
+  .forwho__matrix {
+    position: relative;
+    width: min(100% - 2.5rem, 72rem);
+    margin: clamp(2rem, 5svh, 3.5rem) auto 0;
   }
 
-  .forwho__track {
-    display: flex;
-    width: max-content;
+  .forwho__grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-height: clamp(22rem, 52svh, 32rem);
     margin: 0;
     padding: 0;
     list-style: none;
-    /* translateX(-50%) recorre exactamente una copia → loop sin costura. */
-    animation: forwho-marquee 32s linear infinite;
   }
 
-  /* Pausa en el sitio mientras el cursor está sobre el carrusel. */
-  .forwho__viewport:hover .forwho__track {
-    animation-play-state: paused;
+  .forwho__divider {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    background: var(--border-strong);
+    pointer-events: none;
   }
 
-  @keyframes forwho-marquee {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(-50%);
-    }
+  .forwho__divider--horizontal {
+    top: 50%;
+    right: 0;
+    left: 0;
+    height: 1px;
+    transform-origin: center;
   }
 
-  /* ---------- Card de perfil ---------- */
-  /* margin-inline-end (no gap) para que cada card cargue su separación y el
-     -50% empalme perfecto. */
-  .forwho__card {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-    flex: 0 0 auto;
-    width: clamp(16rem, 70vw, 21rem);
-    margin-inline-end: clamp(1.25rem, 2.5vw, 2rem);
+  .forwho__divider--vertical {
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    transform-origin: center;
+  }
+
+  .forwho__item {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
-    padding: clamp(1.5rem, 3vw, 2.25rem);
-    border-radius: 1.25rem;
-    border: 2px solid color-mix(in srgb, var(--color-accent) 45%, transparent);
-    background: rgba(255, 255, 255, 0.02);
-    transition: border-color 0.4s ease, box-shadow 0.4s ease;
-  }
-
-  .forwho__card:hover {
-    border-color: var(--color-accent);
-    box-shadow: 0 0 2.25rem color-mix(in srgb, var(--color-accent) 25%, transparent);
-  }
-
-  /* Iluminación verde interna (como Sección 3, pero centrada: las cards se
-     mueven, así que no seguimos el cursor → evita jank). */
-  .forwho__glow {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    border-radius: inherit;
-    opacity: 0;
-    transition: opacity 0.45s ease;
-    background: radial-gradient(
-      16rem circle at 50% 35%,
-      color-mix(in srgb, var(--color-accent) 40%, transparent),
-      transparent 65%
-    );
-  }
-
-  .forwho__card:hover .forwho__glow {
-    opacity: 1;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: clamp(2rem, 4vw, 4rem);
+    text-align: center;
   }
 
   .forwho__icon {
     display: block;
-    align-self: center;
-    width: clamp(2.25rem, 5vw, 3rem);
-    color: var(--color-white);
+    width: clamp(2.75rem, 4vw, 3.5rem);
+    color: var(--positive);
   }
 
   .forwho__icon :global(svg) {
@@ -264,51 +192,81 @@ const WHATSAPP_URL = "#contacto";
     line-height: 1.2;
     letter-spacing: -0.01em;
     text-wrap: balance;
-    color: var(--color-text-on-dark);
+    max-width: 24ch;
+    color: var(--on-surface);
     margin: 0;
   }
 
   .forwho__profile-desc {
     font-family: var(--font-body);
-    font-weight: var(--fw-light);
+    font-weight: var(--fw-medium);
     font-size: clamp(0.9rem, 1.3vw, 1rem);
     line-height: 1.5;
-    color: color-mix(in srgb, var(--color-white) 72%, transparent);
+    max-width: 34ch;
+    color: var(--on-surface-muted);
     margin: 0;
   }
 
-  /* ---------- CTA + modalidades ---------- */
-  .forwho__cta {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.25rem;
-    text-align: center;
-  }
-
-  /* Cierre: dos frases largas — caja normal para mantener legibilidad
-     (el uppercase con tracking era para la línea corta de modalidades). */
-  .forwho__modes {
-    font-family: var(--font-body);
-    font-weight: var(--fw-medium);
-    font-size: clamp(0.9rem, 1.8vw, 1.05rem);
-    line-height: 1.6;
-    max-width: 56ch;
-    text-wrap: balance;
-    color: color-mix(in srgb, var(--color-white) 80%, transparent);
-  }
-
-  /* ---------- Reduced motion: detener loop, permitir scroll manual ---------- */
-  @media (prefers-reduced-motion: reduce) {
-    .forwho__track {
-      animation: none;
+  @media (max-width: 768px) {
+    .forwho {
+      display: block;
+      min-height: auto;
+      padding-block: clamp(5.5rem, 14svh, 7rem) clamp(3rem, 8svh, 5rem);
     }
-    .forwho__viewport {
-      overflow-x: auto;
+
+    .forwho__header {
+      gap: 0.5rem;
     }
-    /* Sin animación, las copias serían repeticiones visibles: ocultarlas. */
-    .forwho__card[aria-hidden="true"] {
+
+    .forwho__title {
+      font-size: clamp(1.8rem, 8vw, 2.5rem);
+    }
+
+    .forwho__desc {
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    .forwho__matrix {
+      width: min(100% - 2.5rem, 36rem);
+      margin-top: 2rem;
+    }
+
+    .forwho__grid {
+      display: block;
+      min-height: 0;
+    }
+
+    .forwho__divider {
       display: none;
     }
+
+    .forwho__item {
+      gap: 0.75rem;
+      padding: 2rem 0;
+    }
+
+    .forwho__item + .forwho__item {
+      border-top: 1px solid var(--border-strong);
+    }
+
+    .forwho__icon {
+      width: 2.25rem;
+    }
+
+    .forwho__profile {
+      font-size: 1.1rem;
+    }
+
+    .forwho__profile-desc {
+      font-size: 0.875rem;
+      line-height: 1.4;
+    }
   }
+
 </style>
+
+<script>
+  import { initForWho } from "../../scripts/animations/forwho.js";
+  initForWho();
+</script>
