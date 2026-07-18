@@ -1,15 +1,12 @@
 /**
- * Header — pill nav anclada al hero.
+ * Header — identidad, navegación y conversión en tres pills.
  *
  * Comportamiento:
  *   - OCULTA durante la intro de la máscara del logo (mientras el usuario
  *     aún no hizo click en "Comencemos" o el contenido no se reveló).
  *   - Se vuelve VISIBLE cuando se dispara el evento `hero:entered` (la
  *     intro terminó y la escena completa está a la vista).
- *   - VISIBLE mientras el hero está en viewport y el usuario scrollea.
- *   - Se desvanece (autoAlpha → 0) cuando el hero sale del viewport por
- *     arriba al scrollear. Vuelve a aparecer si el usuario regresa.
- *   - No se vuelve fixed en otras secciones: vive solo con el hero.
+ *   - Se vuelve fixed al abandonar el inicio y permanece disponible.
  *
  * También maneja el toggle del menú mobile.
  */
@@ -86,29 +83,42 @@ function setupMobileToggle(header) {
   const mobile = header.querySelector("[data-header-mobile]");
   if (!toggle || !mobile) return;
 
-  toggle.addEventListener("click", () => {
-    const isOpen = header.getAttribute("data-mobile-open") === "true";
-    const next = !isOpen;
+  const setOpen = (isOpen) => {
+    header.setAttribute("data-mobile-open", String(isOpen));
+    toggle.setAttribute("aria-expanded", String(isOpen));
+    toggle.setAttribute("aria-label", isOpen ? "Cerrar menú" : "Abrir menú");
 
-    header.setAttribute("data-mobile-open", String(next));
-    toggle.setAttribute("aria-expanded", String(next));
-    toggle.setAttribute("aria-label", next ? "Cerrar menú" : "Abrir menú");
-
-    if (next) {
+    if (isOpen) {
       mobile.removeAttribute("hidden");
     } else {
       mobile.setAttribute("hidden", "");
     }
+  };
+
+  toggle.addEventListener("click", () => {
+    const isOpen = header.getAttribute("data-mobile-open") === "true";
+    setOpen(!isOpen);
   });
 
   // Cerrar al hacer click en un link del menú mobile
   mobile.querySelectorAll("[data-header-mobile-link]").forEach((link) => {
     link.addEventListener("click", () => {
-      header.setAttribute("data-mobile-open", "false");
-      toggle.setAttribute("aria-expanded", "false");
-      toggle.setAttribute("aria-label", "Abrir menú");
-      mobile.setAttribute("hidden", "");
+      setOpen(false);
+      toggle.focus({ preventScroll: true });
     });
+  });
+
+  const desktopMedia = window.matchMedia("(min-width: 761px)");
+  desktopMedia.addEventListener("change", ({ matches }) => {
+    if (matches) setOpen(false);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    if (header.getAttribute("data-mobile-open") !== "true") return;
+
+    setOpen(false);
+    toggle.focus();
   });
 }
 
