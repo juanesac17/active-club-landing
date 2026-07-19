@@ -1,0 +1,178 @@
+<section
+  class="founder"
+  id="fundador"
+  aria-labelledby="founder-title"
+  data-theme="dark"
+  data-founder-section
+>
+  <div class="founder__inner">
+    <div class="founder__content" data-founder-content>
+      <h2 class="founder__title" id="founder-title">Detrás de Active Club</h2>
+
+      <div class="founder__copy">
+        <p>[Presentación del fundador pendiente.]</p>
+        <p>[Historia del origen de Active Club pendiente.]</p>
+      </div>
+    </div>
+
+    <div
+      class="founder__portrait"
+      role="img"
+      aria-label="Fotografía vertical del fundador pendiente"
+      data-founder-portrait
+    >
+      <span class="founder__portrait-label">Fotografía pendiente</span>
+      <span class="founder__portrait-ratio" aria-hidden="true">9:16</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .founder {
+    position: relative;
+    overflow: hidden;
+    padding-inline: clamp(1.25rem, 6vw, 6rem);
+    padding-bottom: clamp(4rem, 10vh, 6rem);
+    color: var(--on-surface);
+    background: var(--surface);
+  }
+
+  .founder__inner {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-top: clamp(3rem, 7vh, 4.5rem);
+    border-top: 1px solid var(--border-default);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(17rem, 21rem);
+    align-items: center;
+    gap: clamp(3rem, 8vw, 7rem);
+  }
+
+  .founder__content {
+    max-width: 38rem;
+  }
+
+  .founder__title {
+    max-width: 14ch;
+    margin: 0;
+    color: var(--on-surface);
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5.5vw, 3.75rem);
+    font-weight: var(--fw-bold);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  .founder__copy {
+    display: grid;
+    gap: clamp(1.25rem, 3vh, 1.75rem);
+    max-width: 65ch;
+    margin-top: clamp(2rem, 5vh, 3rem);
+  }
+
+  .founder__copy p {
+    margin: 0;
+    color: var(--on-surface-muted);
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 1.7vw, 1.2rem);
+    font-weight: var(--fw-light);
+    line-height: 1.65;
+  }
+
+  .founder__portrait {
+    position: relative;
+    isolation: isolate;
+    width: min(100%, 21rem);
+    aspect-ratio: 9 / 16;
+    justify-self: end;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    border: 2px solid var(--border-default);
+    border-radius: 1.5rem;
+    color: var(--on-surface-muted);
+    background: var(--surface-raised);
+    box-shadow: var(--shadow-card);
+  }
+
+  .founder__portrait::before,
+  .founder__portrait::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 50% auto auto 50%;
+    width: 140%;
+    height: 1px;
+    background: var(--border-default);
+    transform-origin: center;
+  }
+
+  .founder__portrait::before {
+    transform: translate(-50%, -50%) rotate(60deg);
+  }
+
+  .founder__portrait::after {
+    transform: translate(-50%, -50%) rotate(-60deg);
+  }
+
+  .founder__portrait-label {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    color: var(--on-surface);
+    background: var(--surface);
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .founder__portrait-ratio {
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    color: var(--on-surface-muted);
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    font-weight: var(--fw-bold);
+    letter-spacing: 0.08em;
+  }
+
+  @media (max-width: 900px) {
+    .founder__inner {
+      grid-template-columns: 1fr;
+      gap: clamp(2.5rem, 7vh, 4rem);
+    }
+
+    .founder__content {
+      max-width: 42rem;
+    }
+
+    .founder__portrait {
+      width: min(100%, 18rem);
+      justify-self: center;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .founder {
+      padding-bottom: clamp(3.5rem, 9vh, 5rem);
+    }
+
+    .founder__title {
+      font-size: clamp(1.8rem, 8vw, 2.5rem);
+    }
+
+    .founder__copy {
+      margin-top: 2rem;
+    }
+  }
+</style>
+
+<script>
+  import { initFounder } from "../../scripts/animations/founder.js";
+  initFounder();
+</script>
