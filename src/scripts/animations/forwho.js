@@ -26,6 +26,7 @@ export function initForWho() {
           ".forwho__divider--vertical"
         );
         const items = gsap.utils.toArray("[data-forwho-item]", matrix);
+        const cta = section.querySelector("[data-forwho-cta]");
 
         const timeline = gsap.timeline({
           scrollTrigger: {
@@ -65,6 +66,18 @@ export function initForWho() {
               stagger: 0.1,
             },
             0.3
+          )
+          .addLabel("ctaReveal")
+          .from(
+            cta,
+            {
+              autoAlpha: 0,
+              y: 16,
+              scale: 0.97,
+              duration: 0.45,
+              ease: "power2.out",
+            },
+            "ctaReveal"
           );
       }, section);
 

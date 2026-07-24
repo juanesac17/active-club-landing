@@ -7,6 +7,9 @@
  * En mobile el contenido se apila sin animación.
  */
 
+import Button from "../ui/Button.astro";
+import { BRAND_DATA } from "../../data/brand";
+
 // Íconos de marca (currentColor) cargados de una sola vez. Agregar un perfil =
 // sumar un objeto a PROFILES; su `icon` debe existir en src/assets/icons/.
 const icons = import.meta.glob("../../assets/icons/*.svg", {
@@ -51,9 +54,6 @@ const PROFILES = [
   <div class="forwho__inner">
     <header class="forwho__header">
       <h2 class="forwho__title" id="forwho-title">Tu punto de partida también cuenta</h2>
-      <p class="forwho__desc">
-        Acompañamos distintos objetivos, niveles de experiencia y formas de entrenar.
-      </p>
     </header>
   </div>
 
@@ -71,6 +71,15 @@ const PROFILES = [
         ))
       }
     </ul>
+  </div>
+
+  <div class="forwho__cta" data-forwho-cta>
+    <p class="forwho__desc">
+      Acompañamos distintos objetivos, niveles de experiencia y formas de entrenar.
+    </p>
+    <Button href={BRAND_DATA.links.contact.href} variant="primary">
+      Quiero comenzar
+    </Button>
   </div>
 </section>
 
@@ -205,6 +214,17 @@ const PROFILES = [
     max-width: 34ch;
     color: var(--on-surface-muted);
     margin: 0;
+  }
+
+  .forwho__cta {
+    width: min(100% - 2.5rem, 72rem);
+    margin: clamp(2rem, 5svh, 3rem) auto 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    text-align: center;
   }
 
   @media (max-width: 768px) {
