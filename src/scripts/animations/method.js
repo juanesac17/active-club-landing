@@ -2,8 +2,8 @@ import { gsap } from "./gsap.config.js";
 
 /**
  * Sección 4 — Metodología Active Club.
- * Entrada secuencial de los 4 pasos con stagger al scrollear el grid.
- * Sin spotlight ni hover lift: el foco está en el contenido del paso.
+ * El rail de progreso entra una sola vez al scrollear la secuencia.
+ * El contenido permanece visible; el movimiento explica continuidad.
  *
  * Patrón del proyecto: gsap.matchMedia() (reduced-motion) + gsap.context()
  * (cleanup) + ScrollTrigger one-time.
@@ -15,37 +15,41 @@ export function initMethod() {
 
   const mm = gsap.matchMedia();
 
+  const sequence = section.querySelector(".method__sequence-frame");
+  const progress = section.querySelector("[data-method-progress]");
+  if (!sequence || !progress) return;
+
   mm.add(
     {
       reduce: "(prefers-reduced-motion: reduce)",
-      ok: "(prefers-reduced-motion: no-preference)",
+      compact: "(max-width: 63.9375rem)",
+      wide: "(min-width: 64rem)",
     },
     (context) => {
-      const { reduce } = context.conditions;
-      const steps = gsap.utils.toArray(".method__step", section);
+      const { reduce, compact } = context.conditions;
 
-      // reduced-motion: contenido visible, sin animar.
       if (reduce) {
-        gsap.set(steps, { autoAlpha: 1, clearProps: "transform" });
+        gsap.set(progress, { scaleX: 1, scaleY: 1 });
         return;
       }
 
-      let ctx;
-      ctx = gsap.context(() => {
-        // Los 4 pasos entran con stagger cuando el grid aparece en viewport.
-        gsap.from(steps, {
-          autoAlpha: 0,
-          y: 32,
-          duration: 0.7,
-          ease: "power2.out",
-          stagger: 0.12,
-          scrollTrigger: {
-            trigger: section.querySelector(".method__grid"),
-            start: "top 75%",
-            once: true,
-          },
-        });
+      const axis = compact ? "scaleY" : "scaleX";
 
+      const ctx = gsap.context(() => {
+        gsap.fromTo(
+          progress,
+          { [axis]: 0 },
+          {
+            [axis]: 1,
+            duration: 5.0,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: sequence,
+              start: "top 75%",
+              once: true,
+            },
+          }
+        );
       }, section);
 
       return () => ctx.revert();

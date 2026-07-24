@@ -33,27 +33,33 @@ const STEPS = [
       </p>
     </header>
 
-    <ol class="method__grid" role="list">
-      {STEPS.map((step, index) => (
-        <li class="method__step">
-          <span class="method__num" aria-hidden="true">{step.n}</span>
-          <h3 class="method__step-title">{step.title}</h3>
-          <p class="method__description">{step.description}</p>
-          {index < STEPS.length - 1 && (
-            <span class="method__arrow" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 12h14m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
-          )}
-        </li>
-      ))}
-    </ol>
+    <div class="method__sequence-frame">
+      <span class="method__rail" aria-hidden="true">
+        <span class="method__rail-progress" data-method-progress></span>
+      </span>
+
+      <ol class="method__sequence">
+        {STEPS.map((step) => (
+          <li class="method__step">
+            <span class="method__num" aria-hidden="true">{step.n}</span>
+            <div class="method__step-content">
+              <h3 class="method__step-title">{step.title}</h3>
+              <p class="method__description">{step.description}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
   </div>
 </section>
 
 <style>
+  /* Hallmark · pre-emit critique: P5 H5 E5 S5 R5 V5 */
+  /* Hallmark · macrostructure: editorial step sequence · genre: editorial · archetype: F4 step sequence */
   .method {
+    --method-index-size: clamp(2.25rem, 3vw, 2.75rem);
+    --method-index-half: clamp(1.125rem, 1.5vw, 1.375rem);
+
     position: relative;
     overflow: hidden;
     padding-block: clamp(4rem, 10vh, 6rem);
@@ -73,14 +79,15 @@ const STEPS = [
   }
 
   .method__header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.25rem;
-    text-align: center;
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(16rem, 0.65fr);
+    align-items: end;
+    gap: clamp(2rem, 8vw, 8rem);
+    text-align: left;
   }
 
   .method__title {
+    min-width: 0;
     max-width: 22ch;
     color: var(--on-surface);
     font-family: var(--font-display);
@@ -89,10 +96,12 @@ const STEPS = [
     line-height: 1.05;
     letter-spacing: -0.01em;
     text-wrap: balance;
+    overflow-wrap: anywhere;
   }
 
   .method__intro {
-    max-width: 62ch;
+    max-width: 34ch;
+    justify-self: end;
     color: var(--on-surface-muted);
     font-family: var(--font-body);
     font-size: clamp(1rem, 1.7vw, 1.2rem);
@@ -101,40 +110,70 @@ const STEPS = [
     text-wrap: balance;
   }
 
-  .method__grid {
+  .method__sequence-frame {
+    position: relative;
+  }
+
+  .method__sequence {
+    position: relative;
+    z-index: 1;
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: clamp(1.5rem, 2.8vw, 2.5rem);
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  .method__step {
-    position: relative;
-    min-height: 17rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    padding: clamp(1.4rem, 2.2vw, 2rem);
-    border: 2px solid var(--border-default);
-    border-radius: 1.25rem;
-    background: var(--surface-raised);
-    box-shadow: var(--shadow-card);
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  .method__rail {
+    position: absolute;
+    z-index: 0;
+    top: var(--method-index-half);
+    right: 12.5%;
+    left: 12.5%;
+    height: 1px;
+    overflow: hidden;
+    background: var(--border-default);
   }
 
-  .method__step:hover {
-    border-color: var(--border-strong);
-    box-shadow: var(--shadow-card-hover);
+  .method__rail-progress {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: var(--highlight);
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+
+  .method__step {
+    position: relative;
+    min-width: 0;
+    display: grid;
+    grid-template-rows: var(--method-index-size) minmax(0, 1fr);
+    gap: clamp(1.5rem, 3vw, 2.25rem);
+    min-height: clamp(12rem, 18vw, 15rem);
+    padding-inline: clamp(0.5rem, 1.5vw, 1.5rem);
   }
 
   .method__num {
+    justify-self: center;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    min-height: var(--method-index-size);
+    padding-inline: 0.5rem;
+    background: var(--surface);
     color: var(--highlight);
     font-family: var(--font-display);
     font-size: clamp(1.75rem, 3vw, 2.4rem);
     font-weight: var(--fw-bold);
     line-height: 1;
+  }
+
+  .method__step-content {
+    min-width: 0;
+    padding-top: clamp(0.25rem, 1vw, 0.75rem);
+    text-align: center;
   }
 
   .method__step-title {
@@ -145,10 +184,12 @@ const STEPS = [
     font-weight: var(--fw-bold);
     line-height: 1.2;
     text-wrap: balance;
+    overflow-wrap: anywhere;
   }
 
   .method__description {
-    margin: auto 0 0;
+    max-width: 21ch;
+    margin: 0.9rem auto 0;
     color: var(--on-surface-muted);
     font-family: var(--font-body);
     font-size: clamp(0.95rem, 1.3vw, 1.05rem);
@@ -156,42 +197,63 @@ const STEPS = [
     line-height: 1.5;
   }
 
-  .method__arrow {
-    position: absolute;
-    top: 50%;
-    right: clamp(-1.25rem, -1.4vw, -0.75rem);
-    z-index: 2;
-    width: clamp(1.25rem, 2vw, 1.75rem);
-    color: var(--highlight);
-    transform: translate(50%, -50%);
-  }
+  @media (max-width: 63.9375rem) {
+    .method__header {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: start;
+      gap: 1rem;
+    }
 
-  .method__arrow svg {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
+    .method__intro {
+      justify-self: start;
+      max-width: 58ch;
+    }
 
-  @media (max-width: 1023px) {
-    .method__grid {
-      grid-template-columns: minmax(0, 38rem);
-      justify-content: center;
-      gap: 3.25rem;
+    .method__sequence {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+
+    .method__rail {
+      top: var(--method-index-half);
+      right: auto;
+      bottom: var(--method-index-half);
+      left: 1.75rem;
+      width: 1px;
+      height: auto;
+    }
+
+    .method__rail-progress {
+      width: 100%;
+      height: 100%;
+      transform: scaleY(0);
+      transform-origin: top center;
     }
 
     .method__step {
-      min-height: auto;
+      grid-template-columns: minmax(3.5rem, 4.5rem) minmax(0, 1fr);
+      grid-template-rows: auto;
+      column-gap: 1rem;
+      min-height: 0;
+      padding-inline: 0;
+      padding-bottom: 2.75rem;
     }
 
-    .method__description {
-      margin-top: 0.5rem;
+    .method__step:last-child {
+      padding-bottom: 0;
     }
 
-    .method__arrow {
-      top: auto;
-      right: 50%;
-      bottom: -2.55rem;
-      transform: translateX(50%) rotate(90deg);
+    .method__num {
+      justify-self: center;
+      grid-column: 1;
+      grid-row: 1;
+      padding-inline: 0.25rem;
+    }
+
+    .method__step-content {
+      grid-column: 2;
+      grid-row: 1;
+      padding-bottom: 0;
     }
   }
 </style>
