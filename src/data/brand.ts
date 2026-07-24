@@ -1,11 +1,13 @@
-import instagramIconSvg from "../assets/icons/instagram.svg?raw";
-import whatsappIconSvg from "../assets/icons/whatsapp.svg?raw";
+import { siInstagram, siWhatsapp } from "simple-icons";
 import navigationLogoSvg from "../assets/images/logotipo-blanco.svg?raw";
 import wordmarkSvg from "../assets/images/wordmark.svg?raw";
 
+const simpleIconSvg = (path: string) =>
+  `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path d="${path}" /></svg>`;
+
 export const BRAND_ICONS = {
-  instagram: instagramIconSvg,
-  whatsapp: whatsappIconSvg,
+  instagram: simpleIconSvg(siInstagram.path),
+  whatsapp: simpleIconSvg(siWhatsapp.path),
 } as const;
 
 export type BrandIconName = keyof typeof BRAND_ICONS;
