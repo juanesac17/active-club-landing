@@ -1,3 +1,7 @@
+---
+import { FOUNDER_DATA } from "../../data/founder";
+---
+
 <section
   class="founder"
   id="fundador"
@@ -7,11 +11,11 @@
 >
   <div class="founder__inner">
     <div class="founder__content" data-founder-content>
-      <h2 class="founder__title" id="founder-title">Detrás de Active Club</h2>
+      <h2 class="founder__title" id="founder-title">{FOUNDER_DATA.heading}</h2>
 
       <div class="founder__copy">
-        <p>[Presentación del fundador pendiente.]</p>
-        <p>[Historia del origen de Active Club pendiente.]</p>
+        <p>{FOUNDER_DATA.biography}</p>
+        <p>{FOUNDER_DATA.story}</p>
       </div>
     </div>
 

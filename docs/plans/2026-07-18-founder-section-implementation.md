@@ -1,28 +1,34 @@
 # Plan de implementación de Founder
 
-Este plan incorpora la sección Founder sin producir todavía contenido biográfico ni fotografía definitivos. La entrega se mantiene como un único trabajo funcional y revisable: componente, integración, movimiento mínimo y verificación viajan juntos.
+Este plan incorpora la sección Founder con contenido biográfico aprobado y una fotografía todavía pendiente. La entrega se mantiene como un único trabajo funcional y revisable: datos, componente, integración, movimiento mínimo y verificación viajan juntos.
 
 ## Ruta rápida
 
-1. Crear el componente semántico y responsive.
-2. Integrarlo entre Method y ForWho.
-3. Añadir un reveal discreto compatible con movimiento reducido.
+1. Mantener el contenido editorial en un módulo tipado.
+2. Renderizarlo desde el componente semántico y responsive.
+3. Conservar la integración y el reveal compatible con movimiento reducido.
 4. Ejecutar validaciones técnicas y visuales.
 
 ## Unidad 1 — Construir e integrar Founder
 
-**Objetivo:** renderizar la nueva sección en su posición aprobada, con todos los placeholders y comportamientos responsive definidos en el diseño.
+**Objetivo:** renderizar la sección en su posición aprobada, con la biografía e historia definitivas separadas de la UI y los comportamientos responsive definidos en el diseño.
 
-### 1. Crear `src/components/sections/Founder.astro`
+### 1. Crear `src/data/founder.ts`
+
+- Exportar `FOUNDER_DATA` con el título, la biografía y la historia aprobados.
+- Definir una interfaz plana con propiedades de solo lectura.
+- Mantener este módulo libre de estructura HTML y comportamiento visual.
+
+### 2. Actualizar `src/components/sections/Founder.astro`
 
 - Añadir una sección con:
   - `id="fundador"`.
   - `data-theme="dark"`.
   - `aria-labelledby="founder-title"`.
-  - `h2` con el texto `Detrás de Active Club`.
-  - Dos párrafos con los placeholders editoriales aprobados.
+  - `h2` con el título obtenido desde `FOUNDER_DATA`.
+  - Dos párrafos con la biografía y la historia obtenidas desde `FOUNDER_DATA`.
   - Un placeholder visual con proporción 9:16 y estado pendiente inequívoco.
-- No añadir eyebrow, CTA, redes sociales, estadísticas ni credenciales.
+- No añadir eyebrow, CTA, redes sociales ni estadísticas.
 - Construir el layout con CSS local y tokens semánticos existentes:
   - Desktop: dos columnas, contenido a la izquierda y visual a la derecha.
   - Mobile: una columna en orden título → párrafos → visual.
@@ -30,7 +36,7 @@ Este plan incorpora la sección Founder sin producir todavía contenido biográf
 - Mantener una medida de lectura controlada y reutilizar la escala de espaciado y títulos de la landing.
 - Incorporar un divisor sutil respecto de Method usando `--border-default`.
 
-### 2. Crear `src/scripts/animations/founder.js`
+### 3. Conservar `src/scripts/animations/founder.js`
 
 - Exportar `initFounder()` siguiendo las convenciones actuales:
   - Retorno temprano cuando la sección no exista.
@@ -44,17 +50,16 @@ Este plan incorpora la sección Founder sin producir todavía contenido biográf
   - Solo `opacity` y `transform`; no animar propiedades de layout.
 - Con `prefers-reduced-motion: reduce`, dejar todos los elementos visibles y sin transformación.
 
-### 3. Actualizar `src/pages/index.astro`
+### 4. Conservar la integración en `src/pages/index.astro`
 
 - Importar `Founder.astro`.
 - Renderizar `<Founder />` inmediatamente después de `<Method />` y antes de `<ForWho />`.
 - No añadir Founder a la navegación principal: la sección genera confianza, pero no constituye uno de los destinos principales del recorrido comprimido.
 
-## Sustitución futura de placeholders
+## Sustitución futura de la fotografía
 
-Cuando estén disponibles el contenido y la fotografía reales:
+Cuando esté disponible la fotografía real:
 
-- Reemplazar únicamente los dos párrafos, sin cambiar la estructura del componente.
 - Sustituir el placeholder por una imagen optimizada mediante el pipeline de assets de Astro.
 - Declarar `width`, `height`, `sizes` y texto alternativo contextual.
 - Mantener la proporción 9:16 para evitar una regresión de layout.
@@ -88,13 +93,14 @@ No existe actualmente un runner de pruebas automatizadas para componentes. `astr
 
 | Acción | Archivo | Responsabilidad |
 |---|---|---|
-| Crear | `src/components/sections/Founder.astro` | Estructura, placeholders y responsive. |
-| Crear | `src/scripts/animations/founder.js` | Reveal progresivo y movimiento reducido. |
-| Modificar | `src/pages/index.astro` | Integración en el recorrido. |
+| Crear | `src/data/founder.ts` | Contenido editorial tipado y separado de la UI. |
+| Modificar | `src/components/sections/Founder.astro` | Render del contenido y responsive. |
+| Sin cambios | `src/scripts/animations/founder.js` | Reveal progresivo y movimiento reducido. |
+| Sin cambios | `src/pages/index.astro` | Integración en el recorrido. |
 
 ## Límite de revisión y rollback
 
-La entrega debe permanecer en una sola unidad porque el componente no tiene valor aislado sin su integración y verificación. El rollback consiste en eliminar `Founder.astro`, `founder.js` y retirar su importación y render de `index.astro`; no requiere modificar otras secciones ni datos compartidos.
+La entrega debe permanecer en una sola unidad porque los datos y su render forman un único cambio editorial. El rollback consiste en eliminar `src/data/founder.ts` y restaurar los placeholders previos en `Founder.astro`; no requiere modificar otras secciones.
 
 ## Criterios de finalización
 
@@ -103,4 +109,5 @@ La entrega debe permanecer en una sola unidad porque el componente no tiene valo
 - [ ] `npm run build` finaliza sin errores.
 - [ ] `git diff --check` finaliza sin errores.
 - [ ] La revisión responsive y de movimiento reducido queda registrada.
-- [ ] No se incorporan afirmaciones biográficas ni imágenes ficticias.
+- [ ] Solo se incorporan las afirmaciones biográficas aprobadas por el usuario.
+- [ ] La fotografía continúa representada por un placeholder inequívoco.

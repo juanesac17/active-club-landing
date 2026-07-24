@@ -1,6 +1,6 @@
 # Diseño de la sección Founder
 
-Founder incorporará una pausa editorial y humana dentro del recorrido de Active Club. La sección explicará quién está detrás de la marca y, cuando exista el contenido definitivo, contará su origen sin repetir la metodología ni los servicios.
+Founder incorpora una pausa editorial y humana dentro del recorrido de Active Club. La sección explica quién está detrás de la marca y cuenta su origen en primera persona, sin repetir la metodología ni los servicios.
 
 ## Decisiones aprobadas
 
@@ -13,18 +13,19 @@ Founder incorporará una pausa editorial y humana dentro del recorrido de Active
 | Composición mobile | Una columna: título y párrafos primero; imagen después. |
 | Título | `Detrás de Active Club`. |
 | Eyebrow | No se incluye. |
-| Descripción | Dos párrafos editoriales explícitamente marcados como pendientes. |
+| Descripción | Dos párrafos editoriales en primera persona: biografía del fundador e historia de la marca. |
+| Fuente de datos | Módulo tipado `src/data/founder.ts`, separado del componente visual. |
 | Imagen inicial | Placeholder visible con proporción 9:16. |
 | Imagen definitiva | Fotografía real del fundador; queda fuera de esta primera implementación. |
 
-## Contenido inicial
+## Contenido aprobado
 
-La primera versión mostrará estos textos para que nadie los confunda con copy definitivo:
+La sección mostrará estos textos desde la voz de Juan Esteban Arias:
 
-1. `[Presentación del fundador pendiente.]`
-2. `[Historia del origen de Active Club pendiente.]`
+1. `Mi nombre es Juan Esteban Arias, soy el fundador de Active Club y profesional en Entrenamiento Deportivo de la Universidad de Antioquia. Mi trabajo se enfoca en crear procesos responsables, personalizados y adaptados a las necesidades de cada persona, entendiendo la salud, el movimiento y el rendimiento como partes de un mismo proceso.`
+2. `Fundé Active Club en 2024 con el propósito de ofrecer un acompañamiento más humano, profesional y cercano. Desde Active Club, ayudo a las personas a mejorar su salud, bienestar y rendimiento deportivo mediante una planificación segura, progresiva y orientada a resultados reales y sostenibles.`
 
-El primer párrafo se reemplazará posteriormente por una presentación humana del fundador. El segundo contará la situación concreta que dio origen a Active Club. Ninguno deberá convertirse en una hoja de vida ni duplicar los pasos explicados en Method.
+El primer párrafo presenta al fundador y su enfoque profesional. El segundo cuenta el propósito que dio origen a Active Club. El contenido vive fuera de la UI para que pueda evolucionar sin modificar la estructura del componente.
 
 ## Composición visual
 
@@ -47,10 +48,8 @@ El primer párrafo se reemplazará posteriormente por una presentación humana d
 
 ## Fuera de alcance
 
-- Redactar la biografía definitiva.
-- Redactar la historia de origen de Active Club.
 - Incorporar la fotografía real.
-- Agregar CTA, redes sociales, credenciales o estadísticas.
+- Agregar CTA, redes sociales o estadísticas.
 - Modificar la navegación principal.
 
 ## Criterios de aceptación visual
@@ -60,6 +59,8 @@ El primer párrafo se reemplazará posteriormente por una presentación humana d
 - [ ] Desktop presenta texto a la izquierda e imagen 9:16 a la derecha.
 - [ ] Mobile presenta título y párrafos antes de la imagen.
 - [ ] No aparece eyebrow.
-- [ ] Los dos párrafos y la imagen se reconocen claramente como placeholders.
+- [ ] La biografía y la historia se leen en primera persona.
+- [ ] El contenido editorial se obtiene desde `src/data/founder.ts`.
+- [ ] La imagen se reconoce claramente como placeholder.
 - [ ] No existe scroll horizontal a 375 px.
 - [ ] El cambio posterior a ForWho conserva un contraste claro entre dark y light.
