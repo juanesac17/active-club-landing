@@ -31,7 +31,7 @@ export function initForWho() {
           scrollTrigger: {
             id: "forwho-editorial-grid",
             trigger: matrix,
-            start: "top 75%",
+            start: "top 50%",
             once: true,
           },
         });
@@ -41,7 +41,7 @@ export function initForWho() {
             horizontalDivider,
             {
               scaleX: 0,
-              duration: 0.35,
+              duration: 0.85,
               ease: "none",
             },
             0
@@ -50,7 +50,7 @@ export function initForWho() {
             verticalDivider,
             {
               scaleY: 0,
-              duration: 0.35,
+              duration: 0.85,
               ease: "none",
             },
             0
@@ -60,7 +60,7 @@ export function initForWho() {
             {
               autoAlpha: 0,
               y: 28,
-              duration: 0.5,
+              duration: 0.65,
               ease: "power2.out",
               stagger: 0.1,
             },
