@@ -210,6 +210,13 @@ html.intro-lock body {
   overscroll-behavior: none;
 }
 
+/* Bloqueo del documento mientras un detalle de plan está abierto. */
+html.plans-dialog-lock,
+html.plans-dialog-lock body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 /* -------------------------------------------------------------
    Movimiento reducido — respeta la preferencia del sistema
    ------------------------------------------------------------- */

@@ -2,6 +2,13 @@ import { siInstagram, siWhatsapp } from "simple-icons";
 import navigationLogoSvg from "../assets/images/logotipo-blanco.svg?raw";
 import wordmarkSvg from "../assets/images/wordmark.svg?raw";
 
+const WHATSAPP_BASE_URL = "https://wa.me/573045999963";
+
+export const createWhatsAppHref = (message: string) => {
+  const params = new URLSearchParams({ text: message });
+  return `${WHATSAPP_BASE_URL}?${params.toString()}`;
+};
+
 const simpleIconSvg = (path: string) =>
   `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path d="${path}" /></svg>`;
 
@@ -69,7 +76,9 @@ const BRAND_LINKS = {
   home: { label: "Active Club — inicio", href: "#hero" },
   contact: {
     label: "WhatsApp",
-    href: "https://wa.me/573045999963?text=Hola%2C%20quiero%20agendar%20una%20cita%20con%20Active%20Club.%20Me%20gustar%C3%ADa%20conocer%20qu%C3%A9%20opci%C3%B3n%20se%20adapta%20mejor%20a%20mis%20objetivos%20y%20recibir%20informaci%C3%B3n%20sobre%20los%20planes.",
+    href: createWhatsAppHref(
+      "Hola, quiero agendar una cita con Active Club. Me gustaría conocer qué opción se adapta mejor a mis objetivos y recibir información sobre los planes."
+    ),
   },
   instagram: {
     label: "Instagram",

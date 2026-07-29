@@ -5,46 +5,20 @@
  * con precios en COP y separadores horizontales. Active destacado por
  * hairline accent, no por badge.
  *
- * Sin animaciones — el contenido es visible desde el primer render.
+ * Cada plan amplía su información en un diálogo nativo accesible.
  */
-const PLANS = [
-  {
-    name: "Starter",
-    focus: "Para comenzar con una ruta clara.",
-    price: "$180.000",
-    features: [
-      "Entrenamiento virtual",
-      "Plan personalizado",
-      "Seguimiento mensual",
-    ],
-    featured: false,
-  },
-  {
-    name: "Active",
-    focus: "Para combinar autonomía y acompañamiento presencial.",
-    price: "$320.000",
-    features: [
-      "Cuatro sesiones presenciales al mes",
-      "Ajustes quincenales",
-      "Soporte por WhatsApp",
-    ],
-    featured: true,
-  },
-  {
-    name: "Elite",
-    focus: "Para un acompañamiento más frecuente e individualizado.",
-    price: "$480.000",
-    features: [
-      "Sesiones presenciales ilimitadas",
-      "Acompañamiento dedicado",
-      "Evaluación física mensual",
-    ],
-    featured: false,
-  },
-];
+import logoHorizontalUrl from "../../assets/images/logo-horizontal.svg?url";
+import { PLANS } from "../../data/plans";
+import Button from "../ui/Button.astro";
 ---
 
-<section class="plans" id="planes" aria-labelledby="plans-title" data-theme="light">
+<section
+  class="plans"
+  id="planes"
+  aria-labelledby="plans-title"
+  data-theme="light"
+  data-plans
+>
   <div class="plans__inner">
     <header class="plans__header">
       <h2 class="plans__title" id="plans-title">Elige cómo quieres comenzar</h2>
@@ -94,7 +68,82 @@ const PLANS = [
                 ))}
               </ul>
             </div>
+
+            <div class="plans__cell plans__cell--action" role="cell">
+              <button
+                class="plans__details-trigger"
+                type="button"
+                aria-haspopup="dialog"
+                aria-controls={`plan-${plan.id}-dialog`}
+                data-dialog-open={`plan-${plan.id}-dialog`}
+              >
+                Ver detalles
+              </button>
+            </div>
           </article>
+        ))
+      }
+    </div>
+
+    <div class="plans__dialogs">
+      {
+        PLANS.map((plan) => (
+          <dialog
+            class="plans__dialog"
+            id={`plan-${plan.id}-dialog`}
+            aria-labelledby={`plan-${plan.id}-title`}
+            aria-describedby={`plan-${plan.id}-description`}
+          >
+            <div class="plans__dialog-panel">
+              <button
+                class="plans__dialog-close"
+                type="button"
+                aria-label={`Cerrar detalles del plan ${plan.name}`}
+                data-dialog-close
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M6 6l12 12M18 6L6 18"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </button>
+
+              <img
+                class="plans__dialog-logo"
+                src={logoHorizontalUrl}
+                alt=""
+                width="5149"
+                height="1487"
+                decoding="async"
+                aria-hidden="true"
+              />
+
+              <h3 class="plans__dialog-title" id={`plan-${plan.id}-title`}>
+                {plan.name}
+              </h3>
+
+              <p
+                class="plans__dialog-description"
+                id={`plan-${plan.id}-description`}
+              >
+                {plan.description}
+              </p>
+
+              <div class="plans__dialog-action">
+                <Button href={plan.cta.href} variant="primary">
+                  {plan.cta.label}
+                </Button>
+              </div>
+            </div>
+          </dialog>
         ))
       }
     </div>
@@ -153,7 +202,7 @@ const PLANS = [
   .plans__row {
     position: relative;
     display: grid;
-    grid-template-columns: minmax(8rem, 1fr) minmax(7rem, 0.8fr) minmax(12rem, 1.2fr) minmax(14rem, 1.5fr);
+    grid-template-columns: minmax(7rem, 0.8fr) minmax(6.75rem, 0.65fr) minmax(11rem, 1.1fr) minmax(13rem, 1.35fr) max-content;
     gap: clamp(1.5rem, 3vw, 2.5rem);
     padding-block: clamp(1.5rem, 3vh, 2.25rem);
     border-bottom: 1px solid var(--border-default);
@@ -181,6 +230,11 @@ const PLANS = [
 
   .plans__cell--price {
     padding-top: 0.25rem;
+  }
+
+  .plans__cell--action {
+    align-items: flex-end;
+    justify-content: center;
   }
 
   .plans__name {
@@ -240,6 +294,156 @@ const PLANS = [
     color: var(--positive);
   }
 
+  .plans__details-trigger {
+    min-height: 44px;
+    padding: 0.65rem 0;
+    border: 0;
+    border-bottom: 1px solid var(--action-primary);
+    color: var(--on-surface);
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: var(--fw-medium);
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .plans__details-trigger:hover {
+    color: var(--action-primary);
+    border-color: currentColor;
+  }
+
+  .plans__details-trigger:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 4px;
+  }
+
+  /* ---------- Detalle modal ---------- */
+  .plans__dialog {
+    width: min(42rem, calc(100% - 2rem));
+    max-width: none;
+    max-height: min(48rem, calc(100dvh - 2rem));
+    margin: auto;
+    padding: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border: 1px solid var(--border-default);
+    border-radius: clamp(1.5rem, 4vw, 2.5rem);
+    color: var(--on-surface);
+    background: var(--surface-raised);
+    box-shadow: var(--shadow-card-featured);
+  }
+
+  .plans__dialog::backdrop {
+    background: rgb(10 10 10 / 72%);
+    backdrop-filter: blur(0.35rem);
+  }
+
+  .plans__dialog[open] {
+    animation: plans-dialog-enter 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .plans__dialog[open]::backdrop {
+    animation: plans-backdrop-enter 0.22s ease-out;
+  }
+
+  .plans__dialog-panel {
+    position: relative;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(1.25rem, 3vh, 2rem);
+    padding: clamp(4.75rem, 9vw, 6rem) clamp(1.5rem, 6vw, 4.5rem)
+      clamp(2rem, 6vw, 4rem);
+    text-align: center;
+  }
+
+  .plans__dialog-close {
+    position: absolute;
+    top: clamp(1rem, 3vw, 1.5rem);
+    right: clamp(1rem, 3vw, 1.5rem);
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    color: var(--on-surface);
+    background: transparent;
+    cursor: pointer;
+    transition: color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .plans__dialog-close:hover {
+    color: var(--surface);
+    background: var(--on-surface);
+  }
+
+  .plans__dialog-close:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 3px;
+  }
+
+  .plans__dialog-close svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .plans__dialog-logo {
+    display: block;
+    width: clamp(7rem, 18vw, 10rem);
+    height: auto;
+  }
+
+  .plans__dialog-title {
+    margin: 0;
+    color: var(--on-surface);
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 7vw, 3.75rem);
+    font-weight: var(--fw-bold);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+
+  .plans__dialog-description {
+    max-width: 48ch;
+    margin: 0;
+    color: var(--on-surface-muted);
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 2.2vw, 1.15rem);
+    font-weight: var(--fw-medium);
+    line-height: 1.65;
+    text-wrap: pretty;
+  }
+
+  .plans__dialog-action {
+    margin-top: 0.25rem;
+  }
+
+  @keyframes plans-dialog-enter {
+    from {
+      opacity: 0;
+      transform: translateY(1rem) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes plans-backdrop-enter {
+    from {
+      background: transparent;
+      backdrop-filter: blur(0);
+    }
+  }
+
   /* ---------- Responsive ---------- */
   @media (max-width: 63.9375rem) {
     .plans__header {
@@ -266,5 +470,73 @@ const PLANS = [
     .plans__cell--price {
       padding-top: 0;
     }
+
+    .plans__cell--action {
+      align-items: flex-start;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .plans__details-trigger,
+    .plans__dialog-close {
+      transition: none;
+    }
+
+    .plans__dialog[open],
+    .plans__dialog[open]::backdrop {
+      animation: none;
+    }
   }
 </style>
+
+<script>
+  const plans = document.querySelector<HTMLElement>("[data-plans]");
+
+  if (plans && plans.dataset.dialogsInitialized !== "true") {
+    plans.dataset.dialogsInitialized = "true";
+
+    const triggers = plans.querySelectorAll<HTMLButtonElement>(
+      "[data-dialog-open]"
+    );
+    let activeTrigger: HTMLButtonElement | null = null;
+
+    const unlockDocument = () => {
+      document.documentElement.classList.remove("plans-dialog-lock");
+    };
+
+    triggers.forEach((trigger) => {
+      const dialogId = trigger.dataset.dialogOpen;
+      const dialog = dialogId ? document.getElementById(dialogId) : null;
+
+      if (!(dialog instanceof HTMLDialogElement)) return;
+
+      const closeButton = dialog.querySelector<HTMLButtonElement>(
+        "[data-dialog-close]"
+      );
+
+      trigger.addEventListener("click", () => {
+        if (dialog.open) return;
+
+        dialog.showModal();
+        activeTrigger = trigger;
+        document.documentElement.classList.add("plans-dialog-lock");
+        closeButton?.focus();
+      });
+
+      closeButton?.addEventListener("click", () => dialog.close());
+
+      dialog.addEventListener("click", (event) => {
+        if (event.target === dialog) dialog.close();
+      });
+
+      dialog.addEventListener("cancel", unlockDocument);
+
+      dialog.addEventListener("close", () => {
+        const triggerToRestore = activeTrigger;
+        activeTrigger = null;
+        unlockDocument();
+        triggerToRestore?.focus();
+      });
+    });
+  }
+</script>
