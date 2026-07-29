@@ -1,0 +1,145 @@
+<div
+  class="scroll-fade"
+  data-scroll-fade
+  data-fade-theme="dark"
+  data-hidden
+  aria-hidden="true"
+></div>
+
+<style>
+  .scroll-fade {
+    position: fixed;
+    z-index: 20;
+    inset: auto 0 0;
+    width: 100%;
+    height: calc(clamp(4.5rem, 10vh, 7rem) + env(safe-area-inset-bottom));
+    pointer-events: none;
+    opacity: 1;
+    contain: layout paint;
+    transition: opacity 0.25s ease;
+  }
+
+  .scroll-fade::before,
+  .scroll-fade::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .scroll-fade::before {
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      color-mix(in srgb, var(--color-black) 16%, transparent) 28%,
+      color-mix(in srgb, var(--color-black) 66%, transparent) 70%,
+      color-mix(in srgb, var(--color-black) 94%, transparent) 100%
+    );
+    opacity: 1;
+  }
+
+  .scroll-fade::after {
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      color-mix(in srgb, var(--color-white) 18%, transparent) 28%,
+      color-mix(in srgb, var(--color-white) 70%, transparent) 70%,
+      color-mix(in srgb, var(--color-white) 96%, transparent) 100%
+    );
+    opacity: 0;
+  }
+
+  .scroll-fade[data-fade-theme="light"]::before {
+    opacity: 0;
+  }
+
+  .scroll-fade[data-fade-theme="light"]::after {
+    opacity: 1;
+  }
+
+  .scroll-fade[data-hidden],
+  :global(html.intro-lock) .scroll-fade {
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-fade,
+    .scroll-fade::before,
+    .scroll-fade::after {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const FADE_THEME = {
+    DARK: "dark",
+    LIGHT: "light",
+  } as const;
+
+  type FadeTheme = (typeof FADE_THEME)[keyof typeof FADE_THEME];
+
+  function initScrollFade() {
+    const fade = document.querySelector<HTMLElement>("[data-scroll-fade]");
+    const footer = document.querySelector<HTMLElement>("footer");
+    const themedSections = Array.from(
+      document.querySelectorAll<HTMLElement>("main > [data-theme]")
+    );
+
+    if (
+      !fade ||
+      !footer ||
+      themedSections.length === 0 ||
+      fade.dataset.initialized === "true" ||
+      !("IntersectionObserver" in window)
+    ) {
+      return;
+    }
+
+    fade.dataset.initialized = "true";
+
+    const resolveThemeAtViewportBottom = (): FadeTheme => {
+      const probeY = Math.max(0, window.innerHeight - 1);
+      const activeSection = themedSections.find((section) => {
+        const bounds = section.getBoundingClientRect();
+        return bounds.top <= probeY && bounds.bottom > probeY;
+      });
+
+      return activeSection?.dataset.theme === FADE_THEME.LIGHT
+        ? FADE_THEME.LIGHT
+        : FADE_THEME.DARK;
+    };
+
+    const updateTheme = () => {
+      fade.dataset.fadeTheme = resolveThemeAtViewportBottom();
+    };
+
+    const footerIsVisible = () => {
+      const bounds = footer.getBoundingClientRect();
+      return bounds.top < window.innerHeight && bounds.bottom > 0;
+    };
+
+    updateTheme();
+    fade.toggleAttribute("data-hidden", footerIsVisible());
+
+    const themeObserver = new IntersectionObserver(updateTheme, {
+      rootMargin: "-90% 0px 0px 0px",
+      threshold: [0, 0.01],
+    });
+
+    themedSections.forEach((section) => themeObserver.observe(section));
+
+    const footerObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry) return;
+        fade.toggleAttribute("data-hidden", entry.isIntersecting);
+      },
+      { threshold: [0, 0.01] }
+    );
+
+    footerObserver.observe(footer);
+    window.addEventListener("resize", updateTheme);
+  }
+
+  initScrollFade();
+</script>

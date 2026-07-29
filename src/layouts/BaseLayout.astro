@@ -1,10 +1,11 @@
 ---
 /**
  * BaseLayout — esqueleto HTML de la landing.
- * Responsabilidad única: <head> (meta tags, SEO, fuentes) + <body> con slot.
- * Header / Footer / WhatsAppFAB se ensamblan en la página, no acá.
+ * Responsabilidad única: <head> (meta tags, SEO, fuentes), <body> con slots
+ * y decoraciones globales del viewport. Header / Footer se ensamblan en la página.
  */
 import "../styles/global.css";
+import ScrollFade from "../components/layout/ScrollFade.astro";
 import { BRAND_DATA } from "../data/brand";
 
 interface Props {
@@ -88,5 +89,6 @@ const socialImage = new URL(image, base);
     </main>
     <!-- Footer fuera de <main>: semántica correcta para el cierre del sitio. -->
     <slot name="footer" />
+    <ScrollFade />
   </body>
 </html>
