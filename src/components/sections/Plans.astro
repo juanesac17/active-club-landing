@@ -1,11 +1,8 @@
 ---
 /**
  * Sección 7 — Planes.
- * Tabla comparativa editorial: tres niveles de acompañamiento sin cards,
- * con precios en COP y separadores horizontales. Active destacado por
- * hairline accent, no por badge.
- *
- * Cada plan amplía su información en un diálogo nativo accesible.
+ * Cuatro tarjetas con resumen frontal y detalle al reverso. El giro se
+ * adapta a mouse, touch, teclado y preferencias de movimiento reducido.
  */
 import logoHorizontalUrl from "../../assets/images/logo-horizontal.svg?url";
 import { PLANS } from "../../data/plans";
@@ -24,126 +21,143 @@ import Button from "../ui/Button.astro";
       <h2 class="plans__title" id="plans-title">Elige cómo quieres comenzar</h2>
     </header>
 
-    <div class="plans__table" role="table" aria-label="Comparación de planes">
+    <div class="plans__grid">
       {
         PLANS.map((plan) => (
           <article
-            class="plans__row"
+            class="plan-card"
+            data-plan-card
             data-featured={plan.featured ? "true" : undefined}
-            role="row"
+            data-flipped="false"
           >
-            <div class="plans__cell plans__cell--name" role="cell">
-              <h3 class="plans__name">{plan.name}</h3>
-            </div>
-
-            <div class="plans__cell plans__cell--price" role="cell">
-              <span class="plans__price">{plan.price}</span>
-            </div>
-
-            <div class="plans__cell plans__cell--focus" role="cell">
-              <p class="plans__focus">{plan.focus}</p>
-            </div>
-
-            <div class="plans__cell plans__cell--features" role="cell">
-              <ul class="plans__features" role="list">
-                {plan.features.map((feature) => (
-                  <li class="plans__feature">
-                    <svg
-                      class="plans__check"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M5 13l4 4L19 7"
-                        stroke="currentColor"
-                        stroke-width="2.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div class="plans__cell plans__cell--action" role="cell">
-              <button
-                class="plans__details-trigger"
-                type="button"
-                aria-haspopup="dialog"
-                aria-controls={`plan-${plan.id}-dialog`}
-                data-dialog-open={`plan-${plan.id}-dialog`}
-              >
-                Ver detalles
-              </button>
-            </div>
-          </article>
-        ))
-      }
-    </div>
-
-    <div class="plans__dialogs">
-      {
-        PLANS.map((plan) => (
-          <dialog
-            class="plans__dialog"
-            id={`plan-${plan.id}-dialog`}
-            aria-labelledby={`plan-${plan.id}-title`}
-            aria-describedby={`plan-${plan.id}-description`}
-          >
-            <div class="plans__dialog-panel">
-              <button
-                class="plans__dialog-close"
-                type="button"
-                aria-label={`Cerrar detalles del plan ${plan.name}`}
-                data-dialog-close
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
+            <div class="plan-card__scene">
+              <div class="plan-card__inner">
+                <div
+                  class="plan-card__face plan-card__face--front"
+                  data-card-front
+                  aria-hidden="false"
                 >
-                  <path
-                    d="M6 6l12 12M18 6L6 18"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
+                  <div class="plan-card__eyebrow plan-card__eyebrow--front">
+                    {plan.featured && (
+                      <span class="plan-card__badge">Recomendado</span>
+                    )}
+                  </div>
+
+                  <h3
+                    class="plan-card__name"
+                    id={`plan-${plan.id}-front-title`}
+                  >
+                    {plan.name}
+                  </h3>
+
+                  <p class="plan-card__price">{plan.price}</p>
+                  <p class="plan-card__focus">{plan.focus}</p>
+
+                  <ul class="plan-card__features" role="list">
+                    {plan.features.map((feature) => (
+                      <li class="plan-card__feature">
+                        <svg
+                          class="plan-card__check"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M5 13l4 4L19 7"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div class="plan-card__front-action">
+                    <button
+                      class="plan-card__toggle"
+                      type="button"
+                      aria-expanded="false"
+                      aria-controls={`plan-${plan.id}-details`}
+                      data-card-open
+                    >
+                      Mostrar más detalles
+                    </button>
+                  </div>
+                </div>
+
+                <div
+                  class="plan-card__face plan-card__face--back"
+                  id={`plan-${plan.id}-details`}
+                  data-card-back
+                  aria-hidden="true"
+                  role="group"
+                  aria-labelledby={`plan-${plan.id}-back-title`}
+                  inert
+                >
+                  <div class="plan-card__eyebrow">
+                    <span class="plan-card__side">Detalles</span>
+                    {plan.featured && (
+                      <span class="plan-card__badge">Recomendado</span>
+                    )}
+                  </div>
+
+                  <h3
+                    class="visually-hidden"
+                    id={`plan-${plan.id}-back-title`}
+                  >
+                    Detalles del plan {plan.name}
+                  </h3>
+
+                  <img
+                    class="plan-card__logo"
+                    src={logoHorizontalUrl}
+                    alt=""
+                    width="5149"
+                    height="1487"
+                    decoding="async"
+                    aria-hidden="true"
                   />
-                </svg>
-              </button>
 
-              <img
-                class="plans__dialog-logo"
-                src={logoHorizontalUrl}
-                alt=""
-                width="5149"
-                height="1487"
-                decoding="async"
-                aria-hidden="true"
-              />
+                  <div class="plan-card__description">
+                    {plan.description.paragraphs.map((paragraph) => (
+                      <p>{paragraph}</p>
+                    ))}
+                  </div>
 
-              <h3 class="plans__dialog-title" id={`plan-${plan.id}-title`}>
-                {plan.name}
-              </h3>
+                  <div class="plan-card__recommended">
+                    <h4>Recomendado para</h4>
+                    <ul role="list">
+                      {plan.description.recommendedFor.map((item) => (
+                        <li>
+                          <span aria-hidden="true" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
 
-              <p
-                class="plans__dialog-description"
-                id={`plan-${plan.id}-description`}
-              >
-                {plan.description}
-              </p>
-
-              <div class="plans__dialog-action">
-                <Button href={plan.cta.href} variant="primary">
-                  {plan.cta.label}
-                </Button>
+                  <div class="plan-card__back-actions">
+                    <div class="plan-card__cta">
+                      <Button href={plan.cta.href} variant="primary">
+                        {plan.cta.label}
+                      </Button>
+                    </div>
+                    <button
+                      class="plan-card__toggle plan-card__toggle--return"
+                      type="button"
+                      data-card-close
+                    >
+                      Volver al resumen
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
-          </dialog>
+          </article>
         ))
       }
     </div>
@@ -152,7 +166,7 @@ import Button from "../ui/Button.astro";
 
 <style>
   /* Hallmark · pre-emit critique: P5 H5 E5 S5 R5 V5 */
-  /* Hallmark · macrostructure: stat-led comparison · genre: editorial */
+  /* Hallmark · macrostructure: paired flip grid · genre: editorial */
   .plans {
     position: relative;
     background: var(--surface);
@@ -171,12 +185,11 @@ import Button from "../ui/Button.astro";
     gap: clamp(3rem, 7vh, 5rem);
   }
 
-  /* ---------- Encabezado asimétrico ---------- */
   .plans__header {
     display: grid;
-    grid-template-columns: minmax(0, 1.35fr) minmax(16rem, 0.65fr);
+    grid-template-columns: minmax(0, 1.2fr) minmax(16rem, 0.8fr);
     align-items: end;
-    gap: clamp(2rem, 8vw, 8rem);
+    gap: clamp(2rem, 7vw, 7rem);
     text-align: left;
   }
 
@@ -193,350 +206,453 @@ import Button from "../ui/Button.astro";
     overflow-wrap: anywhere;
   }
 
-  /* ---------- Tabla comparativa ---------- */
-  .plans__table {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .plans__row {
-    position: relative;
+  .plans__grid {
     display: grid;
-    grid-template-columns: minmax(7rem, 0.8fr) minmax(6.75rem, 0.65fr) minmax(11rem, 1.1fr) minmax(13rem, 1.35fr) max-content;
-    gap: clamp(1.5rem, 3vw, 2.5rem);
-    padding-block: clamp(1.5rem, 3vh, 2.25rem);
-    border-bottom: 1px solid var(--border-default);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    gap: clamp(1.25rem, 3vw, 2.25rem);
   }
 
-  .plans__row:first-child {
-    border-top: 1px solid var(--border-default);
-  }
-
-  .plans__row[data-featured] {
-    border-left: 3px solid var(--highlight);
-    padding-left: clamp(1rem, 2vw, 1.5rem);
-  }
-
-  .plans__cell {
+  .plan-card {
     min-width: 0;
     display: flex;
+    perspective: 80rem;
+  }
+
+  .plan-card__scene,
+  .plan-card__inner {
+    width: 100%;
+    min-height: 100%;
+  }
+
+  .plan-card__scene {
+    display: grid;
+  }
+
+  .plan-card__inner {
+    display: grid;
+    transform-style: preserve-3d;
+    transition: transform 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+  }
+
+  .plan-card[data-flipped="true"] .plan-card__inner {
+    transform: rotateY(180deg);
+  }
+
+  .plan-card__face {
+    grid-area: 1 / 1;
+    min-width: 0;
+    min-height: 100%;
+    display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-  }
-
-  .plans__cell--name {
-    padding-top: 0.25rem;
-  }
-
-  .plans__cell--price {
-    padding-top: 0.25rem;
-  }
-
-  .plans__cell--action {
-    align-items: flex-end;
-    justify-content: center;
-  }
-
-  .plans__name {
-    margin: 0;
+    padding: clamp(1.5rem, 4vw, 2.75rem);
+    border: 4px solid var(--border-default);
+    border-radius: clamp(1.4rem, 3vw, 2rem);
     color: var(--on-surface);
-    font-family: var(--font-display);
-    font-size: clamp(1.25rem, 1.9vw, 1.5rem);
+    background: var(--surface-raised);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .plan-card__face--back {
+    transform: rotateY(180deg);
+  }
+
+  .plan-card[data-featured] .plan-card__face {
+    border: 3px solid var(--positive);
+    background: linear-gradient(
+      145deg,
+      var(--surface-raised) 0%,
+      color-mix(
+          in srgb,
+          var(--surface-raised) 91%,
+          var(--positive-surface) 9%
+        )
+        100%
+    );
+  }
+
+  .plan-card__eyebrow {
+    min-height: 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  .plan-card__eyebrow--front {
+    justify-content: flex-end;
+  }
+
+  .plan-card__side,
+  .plan-card__badge {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
     font-weight: var(--fw-bold);
-    line-height: 1.1;
-    letter-spacing: 0.02em;
+    line-height: 1;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
   }
 
-  .plans__price {
-    font-family: var(--font-body);
-    font-size: clamp(1.1rem, 1.6vw, 1.3rem);
-    font-weight: var(--fw-bold);
-    font-variant-numeric: tabular-nums;
-    color: var(--on-surface);
-    line-height: 1.2;
+  .plan-card__side {
+    color: var(--on-surface-muted);
   }
 
-  .plans__focus {
+  .plan-card__badge {
+    padding: 0.5rem 0.7rem;
+    border-radius: 999px;
+    color: var(--on-positive);
+    background: var(--positive-surface);
+  }
+
+  .plan-card__name {
+    max-width: 15ch;
     margin: 0;
+    color: var(--on-surface);
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4.6vw, 3.5rem);
+    font-weight: var(--fw-bold);
+    line-height: 0.95;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+
+  .plan-card__logo {
+    display: block;
+    width: min(12rem, 48%);
+    height: auto;
+    margin-inline: auto;
+  }
+
+  .plan-card__price {
+    margin: clamp(1.25rem, 3vw, 1.75rem) 0 0;
+    color: var(--on-surface);
+    font-family: var(--font-body);
+    font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+    font-weight: var(--fw-bold);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.15;
+    text-wrap: balance;
+    text-align: center;
+  }
+
+  .plan-card__focus {
+    max-width: 38ch;
+    margin: 0.9rem 0 0;
     color: var(--on-surface-muted);
     font-family: var(--font-body);
-    font-size: clamp(0.95rem, 1.45vw, 1.1rem);
+    font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+    font-weight: var(--fw-medium);
+    line-height: 1.5;
+    text-wrap: pretty;
+    text-align: center;
+  }
+
+  .plan-card__features {
+    list-style: none;
+    margin: clamp(1.75rem, 4vw, 2.5rem) 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .plan-card__feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    color: var(--on-surface-muted);
+    font-family: var(--font-body);
+    font-size: clamp(0.9rem, 1.3vw, 1rem);
     font-weight: var(--fw-medium);
     line-height: 1.45;
   }
 
-  .plans__features {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: clamp(0.5rem, 1vh, 0.75rem);
-  }
-
-  .plans__feature {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.6rem;
-    font-family: var(--font-body);
-    font-weight: var(--fw-medium);
-    font-size: clamp(0.9rem, 1.3vw, 1rem);
-    line-height: 1.5;
-    color: var(--on-surface-muted);
-  }
-
-  .plans__check {
-    flex-shrink: 0;
+  .plan-card__check {
+    flex: 0 0 auto;
     width: 1.1em;
     height: 1.1em;
-    margin-top: 0.2em;
+    margin-top: 0.17em;
     color: var(--positive);
   }
 
-  .plans__details-trigger {
-    min-height: 44px;
-    padding: 0.65rem 0;
-    border: 0;
-    border-bottom: 1px solid var(--action-primary);
-    color: var(--on-surface);
-    background: transparent;
-    font-family: var(--font-body);
-    font-size: 0.9rem;
-    font-weight: var(--fw-medium);
-    line-height: 1;
-    white-space: nowrap;
-    cursor: pointer;
-    transition: color 0.2s ease, border-color 0.2s ease;
-  }
-
-  .plans__details-trigger:hover {
-    color: var(--action-primary);
-    border-color: currentColor;
-  }
-
-  .plans__details-trigger:focus-visible {
-    outline: 2px solid var(--focus-ring);
-    outline-offset: 4px;
-  }
-
-  /* ---------- Detalle modal ---------- */
-  .plans__dialog {
-    width: min(42rem, calc(100% - 2rem));
-    max-width: none;
-    max-height: min(48rem, calc(100dvh - 2rem));
-    margin: auto;
-    padding: 0;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    border: 1px solid var(--border-default);
-    border-radius: clamp(1.5rem, 4vw, 2.5rem);
-    color: var(--on-surface);
-    background: var(--surface-raised);
-    box-shadow: var(--shadow-card-featured);
-  }
-
-  .plans__dialog::backdrop {
-    background: rgb(10 10 10 / 72%);
-    backdrop-filter: blur(0.35rem);
-  }
-
-  .plans__dialog[open] {
-    animation: plans-dialog-enter 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
-  }
-
-  .plans__dialog[open]::backdrop {
-    animation: plans-backdrop-enter 0.22s ease-out;
-  }
-
-  .plans__dialog-panel {
+  .plan-card__front-action {
     position: relative;
-    min-height: 100%;
+    min-height: 44px;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: clamp(1.25rem, 3vh, 2rem);
-    padding: clamp(4.75rem, 9vw, 6rem) clamp(1.5rem, 6vw, 4.5rem)
-      clamp(2rem, 6vw, 4rem);
-    text-align: center;
+    margin-top: auto;
+    padding-top: clamp(1.75rem, 4vw, 2.5rem);
   }
 
-  .plans__dialog-close {
-    position: absolute;
-    top: clamp(1rem, 3vw, 1.5rem);
-    right: clamp(1rem, 3vw, 1.5rem);
-    width: 44px;
-    height: 44px;
-    display: grid;
-    place-items: center;
-    padding: 0;
+  .plan-card__toggle {
+    width: 100%;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1rem;
     border: 1px solid var(--border-strong);
     border-radius: 999px;
     color: var(--on-surface);
     background: transparent;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: var(--fw-bold);
+    line-height: 1;
     cursor: pointer;
-    transition: color 0.2s ease, background-color 0.2s ease;
+    transition:
+      color 0.2s ease,
+      background-color 0.2s ease,
+      border-color 0.2s ease;
   }
 
-  .plans__dialog-close:hover {
+  .plan-card__toggle:hover {
     color: var(--surface);
     background: var(--on-surface);
+    border-color: var(--on-surface);
   }
 
-  .plans__dialog-close:focus-visible {
+  .plan-card__toggle:focus-visible {
     outline: 2px solid var(--focus-ring);
     outline-offset: 3px;
   }
 
-  .plans__dialog-close svg {
-    width: 1.25rem;
-    height: 1.25rem;
-  }
-
-  .plans__dialog-logo {
-    display: block;
-    width: clamp(7rem, 18vw, 10rem);
-    height: auto;
-  }
-
-  .plans__dialog-title {
-    margin: 0;
-    color: var(--on-surface);
-    font-family: var(--font-display);
-    font-size: clamp(2rem, 7vw, 3.75rem);
-    font-weight: var(--fw-bold);
-    line-height: 1;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-    text-wrap: balance;
-  }
-
-  .plans__dialog-description {
+  /* ---------- Reverso ---------- */
+  .plan-card__description {
     max-width: 48ch;
-    margin: 0;
+    margin-top: clamp(1.25rem, 3vw, 2rem);
     color: var(--on-surface-muted);
     font-family: var(--font-body);
-    font-size: clamp(1rem, 2.2vw, 1.15rem);
+    font-size: clamp(0.95rem, 1.5vw, 1.08rem);
     font-weight: var(--fw-medium);
     line-height: 1.65;
     text-wrap: pretty;
   }
 
-  .plans__dialog-action {
-    margin-top: 0.25rem;
+  .plan-card__description p {
+    margin: 0 0 1rem;
   }
 
-  @keyframes plans-dialog-enter {
-    from {
-      opacity: 0;
-      transform: translateY(1rem) scale(0.98);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
+  .plan-card__description p:last-child {
+    margin-bottom: 0;
   }
 
-  @keyframes plans-backdrop-enter {
-    from {
-      background: transparent;
-      backdrop-filter: blur(0);
-    }
+  .plan-card__recommended {
+    margin-top: clamp(1.5rem, 4vw, 2.25rem);
+  }
+
+  .plan-card__recommended h4 {
+    margin: 0 0 0.9rem;
+    color: var(--on-surface);
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: var(--fw-bold);
+    line-height: 1.2;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .plan-card__recommended ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .plan-card__recommended li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    color: var(--on-surface-muted);
+    font-family: var(--font-body);
+    font-size: clamp(0.9rem, 1.35vw, 1rem);
+    font-weight: var(--fw-medium);
+    line-height: 1.45;
+  }
+
+  .plan-card__recommended li > span {
+    flex: 0 0 auto;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-top: 0.45em;
+    border-radius: 50%;
+    background: var(--positive);
+  }
+
+  .plan-card__back-actions {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: auto;
+    padding-top: clamp(1.75rem, 4vw, 2.5rem);
+  }
+
+  .plan-card__cta :global(.btn) {
+    width: 100%;
   }
 
   /* ---------- Responsive ---------- */
-  @media (max-width: 63.9375rem) {
+  @media (min-width: 48.0625rem) and (hover: hover) and (pointer: fine) {
+    .plan-card__toggle {
+      position: absolute;
+      width: 1px;
+      min-width: 1px;
+      height: 1px;
+      min-height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      clip-path: inset(50%);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .plan-card__toggle:focus-visible {
+      position: relative;
+      width: 100%;
+      min-width: 0;
+      height: auto;
+      min-height: 44px;
+      padding: 0.75rem 1rem;
+      margin: 0;
+      overflow: visible;
+      clip: auto;
+      clip-path: none;
+      white-space: normal;
+      border: 1px solid var(--border-strong);
+    }
+
+  }
+
+  @media (max-width: 48rem) {
     .plans__header {
       grid-template-columns: minmax(0, 1fr);
       align-items: start;
       gap: 1rem;
     }
 
-    .plans__row {
+    .plans__grid {
       grid-template-columns: minmax(0, 1fr);
-      gap: 1rem;
-      padding-block: clamp(2rem, 4vh, 2.75rem);
-    }
-
-    .plans__row[data-featured] {
-      border-left: 3px solid var(--highlight);
-      padding-left: 1rem;
-    }
-
-    .plans__cell--name {
-      padding-top: 0;
-    }
-
-    .plans__cell--price {
-      padding-top: 0;
-    }
-
-    .plans__cell--action {
-      align-items: flex-start;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .plans__details-trigger,
-    .plans__dialog-close {
+    .plan-card__inner,
+    .plan-card__toggle {
       transition: none;
     }
 
-    .plans__dialog[open],
-    .plans__dialog[open]::backdrop {
-      animation: none;
+    .plan-card__inner,
+    .plan-card[data-flipped="true"] .plan-card__inner,
+    .plan-card__face--back {
+      transform: none;
+    }
+
+    .plan-card__face[aria-hidden="true"] {
+      visibility: hidden;
+      opacity: 0;
+    }
+
+    .plan-card__face[aria-hidden="false"] {
+      visibility: visible;
+      opacity: 1;
     }
   }
 </style>
 
 <script>
-  const plans = document.querySelector<HTMLElement>("[data-plans]");
+  const HOVER_MEDIA_QUERY =
+    "(min-width: 48.0625rem) and (hover: hover) and (pointer: fine)";
+  const hoverMedia = window.matchMedia(HOVER_MEDIA_QUERY);
+  const planSections = document.querySelectorAll<HTMLElement>("[data-plans]");
 
-  if (plans && plans.dataset.dialogsInitialized !== "true") {
-    plans.dataset.dialogsInitialized = "true";
+  planSections.forEach((plans) => {
+    if (plans.dataset.flipInitialized === "true") return;
 
-    const triggers = plans.querySelectorAll<HTMLButtonElement>(
-      "[data-dialog-open]"
-    );
-    let activeTrigger: HTMLButtonElement | null = null;
+    plans.dataset.flipInitialized = "true";
+    const cards = plans.querySelectorAll<HTMLElement>("[data-plan-card]");
 
-    const unlockDocument = () => {
-      document.documentElement.classList.remove("plans-dialog-lock");
-    };
+    cards.forEach((card) => {
+      const front = card.querySelector<HTMLElement>("[data-card-front]");
+      const back = card.querySelector<HTMLElement>("[data-card-back]");
+      const openButton = card.querySelector<HTMLButtonElement>("[data-card-open]");
+      const closeButton = card.querySelector<HTMLButtonElement>("[data-card-close]");
+      const cta = back?.querySelector<HTMLAnchorElement>(".plan-card__cta a");
 
-    triggers.forEach((trigger) => {
-      const dialogId = trigger.dataset.dialogOpen;
-      const dialog = dialogId ? document.getElementById(dialogId) : null;
+      if (!front || !back || !openButton || !closeButton) return;
 
-      if (!(dialog instanceof HTMLDialogElement)) return;
+      let pointerInside = false;
 
-      const closeButton = dialog.querySelector<HTMLButtonElement>(
-        "[data-dialog-close]"
-      );
+      const setFaceHidden = (face: HTMLElement, hidden: boolean) => {
+        face.inert = hidden;
+        face.setAttribute("aria-hidden", String(hidden));
+      };
 
-      trigger.addEventListener("click", () => {
-        if (dialog.open) return;
+      const focusElement = (element: HTMLElement) => {
+        requestAnimationFrame(() => element.focus({ preventScroll: true }));
+      };
 
-        dialog.showModal();
-        activeTrigger = trigger;
-        document.documentElement.classList.add("plans-dialog-lock");
-        closeButton?.focus();
+      const setFlipped = (flipped: boolean, focusTarget?: HTMLElement) => {
+        card.dataset.flipped = String(flipped);
+        openButton.setAttribute("aria-expanded", String(flipped));
+        setFaceHidden(front, flipped);
+        setFaceHidden(back, !flipped);
+
+        if (focusTarget) focusElement(focusTarget);
+      };
+
+      setFlipped(false);
+
+      card.addEventListener("pointerenter", () => {
+        if (!hoverMedia.matches) return;
+
+        pointerInside = true;
+        setFlipped(true);
       });
 
-      closeButton?.addEventListener("click", () => dialog.close());
+      card.addEventListener("pointerleave", () => {
+        if (!hoverMedia.matches) return;
 
-      dialog.addEventListener("click", (event) => {
-        if (event.target === dialog) dialog.close();
+        pointerInside = false;
+        if (!back.contains(document.activeElement)) setFlipped(false);
       });
 
-      dialog.addEventListener("cancel", unlockDocument);
+      openButton.addEventListener("click", () => {
+        setFlipped(true, cta ?? closeButton);
+      });
 
-      dialog.addEventListener("close", () => {
-        const triggerToRestore = activeTrigger;
-        activeTrigger = null;
-        unlockDocument();
-        triggerToRestore?.focus();
+      closeButton.addEventListener("click", () => {
+        setFlipped(false, openButton);
+      });
+
+      card.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape" || card.dataset.flipped !== "true") return;
+
+        event.preventDefault();
+        setFlipped(false, openButton);
+      });
+
+      card.addEventListener("focusout", () => {
+        requestAnimationFrame(() => {
+          if (!pointerInside && !card.contains(document.activeElement)) {
+            setFlipped(false);
+          }
+        });
+      });
+
+      hoverMedia.addEventListener("change", () => {
+        pointerInside = false;
+        if (!card.contains(document.activeElement)) setFlipped(false);
       });
     });
-  }
+  });
 </script>
