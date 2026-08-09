@@ -1,4 +1,5 @@
 ---
+import founderImage from "../../assets/images/founder-image.webp";
 import { FOUNDER_DATA } from "../../data/founder";
 ---
 
@@ -21,12 +22,17 @@ import { FOUNDER_DATA } from "../../data/founder";
 
     <div
       class="founder__portrait"
-      role="img"
-      aria-label="Fotografía vertical del fundador pendiente"
       data-founder-portrait
     >
-      <span class="founder__portrait-label">Fotografía pendiente</span>
-      <span class="founder__portrait-ratio" aria-hidden="true">9:16</span>
+      <img
+        class="founder__portrait-image"
+        src={founderImage.src}
+        width={founderImage.width}
+        height={founderImage.height}
+        alt="Juan Esteban Arias, fundador de Active Club"
+        loading="lazy"
+        decoding="async"
+      />
     </div>
   </div>
 </section>
@@ -86,63 +92,19 @@ import { FOUNDER_DATA } from "../../data/founder";
   }
 
   .founder__portrait {
-    position: relative;
-    isolation: isolate;
     width: min(100%, 21rem);
-    aspect-ratio: 9 / 16;
     justify-self: end;
-    display: grid;
-    place-items: center;
     overflow: hidden;
     border: 2px solid var(--border-default);
     border-radius: 1.5rem;
-    color: var(--on-surface-muted);
     background: var(--surface-raised);
     box-shadow: var(--shadow-card);
   }
 
-  .founder__portrait::before,
-  .founder__portrait::after {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    inset: 50% auto auto 50%;
-    width: 140%;
-    height: 1px;
-    background: var(--border-default);
-    transform-origin: center;
-  }
-
-  .founder__portrait::before {
-    transform: translate(-50%, -50%) rotate(60deg);
-  }
-
-  .founder__portrait::after {
-    transform: translate(-50%, -50%) rotate(-60deg);
-  }
-
-  .founder__portrait-label {
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--border-strong);
-    border-radius: 999px;
-    color: var(--on-surface);
-    background: var(--surface);
-    font-family: var(--font-body);
-    font-size: 0.8rem;
-    font-weight: var(--fw-medium);
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-
-  .founder__portrait-ratio {
-    position: absolute;
-    right: 1rem;
-    bottom: 1rem;
-    color: var(--on-surface-muted);
-    font-family: var(--font-display);
-    font-size: 0.8rem;
-    font-weight: var(--fw-bold);
-    letter-spacing: 0.08em;
+  .founder__portrait-image {
+    display: block;
+    width: 100%;
+    height: auto;
   }
 
   @media (max-width: 900px) {
