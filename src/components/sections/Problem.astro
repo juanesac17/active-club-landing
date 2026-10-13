@@ -77,12 +77,12 @@ const HIGHLIGHTS = [
     position: absolute;
     z-index: 0;
     top: 50%;
-    right: clamp(-2rem, -1.5vw, -0.75rem);
+    left: 50%;
     width: clamp(24rem, 48vw, 44rem);
     height: auto;
     opacity: 0.08;
     pointer-events: none;
-    transform: translateY(-50%);
+    transform: translate(-50%, -50%);
   }
 
   /* ---------- Título (mismo tamaño que About) ---------- */
@@ -153,8 +153,6 @@ const HIGHLIGHTS = [
 
   @media (max-width: 768px) {
     .problem__logo {
-      top: 56%;
-      right: -0.75rem;
       width: 88%;
       opacity: 0.06;
     }

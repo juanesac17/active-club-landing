@@ -35,9 +35,9 @@ export const PLANS = [
     id: "starter",
     name: "Starter",
     focus: "Para comenzar con una ruta clara.",
-    price: "$180.000 COP/mes",
+    price: "$200.000 COP/mes",
     features: [
-      "Entrenamiento virtual",
+      "Entrenamiento virtual y 2 sesiones presenciales por semana",
       "Plan personalizado",
       "Seguimiento mensual",
       "Ajustes básicos según evolución",
@@ -63,12 +63,12 @@ export const PLANS = [
     focus: "Para entrenar acompañado.",
     price: "$260.000 COP/mes",
     features: [
-      "4 sesiones presenciales al mes en formato dúo",
+      "2 sesiones presenciales por semana en formato dúo",
       "Plan personalizado",
       "Ajustes quincenales",
       "Soporte por WhatsApp",
       "Corrección técnica durante las sesiones",
-      "Seguimiento individual del progreso",
+      "Ajustes básicos según evolución",
     ],
     description: {
       paragraphs: [
@@ -87,7 +87,7 @@ export const PLANS = [
     id: "active",
     name: "Active",
     focus: "Para combinar autonomía y acompañamiento presencial.",
-    price: "$320.000 COP/mes",
+    price: "$400.000 COP/mes",
     features: [
       "4 sesiones presenciales al mes",
       "Ajustes quincenales",
@@ -113,11 +113,11 @@ export const PLANS = [
     id: "elite",
     name: "Elite",
     focus: "Para un acompañamiento más frecuente, cercano e individualizado.",
-    price: "$480.000 COP/mes",
+    price: "$780.000 COP/mes",
     features: [
       "Acompañamiento presencial frecuente",
       "Hasta 4 o 5 sesiones presenciales por semana",
-      "Evaluación física mensual",
+      "Evaluaciones físicas",
       "Ajustes semanales del plan",
       "Control de cargas y progresión",
       "Acompañamiento dedicado según objetivo",

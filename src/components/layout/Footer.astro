@@ -65,10 +65,10 @@ const YEAR = new Date().getFullYear();
   .footer__wordmark {
     position: absolute;
     z-index: 0;
+    top: 50%;
     left: 50%;
-    bottom: clamp(0.25rem, 1vh, 0.75rem);
-    transform: translateX(-50%);
-    width: min(96%, 90rem);
+    transform: translate(-50%, -50%);
+    width: clamp(8rem, 30vw, 16rem);
     color: var(--on-surface);
     opacity: 0.1;
     pointer-events: none;

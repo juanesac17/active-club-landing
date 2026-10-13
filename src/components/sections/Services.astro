@@ -135,12 +135,12 @@ const LOOP = [...SERVICES, ...SERVICES, ...SERVICES];
     position: absolute;
     z-index: 0;
     top: 50%;
-    left: clamp(-2rem, -1.5vw, -0.75rem);
+    left: 50%;
     width: clamp(24rem, 48vw, 44rem);
     height: auto;
     opacity: 0.08;
     pointer-events: none;
-    transform: translateY(-50%);
+    transform: translate(-50%, -50%);
   }
 
   .services__title {
@@ -304,8 +304,6 @@ const LOOP = [...SERVICES, ...SERVICES, ...SERVICES];
 
   @media (max-width: 768px) {
     .services__logo {
-      top: 56%;
-      left: -0.75rem;
       width: 88%;
       opacity: 0.06;
     }
