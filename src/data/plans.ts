@@ -61,7 +61,7 @@ export const PLANS = [
     id: "duo",
     name: "Active Duo",
     focus: "Para entrenar acompañado.",
-    price: "$260.000 COP/mes",
+    price: "$280.000 COP/mes",
     features: [
       "2 sesiones presenciales por semana en formato dúo",
       "Plan personalizado",
