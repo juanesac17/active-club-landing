@@ -18,23 +18,30 @@
  * haya cards suficientes a izquierda y derecha del centro cuando se
  * entra por primera vez o al hacer wrap.
  */
-import servicesLogoUrl from "../../assets/images/logotipo-blanco.svg?url";
+import entrenamientoImage from "../../assets/images/entrenamiento-image.webp";
+import valoracionImage from "../../assets/images/valoracion-image.webp";
+import runningImage from "../../assets/images/running-image.webp";
+import fuerzaImage from "../../assets/images/fuerza-image.webp";
 
 const SERVICES = [
   {
     title: "Entrenamiento personal",
+    image: entrenamientoImage,
     benefit: "Sesiones diseñadas alrededor de tu condición actual y tus objetivos.",
   },
   {
     title: "Valoración, planificación y seguimiento",
+    image: valoracionImage,
     benefit: "Conocemos tu punto de partida y ajustamos el plan según tu evolución.",
   },
   {
     title: "Preparación para running y otros deportes",
+    image: runningImage,
     benefit: "Desarrollamos las capacidades físicas que exige tu disciplina.",
   },
   {
     title: "Fuerza, movilidad y acondicionamiento",
+    image: fuerzaImage,
     benefit: "Mejora cómo te mueves y responde tu cuerpo dentro y fuera del entrenamiento.",
   },
 ];
@@ -45,17 +52,6 @@ const LOOP = [...SERVICES, ...SERVICES, ...SERVICES];
 ---
 
 <section class="services" id="servicios" aria-labelledby="services-title" data-theme="dark">
-  <img
-    class="services__logo"
-    src={servicesLogoUrl}
-    alt=""
-    width="2914"
-    height="2528"
-    loading="lazy"
-    decoding="async"
-    aria-hidden="true"
-  />
-
   <header class="services__header">
     <h2 class="services__title" id="services-title">El acompañamiento que necesitas</h2>
     <p class="services__subtitle">Elegimos las herramientas según tu objetivo, no al revés.</p>
@@ -78,6 +74,17 @@ const LOOP = [...SERVICES, ...SERVICES, ...SERVICES];
               class="services__card"
               aria-hidden={i >= SERVICES.length ? "true" : undefined}
             >
+              {/* Foto decorativa: el título ya describe el servicio. */}
+              <img
+                class="services__card-image"
+                src={service.image.src}
+                width={service.image.width}
+                height={service.image.height}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                draggable="false"
+              />
               <h3 class="services__card-title">{service.title}</h3>
               <p class="services__card-benefit">{service.benefit}</p>
             </li>
@@ -132,18 +139,6 @@ const LOOP = [...SERVICES, ...SERVICES, ...SERVICES];
     align-items: center;
     gap: clamp(0.5rem, 1.5vh, 1rem);
     margin-bottom: clamp(2rem, 4vh, 3rem);
-  }
-
-  .services__logo {
-    position: absolute;
-    z-index: 0;
-    top: 50%;
-    left: 50%;
-    width: clamp(24rem, 48vw, 44rem);
-    height: auto;
-    opacity: 0.08;
-    pointer-events: none;
-    transform: translate(-50%, -50%);
   }
 
   .services__title {
@@ -221,7 +216,8 @@ const LOOP = [...SERVICES, ...SERVICES, ...SERVICES];
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* bloque de contenido centrado verticalmente */
+    justify-content: flex-end; /* texto abajo, sobre el degradado de la foto */
+    overflow: hidden;
     gap: clamp(0.65rem, 1.5vh, 1rem);
     padding: clamp(1.5rem, 2.5vw, 2.25rem);
     text-align: center;
@@ -235,6 +231,40 @@ const LOOP = [...SERVICES, ...SERVICES, ...SERVICES];
     backface-visibility: hidden;
     /* El título escala con el ancho de la card (cqi), no del viewport. */
     container-type: inline-size;
+  }
+
+  /* Foto de fondo + degradado oscuro inferior para el contraste del texto. */
+  .services__card-image {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 30%;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .services__card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(
+      to top,
+      var(--color-black) 0%,
+      color-mix(in srgb, var(--color-black) 85%, transparent) 30%,
+      color-mix(in srgb, var(--color-black) 35%, transparent) 60%,
+      transparent 80%
+    );
+    pointer-events: none;
+  }
+
+  .services__card-title,
+  .services__card-benefit {
+    position: relative;
+    z-index: 2;
   }
 
   .services__card:hover {
@@ -328,11 +358,6 @@ const LOOP = [...SERVICES, ...SERVICES, ...SERVICES];
     .services__card {
       padding-inline: 1rem;
     }
-
-    .services__logo {
-      width: 88%;
-      opacity: 0.06;
-    }
   }
 
   /* ---------- Reduced motion: scroll horizontal nativo ---------- */
@@ -351,7 +376,7 @@ const LOOP = [...SERVICES, ...SERVICES, ...SERVICES];
       padding: 1rem;
     }
     .services__card {
-      position: static;
+      position: relative; /* contiene la foto absoluta */
       width: clamp(15rem, 70vw, 20rem);
       height: auto;
       aspect-ratio: 4 / 5;
