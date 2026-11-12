@@ -108,6 +108,7 @@ export const BRAND_DATA = {
     home: BRAND_LINKS.home,
     items: [
       { label: "Método", href: "#metodo" },
+      { label: "Equipo", href: "#equipo" },
       { label: "Para quién", href: "#para-quien" },
       { label: "Servicios", href: "#servicios" },
       { label: "Planes", href: "#planes" },
