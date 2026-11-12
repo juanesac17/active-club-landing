@@ -3,6 +3,7 @@ import juanImage from "../assets/images/juan-image.webp";
 import agustinImage from "../assets/images/agustin-image.webp";
 import jhonImage from "../assets/images/jhon-image.webp";
 import carolinaImage from "../assets/images/carolina-image.webp";
+import { createWhatsAppHref, type Link } from "./brand";
 
 export interface TeamMember {
   readonly name: string;
@@ -12,10 +13,15 @@ export interface TeamMember {
   readonly image?: ImageMetadata;
 }
 
+export interface TeamCta extends Link {
+  readonly description: string;
+}
+
 export interface TeamData {
   readonly heading: string;
   readonly intro?: string;
   readonly members: readonly TeamMember[];
+  readonly cta: TeamCta;
 }
 
 export const TEAM_DATA = {
@@ -52,4 +58,12 @@ export const TEAM_DATA = {
       image: carolinaImage,
     },
   ],
+  cta: {
+    description:
+      "Cada servicio es independiente: elige solo el que necesitas o combínalos según tu objetivo.",
+    label: "Quiero agendar con el equipo",
+    href: createWhatsAppHref(
+      "Hola, quiero agendar una cita con el equipo de Active Club. Me gustaría saber qué profesional se adapta mejor a mis objetivos."
+    ),
+  },
 } as const satisfies TeamData;

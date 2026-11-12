@@ -59,6 +59,9 @@ const LOOP = [...SERVICES, ...SERVICES, ...SERVICES];
   <header class="services__header">
     <h2 class="services__title" id="services-title">El acompañamiento que necesitas</h2>
     <p class="services__subtitle">Elegimos las herramientas según tu objetivo, no al revés.</p>
+    <p class="services__note">
+      Cada servicio es independiente: elige solo el que necesitas o combínalos según tu objetivo.
+    </p>
   </header>
 
   <div
@@ -158,6 +161,16 @@ const LOOP = [...SERVICES, ...SERVICES, ...SERVICES];
     font-weight: var(--fw-medium);
     font-size: clamp(1.1rem, 1.8vw, 1.4rem);
     color: var(--on-surface-muted);
+  }
+
+  .services__note {
+    max-width: 52ch;
+    font-family: var(--font-body);
+    font-weight: var(--fw-light);
+    font-size: clamp(0.95rem, 1.3vw, 1.05rem);
+    line-height: 1.6;
+    color: var(--on-surface-muted);
+    text-wrap: balance;
   }
 
   /* ---------- Stage: viewport del coverflow ---------- */

@@ -1,4 +1,5 @@
 ---
+import Button from "../ui/Button.astro";
 import { TEAM_DATA, type TeamMember } from "../../data/team";
 
 // Se tipa como TeamMember[] para acceder a `image` aunque algunos integrantes no la tengan.
@@ -98,6 +99,13 @@ const getInitials = (name: string): string => {
         })
       }
     </div>
+
+    <div class="team__cta">
+      <p class="team__cta-text">{TEAM_DATA.cta.description}</p>
+      <Button href={TEAM_DATA.cta.href} variant="primary">
+        {TEAM_DATA.cta.label}
+      </Button>
+    </div>
   </div>
 </section>
 
@@ -141,6 +149,26 @@ const getInitials = (name: string): string => {
     font-size: clamp(1rem, 1.7vw, 1.2rem);
     font-weight: var(--fw-light);
     line-height: 1.65;
+  }
+
+  .team__cta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(1.25rem, 3vh, 1.75rem);
+    text-align: center;
+  }
+
+  .team__cta-text {
+    max-width: 52ch;
+    margin: 0;
+    color: var(--on-surface-muted);
+    font-family: var(--font-body);
+    /* Mismo tamaño que .footer__copy. */
+    font-size: clamp(0.75rem, 0.9vw, 0.85rem);
+    font-weight: var(--fw-light);
+    line-height: 1.6;
+    text-wrap: balance;
   }
 
   /* ---------- Acordeón (desktop: fila de paneles) ---------- */
