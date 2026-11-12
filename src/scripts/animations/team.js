@@ -51,8 +51,10 @@ function preloadImagesNearViewport(section) {
  *
  * Desktop: fila de paneles animada por CSS (flex-grow); siempre hay uno abierto.
  * Mobile: columna de franjas; GSAP anima el alto de los contenidos en un solo
- * tween y, en el mismo frame, compensa el scroll para que la franja tocada no
- * se mueva cuando el panel de arriba se cierra. Tocar la franja abierta la cierra.
+ * tween. El viewport NO se compensa frame a frame (en táctil, scrollBy por
+ * frame mientras cambia el layout vibra): el contenido se reacomoda solo y, al
+ * terminar, si la franja tocada quedó fuera de vista se hace un único scroll
+ * suave hacia ella. Tocar la franja abierta la cierra.
  */
 export function initTeamAccordion(section) {
   const panels = Array.from(section.querySelectorAll("[data-team-panel]"));
@@ -81,6 +83,22 @@ export function initTeamAccordion(section) {
     });
   };
 
+  /**
+   * Si al cerrarse el panel de arriba la franja tocada subió por detrás del
+   * header fijo, la trae de vuelta con un solo scroll suave. scroll-margin-top
+   * (Team.astro, mobile) deja el espacio del header.
+   */
+  const revealTrigger = (trigger) => {
+    const panel = trigger.closest("[data-team-panel]");
+    if (!panel) return;
+    const offset = Number.parseFloat(getComputedStyle(panel).scrollMarginTop) || 0;
+    if (panel.getBoundingClientRect().top >= offset) return;
+    panel.scrollIntoView({
+      behavior: reducedMotionMedia.matches ? "instant" : "smooth",
+      block: "start",
+    });
+  };
+
   const stopHeightTween = () => {
     heightTween?.kill();
     heightTween = null;
@@ -102,26 +120,27 @@ export function initTeamAccordion(section) {
 
     if (reducedMotionMedia.matches) {
       stopHeightTween();
+      revealTrigger(trigger);
       return;
     }
 
-    const anchorTop = trigger.getBoundingClientRect().top;
+    // Sin scroll anchoring nativo mientras dura el tween: si no, Chrome también
+    // ajusta el scroll al cambiar el contenido y el viewport no queda libre.
+    const root = document.documentElement;
+    root.style.overflowAnchor = "none";
 
     heightTween = gsap.to(contents, {
       height: (index) => toHeights[index],
       duration: getTransitionSeconds(section.querySelector("[data-team-panels]") ?? section),
       ease: "power1.inOut",
       overwrite: true,
-      onUpdate: () => {
-        // Mismo tick en que GSAP aplicó los altos: la compensación no va un frame atrasada.
-        const delta = trigger.getBoundingClientRect().top - anchorTop;
-        // "instant": el html usa scroll-behavior: smooth y desfasaría la compensación.
-        if (delta !== 0) window.scrollBy({ top: delta, behavior: "instant" });
-      },
+      onInterrupt: () => root.style.removeProperty("overflow-anchor"),
       onComplete: () => {
         heightTween = null;
+        root.style.removeProperty("overflow-anchor");
         // Devuelve el control al CSS (alto auto / 0) para que se adapte a resize.
         gsap.set(contents, { clearProps: "height" });
+        revealTrigger(trigger);
       },
     });
   };
