@@ -1,0 +1,472 @@
+---
+import { TEAM_DATA, type TeamMember } from "../../data/team";
+
+// Se tipa como TeamMember[] para acceder a `image` aunque algunos integrantes no la tengan.
+const members: readonly TeamMember[] = TEAM_DATA.members;
+
+// Iniciales del placeholder: primera letra de la primera y la última palabra.
+const getInitials = (name: string): string => {
+  const words = name.trim().split(/\s+/);
+  const first = words[0]?.charAt(0) ?? "";
+  const last = words.length > 1 ? (words[words.length - 1]?.charAt(0) ?? "") : "";
+  return `${first}${last}`.toUpperCase();
+};
+---
+
+<section
+  class="team"
+  id="equipo"
+  aria-labelledby="team-title"
+  data-theme="dark"
+  data-team-section
+>
+  <div class="team__inner">
+    <header class="team__header" data-team-header>
+      <h2 class="team__title" id="team-title">{TEAM_DATA.heading}</h2>
+      {TEAM_DATA.intro && <p class="team__intro">{TEAM_DATA.intro}</p>}
+    </header>
+
+    <div class="team__panels" data-team-panels>
+      {
+        members.map((member, index) => {
+          // El color se deriva de la posición: impar → negro, par → blanco.
+          const tone = index % 2 === 0 ? "dark" : "light";
+          const isOpen = index === 0;
+          const triggerId = `team-trigger-${index + 1}`;
+          const contentId = `team-content-${index + 1}`;
+
+          return (
+            <article
+              class:list={[
+                "team-panel",
+                `team-panel--${tone}`,
+                member.image && "team-panel--photo",
+              ]}
+              data-theme={tone}
+              data-team-panel
+              data-open={isOpen ? "true" : "false"}
+            >
+              <h3 class="team-panel__heading">
+                <button
+                  class="team-panel__trigger"
+                  type="button"
+                  id={triggerId}
+                  aria-expanded={isOpen ? "true" : "false"}
+                  aria-controls={contentId}
+                  data-team-trigger
+                >
+                  <span class="team-panel__label">{member.name}</span>
+                  <span class="team-panel__icon" aria-hidden="true" />
+                </button>
+              </h3>
+
+              <div
+                class="team-panel__content"
+                id={contentId}
+                role="region"
+                aria-labelledby={triggerId}
+                aria-hidden={isOpen ? undefined : "true"}
+                inert={!isOpen}
+                data-team-content
+              >
+                <div class="team-panel__media">
+                  {member.image ? (
+                    <img
+                      class="team-panel__image"
+                      src={member.image.src}
+                      width={member.image.width}
+                      height={member.image.height}
+                      alt={`Retrato de ${member.name}`}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : (
+                    <span class="team-panel__initials" aria-hidden="true">
+                      {getInitials(member.name)}
+                    </span>
+                  )}
+                </div>
+
+                <div class="team-panel__body">
+                  <p class="team-panel__name">{member.name}</p>
+                  <p class="team-panel__role">{member.role}</p>
+                  <p class="team-panel__description">{member.description}</p>
+                </div>
+              </div>
+            </article>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .team {
+    position: relative;
+    overflow: hidden;
+    padding-inline: clamp(1.25rem, 6vw, 6rem);
+    padding-bottom: clamp(4rem, 10vh, 6rem);
+    color: var(--on-surface);
+    background: var(--surface);
+  }
+
+  .team__inner {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-top: clamp(3rem, 7vh, 4.5rem);
+    border-top: 1px solid var(--border-default);
+    display: grid;
+    gap: clamp(2.5rem, 6vh, 3.5rem);
+  }
+
+  .team__title {
+    max-width: 16ch;
+    margin: 0;
+    color: var(--on-surface);
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5.5vw, 3.75rem);
+    font-weight: var(--fw-bold);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  .team__intro {
+    max-width: 52ch;
+    margin: clamp(1.25rem, 3vh, 1.75rem) 0 0;
+    color: var(--on-surface-muted);
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 1.7vw, 1.2rem);
+    font-weight: var(--fw-light);
+    line-height: 1.65;
+  }
+
+  /* ---------- Acordeón (desktop: fila de paneles) ---------- */
+  .team__panels {
+    --team-ease: cubic-bezier(0.44, 0, 0.56, 1);
+    --team-duration: 0.5s;
+    display: flex;
+    gap: 0.75rem;
+    height: clamp(28rem, 70vh, 42rem);
+  }
+
+  .team-panel {
+    /* Color del panel: primitivos fijos; data-theme ajusta muted y foco. */
+    --panel-bg: var(--color-black);
+    --panel-fg: var(--color-white);
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+    overflow: hidden;
+    margin: 0;
+    color: var(--panel-fg);
+    background: var(--panel-bg);
+    border: 1px solid var(--border-default);
+    border-radius: 1.5rem;
+    transition: flex-grow var(--team-duration) var(--team-ease);
+  }
+
+  .team-panel--light {
+    --panel-bg: var(--color-white);
+    --panel-fg: var(--color-black);
+    border-color: transparent;
+  }
+
+  .team-panel[data-open="true"] {
+    flex-grow: 3;
+  }
+
+  .team-panel__heading {
+    margin: 0;
+    font: inherit;
+  }
+
+  .team-panel__trigger {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    width: 100%;
+    padding: clamp(1.25rem, 2.5vw, 1.75rem) 0.5rem;
+    color: inherit;
+    background: transparent;
+    border: 0;
+    border-radius: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .team-panel[data-open="true"] .team-panel__trigger {
+    cursor: default;
+  }
+
+  .team-panel__trigger:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: -4px;
+  }
+
+  /* Nombre del panel cerrado: vertical, de abajo hacia arriba. */
+  .team-panel__label {
+    max-height: 100%;
+    overflow: hidden;
+    font-family: var(--font-display);
+    font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+    font-weight: var(--fw-bold);
+    line-height: 1.1;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    transition: opacity 0.2s ease 0.25s;
+  }
+
+  .team-panel[data-open="true"] .team-panel__label {
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .team-panel__icon {
+    display: none;
+  }
+
+  /* Contenido: aparece con un fundido corto después de expandirse. */
+  .team-panel__content {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.15s ease,
+      visibility 0s linear 0.15s;
+  }
+
+  .team-panel[data-open="true"] .team-panel__content {
+    opacity: 1;
+    visibility: visible;
+    transition:
+      opacity 0.35s ease 0.3s,
+      visibility 0s linear 0s;
+  }
+
+  .team-panel__media {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+  }
+
+  /* Absoluta: en un grid con fila auto, height: 100% no se respeta y la
+     imagen se desborda a su alto natural. */
+  .team-panel__image {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 20%;
+  }
+
+  /* Degradado inferior del color del panel para asegurar el contraste del texto. */
+  .team-panel--photo .team-panel__media::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      var(--panel-bg) 0%,
+      color-mix(in srgb, var(--panel-bg) 88%, transparent) 22%,
+      color-mix(in srgb, var(--panel-bg) 40%, transparent) 42%,
+      transparent 62%
+    );
+    pointer-events: none;
+  }
+
+  .team-panel__initials {
+    margin-bottom: 30%;
+    color: color-mix(in srgb, var(--panel-fg) 14%, transparent);
+    font-family: var(--font-display);
+    font-size: clamp(5rem, 11vw, 9rem);
+    font-weight: var(--fw-bold);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    user-select: none;
+  }
+
+  .team-panel__body {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 1;
+    display: grid;
+    gap: 0.5rem;
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+  }
+
+  .team-panel__name {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: var(--fw-bold);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  .team-panel__role {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: clamp(0.85rem, 1.1vw, 0.95rem);
+    font-weight: var(--fw-bold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .team-panel__description {
+    max-width: 42ch;
+    margin: 0.5rem 0 0;
+    color: var(--on-surface-muted);
+    font-family: var(--font-body);
+    font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+    font-weight: var(--fw-light);
+    line-height: 1.6;
+  }
+
+  /* ---------- Mobile: columna de franjas ---------- */
+  @media (max-width: 899.98px) {
+    .team__panels {
+      flex-direction: column;
+      height: auto;
+    }
+
+    .team-panel {
+      flex: none;
+      display: grid;
+      grid-template-rows: 4.5rem 0fr;
+      border-radius: 1.25rem;
+      transition: grid-template-rows var(--team-duration) var(--team-ease);
+    }
+
+    .team-panel[data-open="true"] {
+      grid-template-rows: 4.5rem 1fr;
+    }
+
+    .team-panel__trigger {
+      position: static;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      height: 4.5rem;
+      padding: 0 1.25rem;
+    }
+
+    .team-panel[data-open="true"] .team-panel__trigger {
+      cursor: pointer;
+    }
+
+    .team-panel__label,
+    .team-panel[data-open="true"] .team-panel__label {
+      opacity: 1;
+      writing-mode: horizontal-tb;
+      transform: none;
+      transition: none;
+    }
+
+    /* Indicador +/− de la franja. */
+    .team-panel__icon {
+      position: relative;
+      display: block;
+      flex: 0 0 auto;
+      width: 0.9rem;
+      height: 0.9rem;
+    }
+
+    .team-panel__icon::before,
+    .team-panel__icon::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: currentColor;
+      transform: translateY(-50%);
+      transition: transform var(--team-duration) var(--team-ease);
+    }
+
+    .team-panel__icon::after {
+      transform: translateY(-50%) rotate(90deg);
+    }
+
+    .team-panel[data-open="true"] .team-panel__icon::after {
+      transform: translateY(-50%) rotate(0deg);
+    }
+
+    .team-panel__content {
+      position: relative;
+      inset: auto;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .team-panel__media {
+      position: relative;
+      inset: auto;
+      height: clamp(10rem, 40vw, 14rem);
+    }
+
+    /* Retrato 4:5, con tope para que no domine la pantalla en tablet. */
+    .team-panel--photo .team-panel__media {
+      height: auto;
+      aspect-ratio: 4 / 5;
+      max-height: 32rem;
+    }
+
+    .team-panel__initials {
+      margin-bottom: 0;
+      font-size: clamp(4.5rem, 22vw, 7rem);
+    }
+
+    .team-panel__body {
+      position: relative;
+      padding: 0 1.25rem 1.5rem;
+    }
+
+    /* En mobile el nombre ya está en la franja. */
+    .team-panel__name {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .team {
+      padding-bottom: clamp(3.5rem, 9vh, 5rem);
+    }
+
+    .team__title {
+      font-size: clamp(1.8rem, 8vw, 2.5rem);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .team-panel,
+    .team-panel__label,
+    .team-panel__content,
+    .team-panel[data-open="true"] .team-panel__label,
+    .team-panel[data-open="true"] .team-panel__content,
+    .team-panel__icon::before,
+    .team-panel__icon::after {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  import { initTeam } from "../../scripts/animations/team.js";
+  initTeam();
+</script>
