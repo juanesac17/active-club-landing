@@ -372,16 +372,12 @@ const getInitials = (name: string): string => {
       height: auto;
     }
 
+    /* El alto del contenido lo anima team.js (GSAP); el CSS solo define
+       los estados finales para que funcione sin JS. */
     .team-panel {
       flex: none;
-      display: grid;
-      grid-template-rows: 4.5rem 0fr;
       border-radius: 1.25rem;
-      transition: grid-template-rows var(--team-duration) var(--team-ease);
-    }
-
-    .team-panel[data-open="true"] {
-      grid-template-rows: 4.5rem 1fr;
+      transition: none;
     }
 
     .team-panel__trigger {
@@ -438,8 +434,12 @@ const getInitials = (name: string): string => {
     .team-panel__content {
       position: relative;
       inset: auto;
-      min-height: 0;
+      height: 0;
       overflow: hidden;
+    }
+
+    .team-panel[data-open="true"] .team-panel__content {
+      height: auto;
     }
 
     .team-panel__media {
